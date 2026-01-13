@@ -1,6 +1,7 @@
 import { type WritingGeneratorOptions } from '../../../types/generator';
 import { GridGenerator } from './GridGenerator';
 import { clsx } from 'clsx';
+import { pinyin } from 'pinyin-pro';
 
 interface WritingWorksheetProps {
   options: WritingGeneratorOptions;
@@ -8,11 +9,11 @@ interface WritingWorksheetProps {
 }
 
 export function WritingWorksheet({ options, content }: WritingWorksheetProps) {
-  // 简单的拼音映射（模拟数据，实际项目可能需要 pinyin 库）
-  // 这里只为了演示 UI 布局
-  const getPinyin = (_char: string) => {
-    // 实际项目中应引入 pinyin 库
-    return options.showPinyin ? 'hao' : undefined;
+  const getPinyin = (char: string) => {
+    if (!options.showPinyin) return undefined;
+    // 仅对汉字生成拼音
+    if (!/[\u4e00-\u9fa5]/.test(char)) return undefined;
+    return pinyin(char);
   };
 
   const renderContent = () => {
