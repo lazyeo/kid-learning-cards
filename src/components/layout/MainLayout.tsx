@@ -23,6 +23,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 
       <Toaster
         position="top-center"
+        containerClassName="no-print"
         toastOptions={{
           className: 'rounded-xl shadow-lg',
           duration: 3000,
