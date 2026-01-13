@@ -8,6 +8,7 @@ import { MathWorksheet } from '../components/generators/math/MathWorksheet';
 import { Button } from '../components/common/Button';
 import { generateMathProblems } from '../utils/mathGenerator';
 import { type MathGeneratorOptions, type MathProblem } from '../types/generator';
+import { downloadPDF } from '../utils/pdfGenerator';
 import { routes } from '../config/routes';
 
 export function MathPage() {
@@ -47,6 +48,17 @@ export function MathPage() {
     window.print();
   };
 
+  const handleDownload = () => {
+    if (problems.length === 0) {
+      toast.error('请先生成练习题');
+      return;
+    }
+    downloadPDF({
+      filename: 'math-worksheet',
+      elementId: 'math-worksheet-preview'
+    });
+  };
+
   return (
     <div className="animate-fade-in">
       {/* 顶部导航 */}
@@ -75,8 +87,8 @@ export function MathPage() {
           <Button
             variant="outline"
             icon={<Download className="w-4 h-4" />}
-            disabled={true} // 暂时禁用，HTML转图片功能在后续阶段实现
-            title="下载图片功能即将上线"
+            onClick={handleDownload}
+            disabled={problems.length === 0}
           >
             下载
           </Button>
@@ -108,7 +120,7 @@ export function MathPage() {
 
         {/* 右侧预览区域 - 占据更多空间 */}
         <div className="lg:col-span-8">
-          <div className="print:w-full">
+          <div className="print:w-full" id="math-worksheet-preview">
             <MathWorksheet problems={problems} includeAnswers={options.includeAnswers} />
           </div>
         </div>

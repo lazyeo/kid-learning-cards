@@ -7,6 +7,7 @@ import { WritingOptions } from '../components/generators/writing/WritingOptions'
 import { WritingWorksheet } from '../components/generators/writing/WritingWorksheet';
 import { Button } from '../components/common/Button';
 import { type WritingGeneratorOptions } from '../types/generator';
+import { downloadPDF } from '../utils/pdfGenerator';
 import { routes } from '../config/routes';
 
 export function WritingPage() {
@@ -53,6 +54,17 @@ export function WritingPage() {
     window.print();
   };
 
+  const handleDownload = () => {
+    if (!content) {
+      toast.error('请先生成练习内容');
+      return;
+    }
+    downloadPDF({
+      filename: 'writing-worksheet',
+      elementId: 'writing-worksheet-preview'
+    });
+  };
+
   return (
     <div className="animate-fade-in">
       {/* 顶部导航 */}
@@ -80,8 +92,8 @@ export function WritingPage() {
           <Button
             variant="outline"
             icon={<Download className="w-4 h-4" />}
-            disabled={true}
-            title="下载图片功能即将上线"
+            onClick={handleDownload}
+            disabled={!content}
           >
             下载
           </Button>
@@ -113,7 +125,7 @@ export function WritingPage() {
 
         {/* 右侧预览区域 */}
         <div className="lg:col-span-8">
-          <div className="print:w-full">
+          <div className="print:w-full" id="writing-worksheet-preview">
             <WritingWorksheet options={options} content={content} />
           </div>
         </div>

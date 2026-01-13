@@ -5,7 +5,7 @@ import { toast } from 'react-hot-toast';
 import { ColoringOptions } from '../components/generators/coloring/ColoringOptions';
 import { ColoringPreview } from '../components/generators/coloring/ColoringPreview';
 import { Button } from '../components/common/Button';
-import { useImageGeneration } from '../hooks/useImageGeneration';
+import { downloadPDF } from '../utils/pdfGenerator';
 import { routes } from '../config/routes';
 
 export function ColoringPage() {
@@ -23,24 +23,11 @@ export function ColoringPage() {
   const handleDownload = async () => {
     if (!imageUrl) return;
 
-    try {
-      // 创建一个临时链接下载图片
-      // 注意：由于跨域问题，直接下载可能受限，这里尝试直接打开新窗口
-      // 生产环境最好通过后端代理下载，或者使用 fetch blob
-      const response = await fetch(imageUrl);
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `coloring-page-${Date.now()}.png`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    } catch (e) {
-      console.error('Download failed:', e);
-      window.open(imageUrl, '_blank');
-    }
+    // 使用 PDF 下载工具，将整个练习纸（包含抬头）保存为 PDF
+    downloadPDF({
+      filename: 'coloring-page',
+      elementId: 'coloring-worksheet-preview'
+    });
   };
 
   return (
@@ -74,7 +61,7 @@ export function ColoringPage() {
             onClick={handleDownload}
             disabled={!imageUrl}
           >
-            下载
+            下载 PDF
           </Button>
         </div>
       </div>
@@ -102,7 +89,7 @@ export function ColoringPage() {
 
         {/* 右侧预览区域 */}
         <div className="lg:col-span-8">
-          <div className="print:w-full">
+          <div className="print:w-full" id="coloring-worksheet-preview">
             <ColoringPreview
               imageUrl={imageUrl}
               isLoading={isLoading}

@@ -8,6 +8,7 @@ import { EnglishWorksheet } from '../components/generators/english/EnglishWorksh
 import { Button } from '../components/common/Button';
 import { type EnglishGeneratorOptions } from '../types/generator';
 import { vocabularyDatabase, sentenceTemplates } from '../data/englishVocabulary';
+import { downloadPDF } from '../utils/pdfGenerator';
 import { routes } from '../config/routes';
 
 export function EnglishPage() {
@@ -85,6 +86,17 @@ export function EnglishPage() {
     window.print();
   };
 
+  const handleDownload = () => {
+    if (content.length === 0) {
+      toast.error('Please generate content first');
+      return;
+    }
+    downloadPDF({
+      filename: 'english-worksheet',
+      elementId: 'english-worksheet-preview'
+    });
+  };
+
   return (
     <div className="animate-fade-in">
       {/* 顶部导航 */}
@@ -113,8 +125,8 @@ export function EnglishPage() {
           <Button
             variant="outline"
             icon={<Download className="w-4 h-4" />}
-            disabled={true}
-            title="Download feature coming soon"
+            onClick={handleDownload}
+            disabled={content.length === 0}
           >
             Download
           </Button>
@@ -146,7 +158,7 @@ export function EnglishPage() {
 
         {/* 右侧预览区域 */}
         <div className="lg:col-span-8">
-          <div className="print:w-full">
+          <div className="print:w-full" id="english-worksheet-preview">
             <EnglishWorksheet options={options} content={content} />
           </div>
         </div>
