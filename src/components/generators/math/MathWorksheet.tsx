@@ -2,10 +2,11 @@ import { type MathProblem } from '../../../types/generator';
 
 interface MathWorksheetProps {
   problems: MathProblem[];
+  format?: 'horizontal' | 'vertical';
   includeAnswers?: boolean;
 }
 
-export function MathWorksheet({ problems, includeAnswers }: MathWorksheetProps) {
+export function MathWorksheet({ problems, format = 'horizontal', includeAnswers }: MathWorksheetProps) {
   if (problems.length === 0) {
     return (
       <div className="text-center py-20 text-gray-400 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
@@ -36,17 +37,38 @@ export function MathWorksheet({ problems, includeAnswers }: MathWorksheetProps) 
       </div>
 
       {/* 题目网格 */}
-      <div className="grid grid-cols-2 gap-x-12 gap-y-10 md:grid-cols-3 print:grid-cols-3">
+      <div className={`grid gap-x-12 gap-y-10 ${
+        format === 'vertical'
+          ? 'grid-cols-4 md:grid-cols-5 print:grid-cols-5'
+          : 'grid-cols-2 md:grid-cols-3 print:grid-cols-3'
+      }`}>
         {problems.map((problem, index) => (
-          <div key={problem.id} className="problem-item flex items-center text-2xl font-medium p-2">
-            <span className="text-gray-400 mr-4 text-lg w-8">{index + 1}.</span>
-            <div className="flex-1 flex justify-between items-center whitespace-nowrap">
-              <span className="w-12 text-right">{problem.operand1}</span>
-              <span className="mx-2">{problem.operator}</span>
-              <span className="w-12 text-left">{problem.operand2}</span>
-              <span className="mx-2">=</span>
-              <span className="w-20 h-10 border-b-2 border-gray-300"></span>
-            </div>
+          <div key={problem.id} className="problem-item flex items-center p-2 text-2xl font-medium">
+            <span className={`text-gray-400 mr-2 text-lg w-6 ${format === 'vertical' ? 'self-start mt-2' : ''}`}>
+              {index + 1}.
+            </span>
+
+            {format === 'horizontal' ? (
+              // 横式布局
+              <div className="flex-1 flex justify-between items-center whitespace-nowrap">
+                <span className="w-12 text-right">{problem.operand1}</span>
+                <span className="mx-2">{problem.operator}</span>
+                <span className="w-12 text-left">{problem.operand2}</span>
+                <span className="mx-2">=</span>
+                <span className="w-20 h-10 border-b-2 border-gray-300"></span>
+              </div>
+            ) : (
+              // 竖式布局
+              <div className="flex-1 flex flex-col items-end w-24 mx-auto font-mono">
+                <div className="text-right w-full tracking-widest">{problem.operand1}</div>
+                <div className="flex items-center w-full justify-between">
+                  <span className="transform scale-90">{problem.operator}</span>
+                  <span className="text-right tracking-widest">{problem.operand2}</span>
+                </div>
+                <div className="w-full border-b-2 border-black my-1"></div>
+                <div className="w-full h-8"></div> {/* 答案书写空间 */}
+              </div>
+            )}
           </div>
         ))}
       </div>

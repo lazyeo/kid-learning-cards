@@ -22,6 +22,7 @@ export interface MathGeneratorOptions {
   type: 'addition' | 'subtraction' | 'multiplication' | 'division' | 'mixed';
   difficulty: 'easy' | 'medium' | 'hard';
   count: number;
+  format: 'horizontal' | 'vertical'; // 新增：题目格式
   includeAnswers?: boolean;
 }
 

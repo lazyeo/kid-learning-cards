@@ -19,6 +19,7 @@ export function MathPage() {
     type: 'addition',
     difficulty: 'easy',
     count: 20,
+    format: 'horizontal',
     includeAnswers: true
   });
 

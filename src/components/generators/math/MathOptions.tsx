@@ -79,6 +79,37 @@ export function MathOptions({ options, onChange, onGenerate, isGenerating }: Mat
           </div>
         </div>
 
+        {/* 题目格式 */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">排版格式</label>
+          <div className="flex gap-2">
+            <button
+              onClick={() => handleChange('format', 'horizontal')}
+              className={`
+                flex-1 px-3 py-2 rounded-xl text-sm font-medium transition-all
+                ${options.format === 'horizontal'
+                  ? 'bg-orange-100 text-orange-700 border-2 border-orange-200'
+                  : 'bg-gray-50 text-gray-600 border border-gray-100 hover:bg-gray-100'
+                }
+              `}
+            >
+              横式 (1 + 1 =)
+            </button>
+            <button
+              onClick={() => handleChange('format', 'vertical')}
+              className={`
+                flex-1 px-3 py-2 rounded-xl text-sm font-medium transition-all
+                ${options.format === 'vertical'
+                  ? 'bg-orange-100 text-orange-700 border-2 border-orange-200'
+                  : 'bg-gray-50 text-gray-600 border border-gray-100 hover:bg-gray-100'
+                }
+              `}
+            >
+              竖式
+            </button>
+          </div>
+        </div>
+
         {/* 题目数量 */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">题目数量</label>
