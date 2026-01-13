@@ -5,6 +5,7 @@ import { toast } from 'react-hot-toast';
 import { ColoringOptions } from '../components/generators/coloring/ColoringOptions';
 import { ColoringPreview } from '../components/generators/coloring/ColoringPreview';
 import { Button } from '../components/common/Button';
+import { useImageGeneration } from '../hooks/useImageGeneration';
 import { downloadPDF } from '../utils/pdfGenerator';
 import { routes } from '../config/routes';
 

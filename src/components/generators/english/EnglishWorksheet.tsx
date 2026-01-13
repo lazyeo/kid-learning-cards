@@ -17,33 +17,45 @@ export function EnglishWorksheet({ options, content }: EnglishWorksheetProps) {
   // 四线三格行组件
   const WritingLine = ({ text, repeat = 1 }: { text: string; repeat?: number }) => {
     return (
-      <div className="relative h-24 w-full mb-8">
+      <div className="relative h-24 w-full mb-6 overflow-hidden print:mb-4">
         {/* 四线三格背景 */}
         {options.showLines && (
           <div className="absolute inset-0 flex flex-col w-full h-full pointer-events-none">
-            <div className="flex-1"></div>
-            {/* Ascender Line (Top) */}
-            <div className="border-b border-red-500 print:border-red-600 w-full opacity-60"></div>
-            {/* Mid Line (Dashed) */}
-            <div className="h-6 w-full border-b border-red-400 border-dashed print:border-red-500 opacity-60"></div>
-            {/* Base Line (Bottom Red) */}
-            <div className="h-6 w-full border-b border-red-500 print:border-red-600 opacity-80"></div>
-            {/* Descender Line (Bottom Grey/Pink) */}
-            <div className="h-6 w-full border-b border-red-300 print:border-red-300 opacity-40"></div>
-            <div className="flex-1"></div>
+            {/* 上留白 12px (0.75rem) */}
+            <div className="h-3"></div>
+            {/* Ascender Space 24px */}
+            <div className="h-6 w-full border-b border-red-500 print:border-red-600 opacity-60 box-border"></div>
+            {/* Mid Space 24px */}
+            <div className="h-6 w-full border-b border-red-400 border-dashed print:border-red-500 opacity-60 box-border"></div>
+            {/* Base Space 24px (Baseline at bottom) */}
+            <div className="h-6 w-full border-b border-red-500 print:border-red-600 opacity-80 box-border"></div>
+            {/* Descender Space 24px */}
+            <div className="h-6 w-full border-b border-red-300 print:border-red-300 opacity-40 box-border"></div>
+            {/* 下留白 - 剩余空间 */}
           </div>
         )}
 
-        {/* 文本内容 */}
-        <div className="absolute inset-0 flex items-center px-4 z-10">
-          <div className="flex gap-8 w-full font-sans text-6xl leading-none pt-2"
+        {/* 文本内容 - 绝对定位以匹配基线
+            Grid:
+            Top Spacer: 12px
+            Row 1 (Ascender): 24px. Bottom border at 12+24=36px (Top Line)
+            Row 2 (Mid): 24px. Bottom border at 36+24=60px (Mid Line)
+            Row 3 (Base): 24px. Bottom border at 60+24=84px (Base Line)
+            Row 4 (Descender): 24px. Bottom border at 84+24=108px (Descender Line)
+
+            Writing area (Top Line to Base Line) is 84 - 36 = 48px.
+            We use text-5xl (48px) with leading-none (line-height: 1).
+            Positioning top at 36px (top-9) should align the em-box exactly between Top and Base lines.
+        */}
+        <div className="absolute left-0 right-0 top-9 px-4 z-10 flex">
+          <div className="flex gap-4 w-full font-sans text-5xl leading-none tracking-normal"
                style={{ fontFamily: '"Comic Sans MS", "Arial Rounded MT Bold", sans-serif' }}>
             {/* 示范文字 (实心) */}
-            <span className="text-black">{text}</span>
+            <span className="text-black transform -translate-y-1">{text}</span>
 
             {/* 描红文字 (虚线/灰色) */}
             {options.showTracing && Array.from({ length: repeat }).map((_, i) => (
-              <span key={i} className="text-gray-300 print:text-gray-200">
+              <span key={i} className="text-gray-300 print:text-gray-200 transform -translate-y-1">
                 {text}
               </span>
             ))}

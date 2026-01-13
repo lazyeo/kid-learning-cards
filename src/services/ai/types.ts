@@ -42,3 +42,31 @@ export interface AIProviderConfig {
   name: string;
   isEnabled: boolean;
 }
+
+/**
+ * 通用 Provider 配置
+ */
+export interface ProviderConfig {
+  apiKey: string;
+  baseUrl?: string;
+  model?: string;
+  timeout?: number;
+}
+
+/**
+ * 缓存配置
+ */
+export interface CacheConfig {
+  enabled: boolean;
+  maxAgeDays?: number;  // 缓存有效期(天)
+}
+
+/**
+ * 图片生成结果（包含缓存状态）
+ */
+export interface GenerationResult {
+  imageUrl: string;
+  cached: boolean;
+  cacheId?: string;
+  provider: string;
+}

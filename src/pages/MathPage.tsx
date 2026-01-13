@@ -8,7 +8,7 @@ import { MathWorksheet } from '../components/generators/math/MathWorksheet';
 import { Button } from '../components/common/Button';
 import { generateMathProblems } from '../utils/mathGenerator';
 import { type MathGeneratorOptions, type MathProblem } from '../types/generator';
-import { downloadPDF } from '../utils/pdfGenerator';
+import { downloadPDF, printPDF } from '../utils/pdfGenerator';
 import { routes } from '../config/routes';
 
 export function MathPage() {
@@ -46,7 +46,9 @@ export function MathPage() {
       toast.error('请先生成练习题');
       return;
     }
-    window.print();
+    printPDF({
+      elementId: 'math-worksheet-preview'
+    });
   };
 
   const handleDownload = () => {

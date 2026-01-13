@@ -8,7 +8,7 @@ import { EnglishWorksheet } from '../components/generators/english/EnglishWorksh
 import { Button } from '../components/common/Button';
 import { type EnglishGeneratorOptions } from '../types/generator';
 import { vocabularyDatabase, sentenceTemplates } from '../data/englishVocabulary';
-import { downloadPDF } from '../utils/pdfGenerator';
+import { downloadPDF, printPDF } from '../utils/pdfGenerator';
 import { routes } from '../config/routes';
 
 export function EnglishPage() {
@@ -83,7 +83,9 @@ export function EnglishPage() {
       toast.error('Please generate content first');
       return;
     }
-    window.print();
+    printPDF({
+      elementId: 'english-worksheet-preview'
+    });
   };
 
   const handleDownload = () => {

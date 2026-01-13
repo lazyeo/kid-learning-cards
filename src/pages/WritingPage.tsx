@@ -7,7 +7,7 @@ import { WritingOptions } from '../components/generators/writing/WritingOptions'
 import { WritingWorksheet } from '../components/generators/writing/WritingWorksheet';
 import { Button } from '../components/common/Button';
 import { type WritingGeneratorOptions } from '../types/generator';
-import { downloadPDF } from '../utils/pdfGenerator';
+import { downloadPDF, printPDF } from '../utils/pdfGenerator';
 import { routes } from '../config/routes';
 
 export function WritingPage() {
@@ -51,7 +51,9 @@ export function WritingPage() {
       toast.error('请先生成练习内容');
       return;
     }
-    window.print();
+    printPDF({
+      elementId: 'writing-worksheet-preview'
+    });
   };
 
   const handleDownload = () => {

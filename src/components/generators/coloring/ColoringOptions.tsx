@@ -11,7 +11,7 @@ interface ColoringOptionsProps {
 }
 
 export function ColoringOptions({ onGenerate, isGenerating }: ColoringOptionsProps) {
-  const [provider, setProvider] = useState<ProviderName>('openai');
+  const [provider, setProvider] = useState<ProviderName>('antigravity');
   const [theme, setTheme] = useState<string>('animals');
   const [subject, setSubject] = useState<string>('cat');
   const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>('easy');
@@ -51,7 +51,19 @@ export function ColoringOptions({ onGenerate, isGenerating }: ColoringOptionsPro
             <Bot className="w-4 h-4 text-[var(--color-primary)]" />
             AI 模型
           </label>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-3 gap-2">
+            <button
+              onClick={() => setProvider('antigravity')}
+              className={`
+                px-3 py-2 rounded-xl text-sm font-medium transition-all border-2
+                ${provider === 'antigravity'
+                  ? 'bg-purple-50 border-purple-500 text-purple-700'
+                  : 'bg-white border-gray-200 text-gray-600 hover:border-purple-200'
+                }
+              `}
+            >
+              Antigravity
+            </button>
             <button
               onClick={() => setProvider('openai')}
               className={`
@@ -62,7 +74,7 @@ export function ColoringOptions({ onGenerate, isGenerating }: ColoringOptionsPro
                 }
               `}
             >
-              OpenAI DALL-E 3
+              OpenAI
             </button>
             <button
               onClick={() => setProvider('gemini')}
@@ -74,7 +86,7 @@ export function ColoringOptions({ onGenerate, isGenerating }: ColoringOptionsPro
                 }
               `}
             >
-              Google Gemini
+              Gemini
             </button>
           </div>
         </div>
