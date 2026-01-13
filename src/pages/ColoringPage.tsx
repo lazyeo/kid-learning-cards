@@ -6,19 +6,20 @@ import { ColoringOptions } from '../components/generators/coloring/ColoringOptio
 import { ColoringPreview } from '../components/generators/coloring/ColoringPreview';
 import { Button } from '../components/common/Button';
 import { useImageGeneration } from '../hooks/useImageGeneration';
-import { downloadPDF } from '../utils/pdfGenerator';
+import { downloadPDF, printPDF } from '../utils/pdfGenerator';
 import { routes } from '../config/routes';
 
 export function ColoringPage() {
   const navigate = useNavigate();
   const { isLoading, imageUrl, error, generate } = useImageGeneration();
 
-  const handlePrint = () => {
+  const handlePrint = async () => {
     if (!imageUrl) {
       toast.error('请先生成涂色卡片');
       return;
     }
-    window.print();
+    // 使用 PDF 打印工具，复用 PDF 排版
+    printPDF({ elementId: 'coloring-worksheet-preview' });
   };
 
   const handleDownload = async () => {

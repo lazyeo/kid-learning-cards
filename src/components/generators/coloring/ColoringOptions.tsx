@@ -1,17 +1,15 @@
 import { useState } from 'react';
-import { Settings, Sparkles, Bot, Palette } from 'lucide-react';
+import { Settings, Sparkles, Palette } from 'lucide-react';
 import { Button } from '../../common/Button';
 import { Card } from '../../common/Card';
 import { type ColoringCardParams } from '../../../services/ai/types';
-import { type ProviderName } from '../../../services/api/client';
 
 interface ColoringOptionsProps {
-  onGenerate: (params: ColoringCardParams, provider: ProviderName) => void;
+  onGenerate: (params: ColoringCardParams) => void;
   isGenerating: boolean;
 }
 
 export function ColoringOptions({ onGenerate, isGenerating }: ColoringOptionsProps) {
-  const [provider, setProvider] = useState<ProviderName>('antigravity');
   const [theme, setTheme] = useState<string>('animals');
   const [subject, setSubject] = useState<string>('cat');
   const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>('easy');
@@ -39,58 +37,12 @@ export function ColoringOptions({ onGenerate, isGenerating }: ColoringOptionsPro
       subject,
       difficulty,
       customPrompt
-    }, provider);
+    });
   };
 
   return (
     <Card title={<div className="flex items-center gap-2"><Settings className="w-5 h-5" /> 生成选项</div>}>
       <div className="space-y-6">
-        {/* AI 提供商选择 */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-            <Bot className="w-4 h-4 text-[var(--color-primary)]" />
-            AI 模型
-          </label>
-          <div className="grid grid-cols-3 gap-2">
-            <button
-              onClick={() => setProvider('antigravity')}
-              className={`
-                px-3 py-2 rounded-xl text-sm font-medium transition-all border-2
-                ${provider === 'antigravity'
-                  ? 'bg-purple-50 border-purple-500 text-purple-700'
-                  : 'bg-white border-gray-200 text-gray-600 hover:border-purple-200'
-                }
-              `}
-            >
-              Antigravity
-            </button>
-            <button
-              onClick={() => setProvider('openai')}
-              className={`
-                px-3 py-2 rounded-xl text-sm font-medium transition-all border-2
-                ${provider === 'openai'
-                  ? 'bg-green-50 border-green-500 text-green-700'
-                  : 'bg-white border-gray-200 text-gray-600 hover:border-green-200'
-                }
-              `}
-            >
-              OpenAI
-            </button>
-            <button
-              onClick={() => setProvider('gemini')}
-              className={`
-                px-3 py-2 rounded-xl text-sm font-medium transition-all border-2
-                ${provider === 'gemini'
-                  ? 'bg-blue-50 border-blue-500 text-blue-700'
-                  : 'bg-white border-gray-200 text-gray-600 hover:border-blue-200'
-                }
-              `}
-            >
-              Gemini
-            </button>
-          </div>
-        </div>
-
         {/* 主题选择 */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
