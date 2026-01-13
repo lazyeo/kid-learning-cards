@@ -1,15 +1,57 @@
 @media print {
   /* 隐藏非打印元素 */
-  header, nav, footer, button, .no-print {
+  header, nav, footer, button, .no-print, .toast-container {
     display: none !important;
   }
 
   /* 确保内容填满页面 */
-  body, #root {
-    margin: 0;
-    padding: 0;
-    width: 100%;
+  body, #root, main {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: auto !important;
     background-color: white !important;
+    overflow: visible !important;
+    display: block !important;
+  }
+
+  /* 重置主布局容器 */
+  .min-h-screen {
+    min-height: auto !important;
+    display: block !important;
+  }
+
+  /* 重置最大宽度限制 */
+  .max-w-7xl {
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* 针对各页面的布局调整 */
+  .grid, .flex {
+    display: block !important; /* 默认重置 grid/flex 为 block，避免布局错乱 */
+  }
+
+  /* 但我们需要保留生成器内部的网格布局 */
+  .print\:grid-cols-3 {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  .print\:grid-cols-9 {
+    display: grid !important;
+    grid-template-columns: repeat(9, 1fr) !important;
+  }
+
+  .print\:grid-cols-8 {
+    display: grid !important;
+    grid-template-columns: repeat(8, 1fr) !important;
+  }
+
+  /* 恢复 flex 布局的特定元素 */
+  .flex.items-center, .flex.justify-between, .flex.gap-2 {
+    display: flex !important;
   }
 
   /* A4 纸张优化 */
@@ -21,28 +63,50 @@
   /* 避免分页断开 */
   .problem-item, .grid-cell, .card-container {
     page-break-inside: avoid;
+    break-inside: avoid;
   }
 
   /* 强制分页 */
   .page-break {
     page-break-before: always;
+    break-before: page;
   }
 
-  /* 黑白打印优化 */
+  /* 颜色优化：保留特定颜色，但背景纯白 */
   * {
-    color: black !important;
-    background: white !important;
-    text-shadow: none !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
     box-shadow: none !important;
   }
 
-  /* 保留边框和线条 */
-  .grid-lines, .problem-border, .border, .border-2, .border-4 {
-    border-color: black !important;
+  /* 特殊颜色处理：让灰色更深一点以便打印 */
+  .text-gray-300, .text-gray-400 {
+    color: #cbd5e1 !important; /* light gray */
   }
 
-  /* 网格布局优化 */
-  .grid {
-    display: grid !important;
+  /* 描红文字颜色 */
+  .print\:text-gray-200 {
+    color: #e2e8f0 !important;
+  }
+
+  /* 田字格/四线格颜色 */
+  .border-red-500, .print\:border-red-600 {
+    border-color: #dc2626 !important;
+  }
+  .border-red-300, .print\:border-red-300, .print\:border-red-400 {
+    border-color: #fca5a5 !important;
+  }
+
+  /* 隐藏打印时的无关边框和阴影 */
+  .shadow-sm, .shadow-md, .shadow-lg {
+    box-shadow: none !important;
+  }
+
+  /* 确保容器没有不必要的边距 */
+  .bg-white.p-8.shadow-sm.border {
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
   }
 }

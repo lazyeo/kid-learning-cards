@@ -54,9 +54,9 @@ export function EnglishWorksheet({ options, content }: EnglishWorksheetProps) {
   };
 
   return (
-    <div className="bg-white p-8 shadow-sm border border-gray-200 min-h-[29.7cm] relative print:shadow-none print:border-none print:p-0">
+    <div className="bg-white p-8 shadow-sm border border-gray-200 min-h-[29.7cm] relative print:shadow-none print:border-none print:p-0 print:min-h-0 print:h-auto print:w-full">
       {/* 头部 */}
-      <div className="mb-8 border-b-2 border-gray-800 pb-4">
+      <div className="mb-8 border-b-2 border-gray-800 pb-4 print:mb-4">
         <h1 className="text-3xl font-bold text-center mb-6 font-comic text-gray-800">
           English Writing Practice
         </h1>

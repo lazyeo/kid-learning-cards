@@ -15,9 +15,9 @@ export function MathWorksheet({ problems, includeAnswers }: MathWorksheetProps) 
   }
 
   return (
-    <div className="bg-white p-8 shadow-sm border border-gray-200 min-h-[29.7cm] relative print:shadow-none print:border-none print:p-0">
+    <div className="bg-white p-8 shadow-sm border border-gray-200 min-h-[29.7cm] relative print:shadow-none print:border-none print:p-0 print:min-h-0 print:h-auto print:w-full">
       {/* 练习纸头部 */}
-      <div className="mb-8 border-b-2 border-gray-800 pb-4">
+      <div className="mb-8 border-b-2 border-gray-800 pb-4 print:mb-4">
         <h1 className="text-3xl font-bold text-center mb-6 font-comic text-gray-800">数学练习</h1>
         <div className="flex justify-between text-lg">
           <div className="flex gap-2">
