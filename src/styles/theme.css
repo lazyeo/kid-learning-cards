@@ -1,0 +1,62 @@
+@theme {
+  --color-primary: #FF6B6B;      /* 明亮红色 */
+  --color-secondary: #4ECDC4;    /* 青绿色 */
+  --color-accent: #FFE66D;       /* 明黄色 */
+  --color-success: #95E1D3;      /* 淡绿色 */
+
+  /* 背景色 */
+  --color-bg-primary: #FFF9F0;   /* 温暖米白 */
+  --color-bg-secondary: #F5F5F5; /* 浅灰 */
+
+  /* 文字色 */
+  --color-text-primary: #2D3748; /* 深灰（易读） */
+  --color-text-secondary: #718096; /* 中灰 */
+}
+
+/* 字体设置 */
+:root {
+  font-family: 'Comic Sans MS', 'Fredoka', 'Segoe UI', system-ui, sans-serif;
+}
+
+/* 动画定义 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* 实用类 - 将来可以移至 Tailwind 配置或作为 utility layer */
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-progress {
+  animation: progress 30s linear forwards; /* 配合 AI 生成的预计时间 */
+}
+
+/* 自定义滚动条 */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* iOS 安全区域适配 */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}

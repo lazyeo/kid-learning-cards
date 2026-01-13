@@ -1,0 +1,48 @@
+@media print {
+  /* 隐藏非打印元素 */
+  header, nav, footer, button, .no-print {
+    display: none !important;
+  }
+
+  /* 确保内容填满页面 */
+  body, #root {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    background-color: white !important;
+  }
+
+  /* A4 纸张优化 */
+  @page {
+    size: A4;
+    margin: 1cm;
+  }
+
+  /* 避免分页断开 */
+  .problem-item, .grid-cell, .card-container {
+    page-break-inside: avoid;
+  }
+
+  /* 强制分页 */
+  .page-break {
+    page-break-before: always;
+  }
+
+  /* 黑白打印优化 */
+  * {
+    color: black !important;
+    background: white !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+  }
+
+  /* 保留边框和线条 */
+  .grid-lines, .problem-border, .border, .border-2, .border-4 {
+    border-color: black !important;
+  }
+
+  /* 网格布局优化 */
+  .grid {
+    display: grid !important;
+  }
+}
