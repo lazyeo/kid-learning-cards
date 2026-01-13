@@ -29,6 +29,12 @@ export interface MathGeneratorOptions {
 // 书写练习类型
 export type GridType = 'tian-zi-ge' | 'si-xian-san-ge' | 'mi-zi-ge' | 'blank';
 
+// 汉字难度级别
+export type ChineseDifficulty = 'alphabet' | 'beginner' | 'elementary' | 'intermediate' | 'custom';
+
+// 英文练习类型
+export type EnglishPracticeType = 'alphabet' | 'words' | 'sentences' | 'custom';
+
 export interface WritingContent {
   id: string;
   text: string;
@@ -42,6 +48,15 @@ export interface WritingGeneratorOptions {
   showPinyin?: boolean;
   showTracing?: boolean;
   repeatCount?: number;
+
+  // 田字格子选项
+  chineseDifficulty?: ChineseDifficulty;
+  chineseCategory?: string;
+
+  // 四线格子选项 (英文)
+  englishType?: EnglishPracticeType;
+  englishCategory?: string;
+  englishCount?: number;
 }
 
 // 涂色卡片类型 (预留)

@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Palette, Calculator, Type, PenTool, ArrowRight, Sparkles } from 'lucide-react';
+import { Palette, Calculator, PenTool, ArrowRight, Sparkles } from 'lucide-react';
 import { Card } from '../components/common/Card';
 import { Button } from '../components/common/Button';
 import { routes } from '../config/routes';
@@ -61,17 +61,10 @@ export function HomePage() {
     },
     {
       title: '书写练习',
-      description: '创建汉字、拼音、英文字母书写练习纸，支持田字格和四线三格。',
+      description: '支持汉字田字格和英文四线格，内置难度分级和丰富词库，满足中英文书写练习需求。',
       icon: <PenTool size={32} />,
       color: '#FF6B6B', // Primary
       path: routes.writing,
-    },
-    {
-      title: '英文练习',
-      description: '生成单词描红和句子练习，配合可爱的插图，让英语学习更有趣。',
-      icon: <Type size={32} />,
-      color: '#FFE66D', // Accent
-      path: routes.english,
       isNew: true,
     },
     {
@@ -120,7 +113,7 @@ export function HomePage() {
           <span className="text-sm text-gray-500">更多功能开发中...</span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {features.map((feature) => (
             <FeatureCard key={feature.path} {...feature} />
           ))}

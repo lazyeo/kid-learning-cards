@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Palette, Calculator, Type, PenTool } from 'lucide-react';
+import { Home, Palette, Calculator, PenTool } from 'lucide-react';
 import { routes } from '../../config/routes';
 
 interface NavItemProps {
@@ -38,7 +38,6 @@ export function Navbar() {
     { path: routes.home, icon: <Home size={24} />, label: '首页' },
     { path: routes.math, icon: <Calculator size={24} />, label: '数学' },
     { path: routes.writing, icon: <PenTool size={24} />, label: '书写' },
-    { path: routes.english, icon: <Type size={24} />, label: '英语' },
     { path: routes.coloring, icon: <Palette size={24} />, label: '涂色' },
   ];
 
