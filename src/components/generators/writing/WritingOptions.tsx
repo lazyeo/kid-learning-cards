@@ -62,7 +62,7 @@ export function WritingOptions({ options, onChange, onGenerate, isGenerating }: 
           </div>
           <p className="mt-2 text-xs text-gray-500">
             {options.gridType === 'tian-zi-ge'
-              ? '支持自动生成拼音（即将上线）。目前请输入纯文本。'
+              ? '支持汉字自动注音。'
               : '请输入英文字母或单词。'}
           </p>
         </div>
