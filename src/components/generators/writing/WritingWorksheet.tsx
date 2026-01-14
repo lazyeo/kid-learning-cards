@@ -1,98 +1,262 @@
 import { type WritingGeneratorOptions } from '../../../types/generator';
-import { GridGenerator } from './GridGenerator';
 import { clsx } from 'clsx';
 import { pinyin } from 'pinyin-pro';
 
 interface WritingWorksheetProps {
   options: WritingGeneratorOptions;
-  content: string; // 当前要显示的内容
+  content: string;
+}
+
+// 田字格行组件 - 固定尺寸，适合打印
+function TianZiGeRow({
+  chars,
+  showPinyin,
+  showTracing,
+  gridCount,
+}: {
+  chars?: string[];
+  showPinyin?: boolean;
+  showTracing?: boolean;
+  gridCount: number;
+}) {
+  const grids = [];
+
+  for (let i = 0; i < gridCount; i++) {
+    const char = chars?.[i];
+    const py = char && showPinyin && /[\u4e00-\u9fa5]/.test(char) ? pinyin(char) : undefined;
+
+    grids.push(
+      <div key={i} className="flex flex-col items-center" style={{ width: `${100 / gridCount}%` }}>
+        {/* 拼音区域 - 固定高度 */}
+        <div className="h-4 w-full flex items-end justify-center print:h-5">
+          {py && (
+            <span className="text-[10px] print:text-xs font-sans text-gray-500 tracking-wide leading-none">
+              {py}
+            </span>
+          )}
+        </div>
+
+        {/* 田字格 - 使用固定宽高比 */}
+        <div className="relative w-full aspect-square border border-red-400 bg-white print:border-red-500 box-border">
+          {/* 内部虚线辅助线 */}
+          <div className="absolute inset-0 grid grid-cols-2 grid-rows-2">
+            <div className="border-r border-b border-red-200 border-dashed print:border-red-300"></div>
+            <div className="border-b border-red-200 border-dashed print:border-red-300"></div>
+            <div className="border-r border-red-200 border-dashed print:border-red-300"></div>
+            <div></div>
+          </div>
+
+          {/* 汉字显示 - 使用相对于格子的百分比大小 */}
+          {char && (
+            <div className="absolute inset-0 flex items-center justify-center z-10">
+              <span
+                className={clsx(
+                  "leading-none",
+                  showTracing ? "text-gray-300 print:text-gray-200" : "text-black"
+                )}
+                style={{
+                  fontFamily: '"KaiTi", "STKaiti", "SimKai", serif',
+                  fontSize: `calc(100% * 0.7)`,
+                  // 使用容器查询或固定大小
+                }}
+              >
+                <span className="text-[min(5vw,1.5rem)] print:text-[1.6rem]">{char}</span>
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex w-full">
+      {grids}
+    </div>
+  );
+}
+
+// 四线三格行组件 - 固定高度，适合打印
+function SiXianSanGeRow({
+  text,
+  showTracing
+}: {
+  text?: string;
+  showTracing?: boolean;
+}) {
+  return (
+    <div className="relative w-full h-14 print:h-[60px]">
+      {/* 四线三格背景 - 四条横线 */}
+      <div className="absolute inset-0 flex flex-col w-full h-full pointer-events-none">
+        {/* Ascender line (顶线) */}
+        <div className="flex-1 w-full border-b border-red-400 print:border-red-500 opacity-70 box-border"></div>
+        {/* Mid line (中线 - 虚线) */}
+        <div className="flex-1 w-full border-b border-red-300 border-dashed print:border-red-400 opacity-60 box-border"></div>
+        {/* Base line (基线) */}
+        <div className="flex-1 w-full border-b border-red-400 print:border-red-500 opacity-80 box-border"></div>
+        {/* Descender line (底线) */}
+        <div className="flex-1 w-full border-b border-red-300 print:border-red-400 opacity-50 box-border"></div>
+      </div>
+
+      {/* 文本内容 */}
+      {text && (
+        <div className="absolute inset-0 flex items-center px-2 z-10">
+          <div
+            className={clsx(
+              "text-2xl print:text-[32px] leading-none tracking-wide whitespace-nowrap overflow-hidden",
+              showTracing ? "text-gray-300 print:text-gray-200" : "text-black"
+            )}
+            style={{
+              fontFamily: '"Comic Sans MS", "Arial Rounded MT Bold", cursive',
+            }}
+          >
+            {text}
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export function WritingWorksheet({ options, content }: WritingWorksheetProps) {
-  const getPinyin = (char: string) => {
-    if (!options.showPinyin) return undefined;
-    // 仅对汉字生成拼音
-    if (!/[\u4e00-\u9fa5]/.test(char)) return undefined;
-    return pinyin(char);
-  };
+  const isTianZiGe = options.gridType === 'tian-zi-ge';
 
-  const renderContent = () => {
-    const chars = content.split('');
-    const gridCount = 80; // 每页大致的格子数，根据布局调整
-    const items = [];
+  // 响应式：手机8个格子，平板/桌面/打印14个格子
+  // 使用 CSS 媒体查询在打印时强制使用14列
+  const mobileGridPerRow = 8;
+  const desktopGridPerRow = 14;
 
-    // 如果没有内容，显示空行供练习
-    if (chars.length === 0) {
-      for (let i = 0; i < gridCount; i++) {
-        items.push(
-          <GridGenerator
-            key={`empty-${i}`}
-            type={options.gridType}
-            showTracing={false}
-          />
-        );
-      }
-      return items;
+  const rowCount = isTianZiGe ? 10 : 10;
+
+  // 将内容分成行 - 使用较小的每行格子数来确保内容完整显示
+  const getContentRows = (gridPerRow: number) => {
+    if (!content || content.trim() === '') {
+      return Array(rowCount).fill(null);
     }
 
-    // 填充内容
-    // 逻辑：每个字符显示一次带描红的，后面跟几个空的供练习
-    // 或者简单地铺满
-    // 这里采用简单模式：显示用户输入的内容，如果不够一行则重复，或者留空
-    // 更好的模式可能是：每行显示一个示范字，然后一行都是这个字的描红或空格
+    const rows: (string[] | null)[] = [];
 
-    // MVP 简化逻辑：直接渲染输入的内容，每个字符渲染一个格子
-    // 如果用户输入少，可以重复渲染填满页面
+    if (isTianZiGe) {
+      const chars = content.replace(/\s+/g, '').split('');
+      for (let i = 0; i < chars.length; i += gridPerRow) {
+        rows.push(chars.slice(i, i + gridPerRow));
+      }
+    } else {
+      const lines = content.split('\n').filter(line => line.trim());
+      lines.forEach(line => {
+        rows.push([line.trim()]);
+      });
+    }
 
-    const displayChars = [...chars];
-    // 如果内容少，重复填充直到填满一定数量，或者留空
-    // 这里我们简单地渲染输入的内容
+    while (rows.length < rowCount) {
+      rows.push(null);
+    }
 
-    return displayChars.map((char, index) => (
-      <GridGenerator
-        key={`${char}-${index}`}
-        type={options.gridType}
-        char={char}
-        pinyin={options.gridType === 'tian-zi-ge' ? getPinyin(char) : undefined}
-        showTracing={options.showTracing}
-      />
-    ));
+    return rows;
   };
 
+  // 手机视图的内容行
+  const mobileContentRows = getContentRows(mobileGridPerRow);
+  // 桌面/打印视图的内容行
+  const desktopContentRows = getContentRows(desktopGridPerRow);
+
   return (
-    <div className="bg-white p-8 shadow-sm border border-gray-200 min-h-[29.7cm] relative print:shadow-none print:border-none print:p-0 print:min-h-0 print:h-auto print:w-full">
-      {/* 头部 */}
-      <div className="mb-8 border-b-2 border-gray-800 pb-4 print:mb-4">
-        <h1 className="text-3xl font-bold text-center mb-6 font-comic text-gray-800">
-          {options.gridType === 'tian-zi-ge' ? '汉字书写练习' : 'Writing Practice'}
-        </h1>
-        <div className="flex justify-between text-lg">
-          <div className="flex gap-2">
-            <span className="font-bold">姓名:</span>
-            <div className="w-40 border-b-2 border-gray-400"></div>
+    <>
+      {/* 手机视图 - 仅在屏幕显示，打印时隐藏 */}
+      <div className="block md:hidden print:hidden bg-white p-4 shadow-sm border border-gray-200">
+        {/* 头部 */}
+        <div className="mb-3 border-b-2 border-gray-800 pb-2">
+          <h1 className="text-lg font-bold text-center mb-3 font-comic text-gray-800">
+            {isTianZiGe ? '汉字书写练习' : 'Writing Practice'}
+          </h1>
+          <div className="flex justify-between text-sm">
+            <div className="flex gap-1">
+              <span className="font-bold">{isTianZiGe ? '姓名:' : 'Name:'}</span>
+              <div className="w-20 border-b-2 border-gray-400"></div>
+            </div>
+            <div className="flex gap-1">
+              <span className="font-bold">{isTianZiGe ? '日期:' : 'Date:'}</span>
+              <div className="w-20 border-b-2 border-gray-400"></div>
+            </div>
           </div>
-          <div className="flex gap-2">
-            <span className="font-bold">日期:</span>
-            <div className="w-40 border-b-2 border-gray-400"></div>
-          </div>
+        </div>
+
+        {/* 练习区域 - 手机版 */}
+        <div className={clsx(
+          "flex flex-col w-full",
+          isTianZiGe ? "gap-0.5" : "gap-1"
+        )}>
+          {mobileContentRows.map((row, index) => (
+            isTianZiGe ? (
+              <TianZiGeRow
+                key={index}
+                chars={row as string[] | undefined}
+                showPinyin={options.showPinyin}
+                showTracing={options.showTracing}
+                gridCount={mobileGridPerRow}
+              />
+            ) : (
+              <SiXianSanGeRow
+                key={index}
+                text={row ? (row as string[])[0] : undefined}
+                showTracing={options.showTracing}
+              />
+            )
+          ))}
+        </div>
+
+        <div className="mt-4 text-center text-xs text-gray-400">
+          Kids Learning Cards
         </div>
       </div>
 
-      {/* 格子网格 */}
-      {/* 田字格布局：一行大概 8-10 个 */}
-      {/* 四线三格布局：一行大概 8-10 个 */}
-      <div className={clsx(
-        "grid gap-4",
-        options.gridType === 'tian-zi-ge'
-          ? "grid-cols-8 md:grid-cols-9 print:grid-cols-9 gap-y-6"
-          : "grid-cols-6 md:grid-cols-8 print:grid-cols-8 gap-y-8"
-      )}>
-        {renderContent()}
-      </div>
+      {/* 桌面/打印视图 */}
+      <div className="hidden md:block print:block bg-white p-6 shadow-sm border border-gray-200 print:shadow-none print:border-none print:p-4">
+        {/* 头部 */}
+        <div className="mb-4 border-b-2 border-gray-800 pb-3 print:mb-3">
+          <h1 className="text-2xl font-bold text-center mb-4 font-comic text-gray-800">
+            {isTianZiGe ? '汉字书写练习' : 'Writing Practice'}
+          </h1>
+          <div className="flex justify-between text-base">
+            <div className="flex gap-2">
+              <span className="font-bold">{isTianZiGe ? '姓名:' : 'Name:'}</span>
+              <div className="w-32 border-b-2 border-gray-400"></div>
+            </div>
+            <div className="flex gap-2">
+              <span className="font-bold">{isTianZiGe ? '日期:' : 'Date:'}</span>
+              <div className="w-32 border-b-2 border-gray-400"></div>
+            </div>
+          </div>
+        </div>
 
-      <div className="mt-12 text-center text-sm text-gray-400 print:absolute print:bottom-4 print:left-0 print:w-full">
-        Kids Learning Cards - AI 驱动的儿童教育资源生成器
+        {/* 练习区域 - 桌面/打印版 */}
+        <div className={clsx(
+          "flex flex-col w-full",
+          isTianZiGe ? "gap-1" : "gap-2"
+        )}>
+          {desktopContentRows.map((row, index) => (
+            isTianZiGe ? (
+              <TianZiGeRow
+                key={index}
+                chars={row as string[] | undefined}
+                showPinyin={options.showPinyin}
+                showTracing={options.showTracing}
+                gridCount={desktopGridPerRow}
+              />
+            ) : (
+              <SiXianSanGeRow
+                key={index}
+                text={row ? (row as string[])[0] : undefined}
+                showTracing={options.showTracing}
+              />
+            )
+          ))}
+        </div>
+
+        <div className="mt-6 text-center text-sm text-gray-400 print:absolute print:bottom-4 print:left-0 print:w-full">
+          Kids Learning Cards - AI 驱动的儿童教育资源生成器
+        </div>
       </div>
-    </div>
+    </>
   );
 }

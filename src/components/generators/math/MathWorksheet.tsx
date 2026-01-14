@@ -37,36 +37,54 @@ export function MathWorksheet({ problems, format = 'horizontal', includeAnswers 
       </div>
 
       {/* 题目网格 */}
-      <div className={`grid gap-x-12 gap-y-10 ${
+      <div className={`grid gap-x-6 gap-y-10 ${
         format === 'vertical'
           ? 'grid-cols-4 md:grid-cols-5 print:grid-cols-5'
           : 'grid-cols-2 md:grid-cols-3 print:grid-cols-3'
       }`}>
         {problems.map((problem, index) => (
           <div key={problem.id} className="problem-item flex items-center p-2 text-2xl font-medium">
-            <span className={`text-gray-400 mr-2 text-lg w-6 ${format === 'vertical' ? 'self-start mt-2' : ''}`}>
+            <span className={`text-gray-400 text-lg shrink-0 mr-1 ${format === 'vertical' ? 'self-start mt-2' : ''}`}>
               {index + 1}.
             </span>
 
             {format === 'horizontal' ? (
-              // 横式布局
-              <div className="flex-1 flex justify-between items-center whitespace-nowrap">
-                <span className="w-12 text-right">{problem.operand1}</span>
-                <span className="mx-2">{problem.operator}</span>
-                <span className="w-12 text-left">{problem.operand2}</span>
-                <span className="mx-2">=</span>
-                <span className="w-20 h-10 border-b-2 border-gray-300"></span>
+              // 横式布局 - 自然排列，统一间距
+              <div className="flex-1 flex items-center gap-1 whitespace-nowrap">
+                <span>{problem.operand1}</span>
+                <span>{problem.operator}</span>
+                <span>{problem.operand2}</span>
+                <span>=</span>
+                <span className="flex-1 max-w-14 h-10 border-b-2 border-gray-300"></span>
               </div>
             ) : (
-              // 竖式布局
-              <div className="flex-1 flex flex-col items-end w-24 mx-auto font-mono">
-                <div className="text-right w-full tracking-widest">{problem.operand1}</div>
-                <div className="flex items-center w-full justify-between">
-                  <span className="transform scale-90">{problem.operator}</span>
-                  <span className="text-right tracking-widest">{problem.operand2}</span>
+              // 竖式布局 - 标准数学竖式格式
+              <div className="flex-1 font-mono text-xl">
+                <div className="inline-block">
+                  {/* 进位空间 */}
+                  <div className="h-4 text-xs text-gray-300 text-right pr-1"></div>
+                  {/* 第一个操作数 - 右对齐 */}
+                  <div className="text-right tabular-nums tracking-wider pr-1">
+                    {String(problem.operand1).split('').map((digit, i) => (
+                      <span key={i} className="inline-block w-5 text-center">{digit}</span>
+                    ))}
+                  </div>
+                  {/* 运算符 + 第二个操作数 */}
+                  <div className="flex items-center">
+                    <span className="w-5 text-center text-gray-700">{problem.operator}</span>
+                    <span className="tabular-nums tracking-wider">
+                      {String(problem.operand2).split('').map((digit, i) => (
+                        <span key={i} className="inline-block w-5 text-center">{digit}</span>
+                      ))}
+                    </span>
+                  </div>
+                  {/* 横线 */}
+                  <div className="border-b-2 border-black my-1" style={{
+                    width: `${Math.max(String(problem.operand1).length, String(problem.operand2).length + 1) * 1.25 + 0.5}rem`
+                  }}></div>
+                  {/* 答案书写空间 */}
+                  <div className="h-7"></div>
                 </div>
-                <div className="w-full border-b-2 border-black my-1"></div>
-                <div className="w-full h-8"></div> {/* 答案书写空间 */}
               </div>
             )}
           </div>
@@ -77,19 +95,17 @@ export function MathWorksheet({ problems, format = 'horizontal', includeAnswers 
         Kids Learning Cards - AI 驱动的儿童教育资源生成器
       </div>
 
-      {/* 答案页 (打印时在新的一页) */}
+      {/* 答案页 - 始终渲染以支持 PDF 生成，使用分页 */}
       {includeAnswers && (
-        <div className="hidden print:block page-break">
-          <div className="pt-8">
-            <h2 className="text-2xl font-bold text-center mb-8 border-b-2 border-gray-800 pb-4">参考答案</h2>
-            <div className="grid grid-cols-4 gap-4 text-lg">
-              {problems.map((problem, index) => (
-                <div key={problem.id} className="flex gap-2">
-                  <span className="font-bold text-gray-500">{index + 1}.</span>
-                  <span>{problem.answer}</span>
-                </div>
-              ))}
-            </div>
+        <div className="break-before-page pt-8">
+          <h2 className="text-2xl font-bold text-center mb-8 border-b-2 border-gray-800 pb-4">参考答案</h2>
+          <div className="grid grid-cols-5 gap-x-4 gap-y-2 text-lg">
+            {problems.map((problem, index) => (
+              <div key={problem.id} className="flex gap-2">
+                <span className="font-bold text-gray-500">{index + 1}.</span>
+                <span className="text-blue-600 font-medium">{problem.answer}</span>
+              </div>
+            ))}
           </div>
         </div>
       )}
