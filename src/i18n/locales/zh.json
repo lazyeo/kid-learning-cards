@@ -1,0 +1,232 @@
+{
+  "common": {
+    "home": "首页",
+    "math": "数学",
+    "writing": "书写",
+    "coloring": "涂色",
+    "back": "返回",
+    "print": "打印",
+    "download": "下载",
+    "downloadPdf": "下载 PDF",
+    "generate": "生成",
+    "tips": "使用贴士",
+    "options": "生成选项",
+    "new": "NEW!"
+  },
+  "nav": {
+    "home": "首页",
+    "math": "数学",
+    "writing": "书写",
+    "coloring": "涂色"
+  },
+  "home": {
+    "title": "让学习变得",
+    "titleHighlight": "更有趣",
+    "subtitle": "Kids Learning Cards 是一个 AI 驱动的教育资源生成器。只需几秒钟，就能为您的孩子创建个性化的练习纸和涂色卡片。",
+    "explore": "开始探索",
+    "learnMore": "了解更多",
+    "selectGenerator": "选择一个生成器",
+    "moreFeatures": "更多功能开发中...",
+    "startGenerate": "开始生成",
+    "features": {
+      "math": {
+        "title": "数学练习",
+        "description": "生成加减乘除练习题，支持多种难度，帮助孩子提升计算能力。"
+      },
+      "writing": {
+        "title": "书写练习",
+        "description": "支持汉字田字格和英文四线格，内置难度分级和丰富词库，满足中英文书写练习需求。"
+      },
+      "coloring": {
+        "title": "涂色卡片",
+        "description": "AI 生成各种主题的涂色线稿，激发孩子的想象力和艺术创造力。"
+      }
+    },
+    "values": {
+      "fast": {
+        "title": "快速生成",
+        "description": "无需等待，即时生成高质量的练习材料，随时可以打印。"
+      },
+      "custom": {
+        "title": "个性化定制",
+        "description": "根据孩子的年龄和兴趣，调整难度和内容。"
+      },
+      "print": {
+        "title": "打印友好",
+        "description": "所有内容专为 A4 纸张优化，黑白打印也清晰美观。"
+      }
+    }
+  },
+  "math": {
+    "title": "数学练习生成器",
+    "generateFirst": "请先生成练习题",
+    "generateSuccess": "练习题生成成功！",
+    "generateFailed": "生成失败，请重试",
+    "options": {
+      "type": "题目类型",
+      "addition": "加法",
+      "subtraction": "减法",
+      "multiplication": "乘法",
+      "division": "除法",
+      "mixed": "混合",
+      "difficulty": "难度等级",
+      "easy": "简单 (1-10)",
+      "medium": "中等 (1-20)",
+      "hard": "困难 (1-100)",
+      "format": "排版格式",
+      "horizontal": "横式 (1 + 1 =)",
+      "vertical": "竖式",
+      "count": "题目数量",
+      "countSuffix": "题",
+      "includeAnswers": "包含答案页",
+      "generate": "开始生成"
+    },
+    "tips": [
+      "建议先从简单难度开始，建立孩子信心",
+      "混合运算可以全面考察计算能力",
+      "打印时会自动优化排版，节省墨水",
+      "勾选\"包含答案页\"方便批改作业"
+    ]
+  },
+  "writing": {
+    "title": "书写练习生成器",
+    "generateFirst": "请先生成练习内容",
+    "inputContent": "请输入或选择练习内容",
+    "updateSuccess": "练习纸已更新！",
+    "generateFailed": "生成失败，请重试",
+    "options": {
+      "practiceType": "练习类型",
+      "tianZiGe": "田字格 (汉字)",
+      "siXianGe": "四线格 (英文)",
+      "difficulty": "难度级别",
+      "category": "内容分类",
+      "content": "练习内容",
+      "contentPlaceholder": "输入汉字，例如：天地玄黄",
+      "autoAnnotation": "支持汉字自动注音",
+      "showTracing": "显示描红（虚线文字）",
+      "showPinyin": "显示拼音",
+      "update": "更新预览"
+    },
+    "english": {
+      "alphabet": "字母表",
+      "words": "单词练习",
+      "sentences": "句子练习",
+      "custom": "自定义",
+      "category": "词汇分类",
+      "wordCount": "单词数量",
+      "sentenceCount": "句子数量",
+      "contentPlaceholder": "Input English text here...\nEach line will be displayed separately.",
+      "eachLineHint": "每行文本会单独显示在一行四线格中",
+      "showTracing": "显示描红文本"
+    },
+    "difficulty": {
+      "alphabet": "笔画入门",
+      "beginner": "启蒙级",
+      "elementary": "小学低年级",
+      "intermediate": "小学中高年级",
+      "custom": "自定义"
+    },
+    "tips": {
+      "chinese": [
+        "选择难度级别自动填充对应汉字",
+        "选择\"自定义\"可手动输入练习内容",
+        "勾选\"显示描红\"可以生成临摹字帖",
+        "支持自动注音，方便儿童学习"
+      ],
+      "english": [
+        "字母表适合入门字母书写练习",
+        "单词练习可选择不同分类词汇",
+        "句子练习帮助掌握书写流畅度",
+        "描红文本帮助学习字母比例"
+      ]
+    }
+  },
+  "coloring": {
+    "title": "涂色卡片生成器",
+    "generateFirst": "请先生成涂色卡片",
+    "options": {
+      "theme": "主题",
+      "themes": {
+        "animals": "动物",
+        "vehicles": "交通工具",
+        "plants": "植物",
+        "fantasy": "奇幻",
+        "food": "食物"
+      },
+      "subject": "具体内容",
+      "subjectPlaceholder": "或者输入自定义内容...",
+      "complexity": "复杂度",
+      "easy": "简单",
+      "medium": "中等",
+      "hard": "复杂",
+      "extraPrompt": "额外描述 (可选)",
+      "extraPromptPlaceholder": "例如：wearing a hat, playing soccer...",
+      "generating": "AI 正在绘画中...",
+      "generate": "生成涂色卡片",
+      "generatingNote": "注意：生成过程可能需要 15-30 秒"
+    },
+    "tips": [
+      "尝试组合不同的主题和对象",
+      "\"简单\"难度适合幼儿，线条更粗更少",
+      "如果您有 API Key，请在部署后配置环境变量",
+      "打印时建议使用 A4 纸张"
+    ]
+  },
+  "footer": {
+    "copyright": "Kids Learning Cards. 为孩子们用 ❤️ 制作",
+    "tagline": "AI 驱动的教育资源生成器"
+  },
+  "worksheet": {
+    "name": "姓名",
+    "date": "日期",
+    "score": "得分",
+    "mathPractice": "数学练习",
+    "chinesePractice": "汉字书写练习",
+    "englishPractice": "Writing Practice",
+    "coloringTime": "涂色时间",
+    "answerKey": "参考答案",
+    "tagline": "Kids Learning Cards - AI 驱动的儿童教育资源生成器",
+    "taglineShort": "Kids Learning Cards",
+    "emptyMath": "点击左侧\"开始生成\"按钮创建练习题",
+    "emptyColoring": {
+      "title": "准备好开始了吗？",
+      "description": "在左侧选择您喜欢的主题和难度，点击生成按钮，AI 将为您创建独一无二的涂色卡片。"
+    },
+    "loading": {
+      "text": "AI 正在绘制您的涂色卡片...",
+      "hint": "这通常需要 15-30 秒，请耐心等待"
+    },
+    "error": {
+      "title": "生成失败"
+    }
+  },
+  "notFound": {
+    "title": "页面未找到",
+    "description": "抱歉，您访问的页面不存在。",
+    "backHome": "返回首页"
+  },
+  "chineseCategories": {
+    "strokes": "基础笔画",
+    "numbers": "数字汉字",
+    "nature": "自然万物",
+    "family": "家庭称呼",
+    "body": "身体部位",
+    "animals_basic": "常见动物",
+    "colors": "颜色词汇",
+    "actions": "动作词汇",
+    "school": "学校相关",
+    "time": "时间词汇",
+    "emotions": "情感词汇",
+    "poetry": "古诗词汇",
+    "idioms": "成语常字"
+  },
+  "englishCategories": {
+    "animals": "动物",
+    "fruits": "水果",
+    "colors": "颜色",
+    "numbers": "数字",
+    "family": "家庭",
+    "body": "身体",
+    "sight_words_pre_k": "常见词 (Pre-K)"
+  }
+}

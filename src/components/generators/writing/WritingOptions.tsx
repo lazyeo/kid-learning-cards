@@ -1,4 +1,5 @@
 import { type WritingGeneratorOptions } from '../../../types/generator';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../../common/Button';
 import { Card } from '../../common/Card';
 import { Settings, Grid, AlignLeft, Type, BookOpen, FileText } from 'lucide-react';
@@ -13,6 +14,8 @@ interface WritingOptionsProps {
 }
 
 export function WritingOptions({ options, onChange, onGenerate, isGenerating }: WritingOptionsProps) {
+  const { t } = useTranslation();
+
   const handleChange = (key: keyof WritingGeneratorOptions, value: any) => {
     onChange({ ...options, [key]: value });
   };
@@ -20,27 +23,25 @@ export function WritingOptions({ options, onChange, onGenerate, isGenerating }: 
   const isTianZiGe = options.gridType === 'tian-zi-ge';
 
   const gridTypes = [
-    { value: 'tian-zi-ge', label: '田字格 (汉字)', icon: <Grid className="w-4 h-4" /> },
-    { value: 'si-xian-san-ge', label: '四线格 (英文)', icon: <AlignLeft className="w-4 h-4" /> },
+    { value: 'tian-zi-ge', labelKey: 'writing.options.tianZiGe', icon: <Grid className="w-4 h-4" /> },
+    { value: 'si-xian-san-ge', labelKey: 'writing.options.siXianGe', icon: <AlignLeft className="w-4 h-4" /> },
   ];
 
-  // 英文练习类型
   const englishTypes = [
-    { value: 'alphabet', label: '字母表', icon: <Type className="w-4 h-4" /> },
-    { value: 'words', label: '单词练习', icon: <BookOpen className="w-4 h-4" /> },
-    { value: 'sentences', label: '句子练习', icon: <FileText className="w-4 h-4" /> },
-    { value: 'custom', label: '自定义', icon: <Type className="w-4 h-4" /> },
+    { value: 'alphabet', labelKey: 'writing.english.alphabet', icon: <Type className="w-4 h-4" /> },
+    { value: 'words', labelKey: 'writing.english.words', icon: <BookOpen className="w-4 h-4" /> },
+    { value: 'sentences', labelKey: 'writing.english.sentences', icon: <FileText className="w-4 h-4" /> },
+    { value: 'custom', labelKey: 'writing.english.custom', icon: <Type className="w-4 h-4" /> },
   ];
 
-  // 获取当前难度下的汉字分类
   const chineseCategories = getCategoriesByDifficulty(options.chineseDifficulty || 'beginner');
 
   return (
-    <Card title={<div className="flex items-center gap-2"><Settings className="w-5 h-5" /> 生成选项</div>}>
+    <Card title={<div className="flex items-center gap-2"><Settings className="w-5 h-5" /> {t('common.options')}</div>}>
       <div className="space-y-6">
         {/* 格子类型 */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">练习类型</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">{t('writing.options.practiceType')}</label>
           <div className="grid grid-cols-1 gap-2">
             {gridTypes.map((type) => (
               <button
@@ -55,7 +56,7 @@ export function WritingOptions({ options, onChange, onGenerate, isGenerating }: 
                 `}
               >
                 {type.icon}
-                {type.label}
+                {t(type.labelKey)}
               </button>
             ))}
           </div>
@@ -66,7 +67,7 @@ export function WritingOptions({ options, onChange, onGenerate, isGenerating }: 
           <>
             {/* 难度选择 */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">难度级别</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('writing.options.difficulty')}</label>
               <div className="grid grid-cols-2 gap-2">
                 {difficultyLevels.map((level) => (
                   <button
@@ -81,7 +82,7 @@ export function WritingOptions({ options, onChange, onGenerate, isGenerating }: 
                     `}
                     title={level.description}
                   >
-                    {level.name}
+                    {t(`writing.difficulty.${level.id}`)}
                   </button>
                 ))}
               </div>
@@ -90,7 +91,7 @@ export function WritingOptions({ options, onChange, onGenerate, isGenerating }: 
             {/* 汉字分类 (非自定义模式) */}
             {options.chineseDifficulty !== 'custom' && chineseCategories.length > 0 && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">内容分类</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('writing.options.category')}</label>
                 <div className="grid grid-cols-2 gap-2">
                   {chineseCategories.map((category) => (
                     <button
@@ -104,7 +105,7 @@ export function WritingOptions({ options, onChange, onGenerate, isGenerating }: 
                         }
                       `}
                     >
-                      {category.name}
+                      {t(`chineseCategories.${category.id}`)}
                     </button>
                   ))}
                 </div>
@@ -114,16 +115,16 @@ export function WritingOptions({ options, onChange, onGenerate, isGenerating }: 
             {/* 自定义内容输入 (仅自定义模式) */}
             {options.chineseDifficulty === 'custom' && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">练习内容</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('writing.options.content')}</label>
                 <div className="relative">
                   <textarea
                     value={options.content}
                     onChange={(e) => handleChange('content', e.target.value)}
-                    placeholder="输入汉字，例如：天地玄黄"
+                    placeholder={t('writing.options.contentPlaceholder')}
                     className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[var(--color-primary)] focus:ring-0 transition-colors min-h-[100px]"
                   />
                 </div>
-                <p className="mt-2 text-xs text-gray-500">支持汉字自动注音</p>
+                <p className="mt-2 text-xs text-gray-500">{t('writing.options.autoAnnotation')}</p>
               </div>
             )}
 
@@ -137,7 +138,7 @@ export function WritingOptions({ options, onChange, onGenerate, isGenerating }: 
                   onChange={(e) => handleChange('showTracing', e.target.checked)}
                   className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                 />
-                <label htmlFor="showTracing" className="text-sm text-gray-700">显示描红（虚线文字）</label>
+                <label htmlFor="showTracing" className="text-sm text-gray-700">{t('writing.options.showTracing')}</label>
               </div>
 
               <div className="flex items-center gap-2">
@@ -148,7 +149,7 @@ export function WritingOptions({ options, onChange, onGenerate, isGenerating }: 
                   onChange={(e) => handleChange('showPinyin', e.target.checked)}
                   className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                 />
-                <label htmlFor="showPinyin" className="text-sm text-gray-700">显示拼音</label>
+                <label htmlFor="showPinyin" className="text-sm text-gray-700">{t('writing.options.showPinyin')}</label>
               </div>
             </div>
           </>
@@ -159,7 +160,7 @@ export function WritingOptions({ options, onChange, onGenerate, isGenerating }: 
           <>
             {/* 英文练习类型 */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">练习内容</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('writing.options.content')}</label>
               <div className="grid grid-cols-2 gap-2">
                 {englishTypes.map((type) => (
                   <button
@@ -174,7 +175,7 @@ export function WritingOptions({ options, onChange, onGenerate, isGenerating }: 
                     `}
                   >
                     {type.icon}
-                    {type.label}
+                    {t(type.labelKey)}
                   </button>
                 ))}
               </div>
@@ -183,7 +184,7 @@ export function WritingOptions({ options, onChange, onGenerate, isGenerating }: 
             {/* 单词分类 (仅单词模式) */}
             {options.englishType === 'words' && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">词汇分类</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('writing.english.category')}</label>
                 <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto pr-1">
                   {vocabularyDatabase.map((category) => (
                     <button
@@ -197,7 +198,7 @@ export function WritingOptions({ options, onChange, onGenerate, isGenerating }: 
                         }
                       `}
                     >
-                      {category.name}
+                      {t(`englishCategories.${category.id}`)}
                     </button>
                   ))}
                 </div>
@@ -208,7 +209,7 @@ export function WritingOptions({ options, onChange, onGenerate, isGenerating }: 
             {(options.englishType === 'words' || options.englishType === 'sentences') && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {options.englishType === 'words' ? '单词数量' : '句子数量'}
+                  {options.englishType === 'words' ? t('writing.english.wordCount') : t('writing.english.sentenceCount')}
                 </label>
                 <div className="flex gap-2">
                   {[5, 8, 10, 12].map((count) => (
@@ -233,16 +234,16 @@ export function WritingOptions({ options, onChange, onGenerate, isGenerating }: 
             {/* 自定义内容输入 (仅自定义模式) */}
             {options.englishType === 'custom' && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">练习内容</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('writing.options.content')}</label>
                 <div className="relative">
                   <textarea
                     value={options.content}
                     onChange={(e) => handleChange('content', e.target.value)}
-                    placeholder="Input English text here...&#10;Each line will be displayed separately."
+                    placeholder={t('writing.english.contentPlaceholder')}
                     className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[var(--color-primary)] focus:ring-0 transition-colors min-h-[100px]"
                   />
                 </div>
-                <p className="mt-2 text-xs text-gray-500">每行文本会单独显示在一行四线格中</p>
+                <p className="mt-2 text-xs text-gray-500">{t('writing.english.eachLineHint')}</p>
               </div>
             )}
 
@@ -256,7 +257,7 @@ export function WritingOptions({ options, onChange, onGenerate, isGenerating }: 
                   onChange={(e) => handleChange('showTracing', e.target.checked)}
                   className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                 />
-                <label htmlFor="showTracingEn" className="text-sm text-gray-700">显示描红文本</label>
+                <label htmlFor="showTracingEn" className="text-sm text-gray-700">{t('writing.english.showTracing')}</label>
               </div>
             </div>
           </>
@@ -269,7 +270,7 @@ export function WritingOptions({ options, onChange, onGenerate, isGenerating }: 
           loading={isGenerating}
           className="mt-4"
         >
-          更新预览
+          {t('writing.options.update')}
         </Button>
       </div>
     </Card>

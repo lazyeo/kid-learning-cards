@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Settings, Sparkles, Palette } from 'lucide-react';
 import { Button } from '../../common/Button';
 import { Card } from '../../common/Card';
@@ -10,17 +11,18 @@ interface ColoringOptionsProps {
 }
 
 export function ColoringOptions({ onGenerate, isGenerating }: ColoringOptionsProps) {
+  const { t } = useTranslation();
   const [theme, setTheme] = useState<string>('animals');
   const [subject, setSubject] = useState<string>('cat');
   const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>('easy');
   const [customPrompt, setCustomPrompt] = useState<string>('');
 
   const themes = [
-    { value: 'animals', label: '动物' },
-    { value: 'vehicles', label: '交通工具' },
-    { value: 'plants', label: '植物' },
-    { value: 'fantasy', label: '奇幻' },
-    { value: 'food', label: '食物' },
+    { value: 'animals', labelKey: 'coloring.options.themes.animals' },
+    { value: 'vehicles', labelKey: 'coloring.options.themes.vehicles' },
+    { value: 'plants', labelKey: 'coloring.options.themes.plants' },
+    { value: 'fantasy', labelKey: 'coloring.options.themes.fantasy' },
+    { value: 'food', labelKey: 'coloring.options.themes.food' },
   ];
 
   const subjectsByTheme: Record<string, string[]> = {
@@ -41,31 +43,31 @@ export function ColoringOptions({ onGenerate, isGenerating }: ColoringOptionsPro
   };
 
   return (
-    <Card title={<div className="flex items-center gap-2"><Settings className="w-5 h-5" /> 生成选项</div>}>
+    <Card title={<div className="flex items-center gap-2"><Settings className="w-5 h-5" /> {t('common.options')}</div>}>
       <div className="space-y-6">
         {/* 主题选择 */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
             <Palette className="w-4 h-4 text-[var(--color-primary)]" />
-            主题
+            {t('coloring.options.theme')}
           </label>
           <div className="grid grid-cols-3 gap-2">
-            {themes.map((t) => (
+            {themes.map((themeItem) => (
               <button
-                key={t.value}
+                key={themeItem.value}
                 onClick={() => {
-                  setTheme(t.value);
-                  setSubject(subjectsByTheme[t.value][0]); // 重置 subject
+                  setTheme(themeItem.value);
+                  setSubject(subjectsByTheme[themeItem.value][0]);
                 }}
                 className={`
                   px-2 py-2 rounded-xl text-xs font-medium transition-all border
-                  ${theme === t.value
+                  ${theme === themeItem.value
                     ? 'bg-orange-50 border-orange-400 text-orange-700'
                     : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
                   }
                 `}
               >
-                {t.label}
+                {t(themeItem.labelKey)}
               </button>
             ))}
           </div>
@@ -73,7 +75,7 @@ export function ColoringOptions({ onGenerate, isGenerating }: ColoringOptionsPro
 
         {/* 具体对象 */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">具体内容</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">{t('coloring.options.subject')}</label>
           <div className="flex flex-wrap gap-2 mb-2">
             {subjectsByTheme[theme]?.map((s) => (
               <button
@@ -95,14 +97,14 @@ export function ColoringOptions({ onGenerate, isGenerating }: ColoringOptionsPro
             type="text"
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
-            placeholder="或者输入自定义内容..."
+            placeholder={t('coloring.options.subjectPlaceholder')}
             className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent text-sm"
           />
         </div>
 
         {/* 难度 */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">复杂度</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">{t('coloring.options.complexity')}</label>
           <div className="flex gap-2">
             {(['easy', 'medium', 'hard'] as const).map((d) => (
               <button
@@ -116,7 +118,7 @@ export function ColoringOptions({ onGenerate, isGenerating }: ColoringOptionsPro
                   }
                 `}
               >
-                {d === 'easy' ? '简单' : d === 'medium' ? '中等' : '复杂'}
+                {t(`coloring.options.${d}`)}
               </button>
             ))}
           </div>
@@ -124,11 +126,11 @@ export function ColoringOptions({ onGenerate, isGenerating }: ColoringOptionsPro
 
         {/* 额外描述 */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">额外描述 (可选)</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">{t('coloring.options.extraPrompt')}</label>
           <textarea
             value={customPrompt}
             onChange={(e) => setCustomPrompt(e.target.value)}
-            placeholder="例如：wearing a hat, playing soccer..."
+            placeholder={t('coloring.options.extraPromptPlaceholder')}
             className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent text-sm min-h-[60px]"
           />
         </div>
@@ -141,11 +143,11 @@ export function ColoringOptions({ onGenerate, isGenerating }: ColoringOptionsPro
           icon={<Sparkles className="w-5 h-5" />}
           className="mt-4"
         >
-          {isGenerating ? 'AI 正在绘画中...' : '生成涂色卡片'}
+          {isGenerating ? t('coloring.options.generating') : t('coloring.options.generate')}
         </Button>
 
         <p className="text-xs text-gray-400 text-center">
-          注意：生成过程可能需要 15-30 秒
+          {t('coloring.options.generatingNote')}
         </p>
       </div>
     </Card>

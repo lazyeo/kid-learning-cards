@@ -1,0 +1,232 @@
+{
+  "common": {
+    "home": "Home",
+    "math": "Math",
+    "writing": "Writing",
+    "coloring": "Coloring",
+    "back": "Back",
+    "print": "Print",
+    "download": "Download",
+    "downloadPdf": "Download PDF",
+    "generate": "Generate",
+    "tips": "Tips",
+    "options": "Options",
+    "new": "NEW!"
+  },
+  "nav": {
+    "home": "Home",
+    "math": "Math",
+    "writing": "Writing",
+    "coloring": "Coloring"
+  },
+  "home": {
+    "title": "Make Learning",
+    "titleHighlight": "More Fun",
+    "subtitle": "Kids Learning Cards is an AI-powered educational resource generator. Create personalized worksheets and coloring pages for your children in just seconds.",
+    "explore": "Start Exploring",
+    "learnMore": "Learn More",
+    "selectGenerator": "Choose a Generator",
+    "moreFeatures": "More features coming soon...",
+    "startGenerate": "Start Generating",
+    "features": {
+      "math": {
+        "title": "Math Practice",
+        "description": "Generate addition, subtraction, multiplication, and division problems with multiple difficulty levels to improve calculation skills."
+      },
+      "writing": {
+        "title": "Writing Practice",
+        "description": "Supports Chinese character grids and English handwriting lines with built-in difficulty levels and rich vocabulary."
+      },
+      "coloring": {
+        "title": "Coloring Pages",
+        "description": "AI-generated coloring line art with various themes to inspire imagination and artistic creativity."
+      }
+    },
+    "values": {
+      "fast": {
+        "title": "Fast Generation",
+        "description": "No waiting - instantly generate high-quality practice materials ready for printing."
+      },
+      "custom": {
+        "title": "Personalization",
+        "description": "Adjust difficulty and content based on your child's age and interests."
+      },
+      "print": {
+        "title": "Print Friendly",
+        "description": "All content optimized for A4 paper, clear and beautiful even in black and white."
+      }
+    }
+  },
+  "math": {
+    "title": "Math Worksheet Generator",
+    "generateFirst": "Please generate problems first",
+    "generateSuccess": "Problems generated successfully!",
+    "generateFailed": "Generation failed, please try again",
+    "options": {
+      "type": "Problem Type",
+      "addition": "Addition",
+      "subtraction": "Subtraction",
+      "multiplication": "Multiplication",
+      "division": "Division",
+      "mixed": "Mixed",
+      "difficulty": "Difficulty Level",
+      "easy": "Easy (1-10)",
+      "medium": "Medium (1-20)",
+      "hard": "Hard (1-100)",
+      "format": "Layout Format",
+      "horizontal": "Horizontal (1 + 1 =)",
+      "vertical": "Vertical",
+      "count": "Problem Count",
+      "countSuffix": " problems",
+      "includeAnswers": "Include Answer Key",
+      "generate": "Generate"
+    },
+    "tips": [
+      "Start with easy difficulty to build confidence",
+      "Mixed operations test comprehensive calculation skills",
+      "Print layout is auto-optimized to save ink",
+      "Check \"Include Answer Key\" for easy grading"
+    ]
+  },
+  "writing": {
+    "title": "Writing Worksheet Generator",
+    "generateFirst": "Please generate content first",
+    "inputContent": "Please enter or select practice content",
+    "updateSuccess": "Worksheet updated!",
+    "generateFailed": "Generation failed, please try again",
+    "options": {
+      "practiceType": "Practice Type",
+      "tianZiGe": "Character Grid (Chinese)",
+      "siXianGe": "Handwriting Lines (English)",
+      "difficulty": "Difficulty Level",
+      "category": "Content Category",
+      "content": "Practice Content",
+      "contentPlaceholder": "Enter Chinese characters, e.g.: 天地玄黄",
+      "autoAnnotation": "Auto pinyin annotation supported",
+      "showTracing": "Show Tracing (dotted text)",
+      "showPinyin": "Show Pinyin",
+      "update": "Update Preview"
+    },
+    "english": {
+      "alphabet": "Alphabet",
+      "words": "Word Practice",
+      "sentences": "Sentence Practice",
+      "custom": "Custom",
+      "category": "Vocabulary Category",
+      "wordCount": "Word Count",
+      "sentenceCount": "Sentence Count",
+      "contentPlaceholder": "Input English text here...\nEach line will be displayed separately.",
+      "eachLineHint": "Each line will be displayed on a separate handwriting line",
+      "showTracing": "Show Tracing Text"
+    },
+    "difficulty": {
+      "alphabet": "Basic Strokes",
+      "beginner": "Beginner",
+      "elementary": "Elementary",
+      "intermediate": "Intermediate",
+      "custom": "Custom"
+    },
+    "tips": {
+      "chinese": [
+        "Select difficulty level to auto-fill characters",
+        "Choose \"Custom\" to enter your own content",
+        "Enable \"Show Tracing\" for copybook practice",
+        "Auto pinyin annotation helps children learn"
+      ],
+      "english": [
+        "Alphabet is great for beginner letter practice",
+        "Word practice offers various vocabulary categories",
+        "Sentence practice helps with writing fluency",
+        "Tracing text helps learn letter proportions"
+      ]
+    }
+  },
+  "coloring": {
+    "title": "Coloring Page Generator",
+    "generateFirst": "Please generate a coloring page first",
+    "options": {
+      "theme": "Theme",
+      "themes": {
+        "animals": "Animals",
+        "vehicles": "Vehicles",
+        "plants": "Plants",
+        "fantasy": "Fantasy",
+        "food": "Food"
+      },
+      "subject": "Subject",
+      "subjectPlaceholder": "Or enter custom content...",
+      "complexity": "Complexity",
+      "easy": "Easy",
+      "medium": "Medium",
+      "hard": "Complex",
+      "extraPrompt": "Extra Description (optional)",
+      "extraPromptPlaceholder": "e.g.: wearing a hat, playing soccer...",
+      "generating": "AI is drawing...",
+      "generate": "Generate Coloring Page",
+      "generatingNote": "Note: Generation may take 15-30 seconds"
+    },
+    "tips": [
+      "Try combining different themes and subjects",
+      "\"Easy\" difficulty is great for toddlers with thicker, simpler lines",
+      "Configure your API key in environment variables after deployment",
+      "A4 paper is recommended for printing"
+    ]
+  },
+  "footer": {
+    "copyright": "Kids Learning Cards. Made with ❤️ for children",
+    "tagline": "AI-Powered Educational Resource Generator"
+  },
+  "worksheet": {
+    "name": "Name",
+    "date": "Date",
+    "score": "Score",
+    "mathPractice": "Math Practice",
+    "chinesePractice": "Chinese Writing Practice",
+    "englishPractice": "Writing Practice",
+    "coloringTime": "Coloring Time",
+    "answerKey": "Answer Key",
+    "tagline": "Kids Learning Cards - AI-Powered Educational Resource Generator",
+    "taglineShort": "Kids Learning Cards",
+    "emptyMath": "Click \"Generate\" on the left to create practice problems",
+    "emptyColoring": {
+      "title": "Ready to start?",
+      "description": "Choose your favorite theme and difficulty on the left, click generate, and AI will create a unique coloring page for you."
+    },
+    "loading": {
+      "text": "AI is drawing your coloring page...",
+      "hint": "This usually takes 15-30 seconds, please wait"
+    },
+    "error": {
+      "title": "Generation Failed"
+    }
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "description": "Sorry, the page you're looking for doesn't exist.",
+    "backHome": "Back to Home"
+  },
+  "chineseCategories": {
+    "strokes": "Basic Strokes",
+    "numbers": "Number Characters",
+    "nature": "Nature",
+    "family": "Family",
+    "body": "Body Parts",
+    "animals_basic": "Common Animals",
+    "colors": "Colors",
+    "actions": "Actions",
+    "school": "School",
+    "time": "Time",
+    "emotions": "Emotions",
+    "poetry": "Poetry",
+    "idioms": "Idioms"
+  },
+  "englishCategories": {
+    "animals": "Animals",
+    "fruits": "Fruits",
+    "colors": "Colors",
+    "numbers": "Numbers",
+    "family": "Family",
+    "body": "Body",
+    "sight_words_pre_k": "Sight Words (Pre-K)"
+  }
+}

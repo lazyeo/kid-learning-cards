@@ -11,3 +11,9 @@
   targetPort = 5173
   port = 8888
   publish = "dist"
+
+# SPA 路由重定向 - 所有路由都指向 index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Printer, Download, ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 import { WritingOptions } from '../components/generators/writing/WritingOptions';
 import { WritingWorksheet } from '../components/generators/writing/WritingWorksheet';
@@ -23,6 +24,7 @@ function getRandomItems<T>(arr: T[], count: number): T[] {
 
 export function WritingPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [isGenerating, setIsGenerating] = useState(false);
   const [content, setContent] = useState<string>('');
   const [options, setOptions] = useState<WritingGeneratorOptions>({
@@ -30,10 +32,8 @@ export function WritingPage() {
     content: '',
     showTracing: true,
     showPinyin: true,
-    // 田字格默认选项
     chineseDifficulty: 'beginner',
     chineseCategory: 'nature',
-    // 四线格默认选项
     englishType: 'alphabet',
     englishCategory: 'animals',
     englishCount: 8
@@ -149,16 +149,16 @@ export function WritingPage() {
 
       const newContent = generateContent(options);
       if (!newContent.trim()) {
-        toast.error('请输入或选择练习内容');
+        toast.error(t('writing.inputContent'));
         setIsGenerating(false);
         return;
       }
 
       setContent(newContent);
-      toast.success('练习纸已更新！');
+      toast.success(t('writing.updateSuccess'));
     } catch (error) {
       console.error(error);
-      toast.error('生成失败，请重试');
+      toast.error(t('writing.generateFailed'));
     } finally {
       setIsGenerating(false);
     }
@@ -166,7 +166,7 @@ export function WritingPage() {
 
   const handlePrint = () => {
     if (!content) {
-      toast.error('请先生成练习内容');
+      toast.error(t('writing.generateFirst'));
       return;
     }
     printPDF({
@@ -176,7 +176,7 @@ export function WritingPage() {
 
   const handleDownload = () => {
     if (!content) {
-      toast.error('请先生成练习内容');
+      toast.error(t('writing.generateFirst'));
       return;
     }
     downloadPDF({
@@ -198,9 +198,9 @@ export function WritingPage() {
             onClick={() => navigate(routes.home)}
             icon={<ChevronLeft className="w-4 h-4" />}
           >
-            返回
+            {t('common.back')}
           </Button>
-          <h1 className="text-2xl font-bold text-gray-800">书写练习生成器</h1>
+          <h1 className="text-2xl font-bold text-gray-800">{t('writing.title')}</h1>
         </div>
 
         <div className="flex gap-2">
@@ -209,7 +209,7 @@ export function WritingPage() {
             icon={<Printer className="w-4 h-4" />}
             onClick={handlePrint}
           >
-            打印
+            {t('common.print')}
           </Button>
           <Button
             variant="outline"
@@ -217,7 +217,7 @@ export function WritingPage() {
             onClick={handleDownload}
             disabled={!content}
           >
-            下载
+            {t('common.download')}
           </Button>
         </div>
       </div>
@@ -234,23 +234,17 @@ export function WritingPage() {
 
           <div className={`${isTianZiGe ? 'bg-orange-50 text-orange-700' : 'bg-purple-50 text-purple-700'} p-4 rounded-2xl text-sm`}>
             <h3 className="font-bold mb-2 flex items-center gap-2">
-              💡 使用贴士
+              💡 {t('common.tips')}
             </h3>
             <ul className="list-disc list-inside space-y-1 opacity-80">
               {isTianZiGe ? (
-                <>
-                  <li>选择难度级别自动填充对应汉字</li>
-                  <li>选择"自定义"可手动输入练习内容</li>
-                  <li>勾选"显示描红"可以生成临摹字帖</li>
-                  <li>支持自动注音，方便儿童学习</li>
-                </>
+                (t('writing.tips.chinese', { returnObjects: true }) as string[]).map((tip, index) => (
+                  <li key={index}>{tip}</li>
+                ))
               ) : (
-                <>
-                  <li>字母表适合入门字母书写练习</li>
-                  <li>单词练习可选择不同分类词汇</li>
-                  <li>句子练习帮助掌握书写流畅度</li>
-                  <li>描红文本帮助学习字母比例</li>
-                </>
+                (t('writing.tips.english', { returnObjects: true }) as string[]).map((tip, index) => (
+                  <li key={index}>{tip}</li>
+                ))
               )}
             </ul>
           </div>

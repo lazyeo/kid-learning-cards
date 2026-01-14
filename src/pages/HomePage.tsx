@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Palette, Calculator, PenTool, ArrowRight, Sparkles } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Card } from '../components/common/Card';
 import { Button } from '../components/common/Button';
 import { routes } from '../config/routes';
@@ -11,10 +12,12 @@ interface FeatureCardProps {
   color: string;
   path: string;
   isNew?: boolean;
+  startText: string;
 }
 
-function FeatureCard({ title, description, icon, color, path, isNew }: FeatureCardProps) {
+function FeatureCard({ title, description, icon, color, path, isNew, startText }: FeatureCardProps) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <Card
@@ -24,7 +27,7 @@ function FeatureCard({ title, description, icon, color, path, isNew }: FeatureCa
     >
       {isNew && (
         <div className="absolute -top-3 -right-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg animate-bounce z-10">
-          NEW!
+          {t('common.new')}
         </div>
       )}
 
@@ -44,32 +47,34 @@ function FeatureCard({ title, description, icon, color, path, isNew }: FeatureCa
       </p>
 
       <div className="flex items-center text-[var(--color-primary)] font-bold text-sm group-hover:translate-x-2 transition-transform">
-        开始生成 <ArrowRight className="ml-2 w-4 h-4" />
+        {startText} <ArrowRight className="ml-2 w-4 h-4" />
       </div>
     </Card>
   );
 }
 
 export function HomePage() {
+  const { t } = useTranslation();
+
   const features = [
     {
-      title: '数学练习',
-      description: '生成加减乘除练习题，支持多种难度，帮助孩子提升计算能力。',
+      title: t('home.features.math.title'),
+      description: t('home.features.math.description'),
       icon: <Calculator size={32} />,
       color: '#4ECDC4', // Secondary
       path: routes.math,
     },
     {
-      title: '书写练习',
-      description: '支持汉字田字格和英文四线格，内置难度分级和丰富词库，满足中英文书写练习需求。',
+      title: t('home.features.writing.title'),
+      description: t('home.features.writing.description'),
       icon: <PenTool size={32} />,
       color: '#FF6B6B', // Primary
       path: routes.writing,
       isNew: true,
     },
     {
-      title: '涂色卡片',
-      description: 'AI 生成各种主题的涂色线稿，激发孩子的想象力和艺术创造力。',
+      title: t('home.features.coloring.title'),
+      description: t('home.features.coloring.description'),
       icon: <Palette size={32} />,
       color: '#95E1D3', // Success
       path: routes.coloring,
@@ -83,8 +88,8 @@ export function HomePage() {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-full bg-gradient-to-b from-orange-50 to-transparent -z-10 rounded-full blur-3xl opacity-60"></div>
 
         <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-800 leading-tight">
-          让学习变得 <span className="text-[var(--color-primary)] relative inline-block">
-            更有趣
+          {t('home.title')} <span className="text-[var(--color-primary)] relative inline-block">
+            {t('home.titleHighlight')}
             <svg className="absolute -bottom-2 left-0 w-full h-3 text-[var(--color-accent)] opacity-60" viewBox="0 0 100 10" preserveAspectRatio="none">
               <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="8" fill="none" />
             </svg>
@@ -92,16 +97,15 @@ export function HomePage() {
         </h1>
 
         <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-10">
-          Kids Learning Cards 是一个 AI 驱动的教育资源生成器。
-          只需几秒钟，就能为您的孩子创建个性化的练习纸和涂色卡片。
+          {t('home.subtitle')}
         </p>
 
         <div className="flex justify-center gap-4">
           <Button size="large" onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}>
-            开始探索
+            {t('home.explore')}
           </Button>
           <Button variant="outline" size="large" icon={<Sparkles className="w-5 h-5" />}>
-            了解更多
+            {t('home.learnMore')}
           </Button>
         </div>
       </section>
@@ -109,13 +113,13 @@ export function HomePage() {
       {/* Features Grid */}
       <section id="features" className="py-8">
         <div className="flex items-center justify-between mb-8 px-2">
-          <h2 className="text-2xl font-bold text-gray-800">选择一个生成器</h2>
-          <span className="text-sm text-gray-500">更多功能开发中...</span>
+          <h2 className="text-2xl font-bold text-gray-800">{t('home.selectGenerator')}</h2>
+          <span className="text-sm text-gray-500">{t('home.moreFeatures')}</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {features.map((feature) => (
-            <FeatureCard key={feature.path} {...feature} />
+            <FeatureCard key={feature.path} {...feature} startText={t('home.startGenerate')} />
           ))}
         </div>
       </section>
@@ -125,18 +129,18 @@ export function HomePage() {
         <div className="grid md:grid-cols-3 gap-8 text-center">
           <div>
             <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-xl">🚀</div>
-            <h3 className="font-bold text-lg mb-2">快速生成</h3>
-            <p className="text-gray-500 text-sm">无需等待，即时生成高质量的练习材料，随时可以打印。</p>
+            <h3 className="font-bold text-lg mb-2">{t('home.values.fast.title')}</h3>
+            <p className="text-gray-500 text-sm">{t('home.values.fast.description')}</p>
           </div>
           <div>
             <div className="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-xl">🎨</div>
-            <h3 className="font-bold text-lg mb-2">个性化定制</h3>
-            <p className="text-gray-500 text-sm">根据孩子的年龄和兴趣，调整难度和内容。</p>
+            <h3 className="font-bold text-lg mb-2">{t('home.values.custom.title')}</h3>
+            <p className="text-gray-500 text-sm">{t('home.values.custom.description')}</p>
           </div>
           <div>
             <div className="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 text-xl">🖨️</div>
-            <h3 className="font-bold text-lg mb-2">打印友好</h3>
-            <p className="text-gray-500 text-sm">所有内容专为 A4 纸张优化，黑白打印也清晰美观。</p>
+            <h3 className="font-bold text-lg mb-2">{t('home.values.print.title')}</h3>
+            <p className="text-gray-500 text-sm">{t('home.values.print.description')}</p>
           </div>
         </div>
       </section>

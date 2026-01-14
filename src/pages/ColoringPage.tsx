@@ -1,6 +1,7 @@
 import { Printer, Download, ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 import { ColoringOptions } from '../components/generators/coloring/ColoringOptions';
 import { ColoringPreview } from '../components/generators/coloring/ColoringPreview';
@@ -11,21 +12,20 @@ import { routes } from '../config/routes';
 
 export function ColoringPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { isLoading, imageUrl, error, generate } = useImageGeneration();
 
   const handlePrint = async () => {
     if (!imageUrl) {
-      toast.error('请先生成涂色卡片');
+      toast.error(t('coloring.generateFirst'));
       return;
     }
-    // 使用 PDF 打印工具，复用 PDF 排版
     printPDF({ elementId: 'coloring-worksheet-preview' });
   };
 
   const handleDownload = async () => {
     if (!imageUrl) return;
 
-    // 使用 PDF 下载工具，将整个练习纸（包含抬头）保存为 PDF
     downloadPDF({
       filename: 'coloring-page',
       elementId: 'coloring-worksheet-preview'
@@ -43,9 +43,9 @@ export function ColoringPage() {
             onClick={() => navigate(routes.home)}
             icon={<ChevronLeft className="w-4 h-4" />}
           >
-            返回
+            {t('common.back')}
           </Button>
-          <h1 className="text-2xl font-bold text-gray-800">涂色卡片生成器</h1>
+          <h1 className="text-2xl font-bold text-gray-800">{t('coloring.title')}</h1>
         </div>
 
         <div className="flex gap-2">
@@ -55,7 +55,7 @@ export function ColoringPage() {
             onClick={handlePrint}
             disabled={!imageUrl}
           >
-            打印
+            {t('common.print')}
           </Button>
           <Button
             variant="outline"
@@ -63,7 +63,7 @@ export function ColoringPage() {
             onClick={handleDownload}
             disabled={!imageUrl}
           >
-            下载 PDF
+            {t('common.downloadPdf')}
           </Button>
         </div>
       </div>
@@ -78,13 +78,12 @@ export function ColoringPage() {
 
           <div className="bg-green-50 p-4 rounded-2xl text-sm text-green-700">
             <h3 className="font-bold mb-2 flex items-center gap-2">
-              💡 使用贴士
+              💡 {t('common.tips')}
             </h3>
             <ul className="list-disc list-inside space-y-1 opacity-80">
-              <li>尝试组合不同的主题和对象</li>
-              <li>"简单"难度适合幼儿，线条更粗更少</li>
-              <li>如果您有 API Key，请在部署后配置环境变量</li>
-              <li>打印时建议使用 A4 纸张</li>
+              {(t('coloring.tips', { returnObjects: true }) as string[]).map((tip, index) => (
+                <li key={index}>{tip}</li>
+              ))}
             </ul>
           </div>
         </div>

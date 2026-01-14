@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Home, Palette, Calculator, PenTool } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { routes } from '../../config/routes';
 
 interface NavItemProps {
@@ -33,12 +34,13 @@ function NavItem({ to, icon, label, isActive }: NavItemProps) {
 export function Navbar() {
   const location = useLocation();
   const currentPath = location.pathname;
+  const { t } = useTranslation();
 
   const navItems = [
-    { path: routes.home, icon: <Home size={24} />, label: '首页' },
-    { path: routes.math, icon: <Calculator size={24} />, label: '数学' },
-    { path: routes.writing, icon: <PenTool size={24} />, label: '书写' },
-    { path: routes.coloring, icon: <Palette size={24} />, label: '涂色' },
+    { path: routes.home, icon: <Home size={24} />, labelKey: 'nav.home' },
+    { path: routes.math, icon: <Calculator size={24} />, labelKey: 'nav.math' },
+    { path: routes.writing, icon: <PenTool size={24} />, labelKey: 'nav.writing' },
+    { path: routes.coloring, icon: <Palette size={24} />, labelKey: 'nav.coloring' },
   ];
 
   return (
@@ -50,7 +52,7 @@ export function Navbar() {
               key={item.path}
               to={item.path}
               icon={item.icon}
-              label={item.label}
+              label={t(item.labelKey)}
               isActive={currentPath === item.path}
             />
           ))}

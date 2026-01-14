@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Printer, Download, ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 import { MathOptions } from '../components/generators/math/MathOptions';
 import { MathWorksheet } from '../components/generators/math/MathWorksheet';
@@ -13,6 +14,7 @@ import { routes } from '../config/routes';
 
 export function MathPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [isGenerating, setIsGenerating] = useState(false);
   const [problems, setProblems] = useState<MathProblem[]>([]);
   const [options, setOptions] = useState<MathGeneratorOptions>({
@@ -27,15 +29,14 @@ export function MathPage() {
     setIsGenerating(true);
 
     try {
-      // 模拟一点延迟，让用户感知到生成过程
       await new Promise(resolve => setTimeout(resolve, 500));
 
       const newProblems = generateMathProblems(options);
       setProblems(newProblems);
-      toast.success('练习题生成成功！');
+      toast.success(t('math.generateSuccess'));
     } catch (error) {
       console.error(error);
-      toast.error('生成失败，请重试');
+      toast.error(t('math.generateFailed'));
     } finally {
       setIsGenerating(false);
     }
@@ -43,7 +44,7 @@ export function MathPage() {
 
   const handlePrint = () => {
     if (problems.length === 0) {
-      toast.error('请先生成练习题');
+      toast.error(t('math.generateFirst'));
       return;
     }
     printPDF({
@@ -53,7 +54,7 @@ export function MathPage() {
 
   const handleDownload = () => {
     if (problems.length === 0) {
-      toast.error('请先生成练习题');
+      toast.error(t('math.generateFirst'));
       return;
     }
     downloadPDF({
@@ -73,9 +74,9 @@ export function MathPage() {
             onClick={() => navigate(routes.home)}
             icon={<ChevronLeft className="w-4 h-4" />}
           >
-            返回
+            {t('common.back')}
           </Button>
-          <h1 className="text-2xl font-bold text-gray-800">数学练习生成器</h1>
+          <h1 className="text-2xl font-bold text-gray-800">{t('math.title')}</h1>
         </div>
 
         <div className="flex gap-2">
@@ -85,7 +86,7 @@ export function MathPage() {
             onClick={handlePrint}
             disabled={problems.length === 0}
           >
-            打印
+            {t('common.print')}
           </Button>
           <Button
             variant="outline"
@@ -93,7 +94,7 @@ export function MathPage() {
             onClick={handleDownload}
             disabled={problems.length === 0}
           >
-            下载
+            {t('common.download')}
           </Button>
         </div>
       </div>
@@ -110,13 +111,12 @@ export function MathPage() {
 
           <div className="bg-blue-50 p-4 rounded-2xl text-sm text-blue-700">
             <h3 className="font-bold mb-2 flex items-center gap-2">
-              💡 使用贴士
+              💡 {t('common.tips')}
             </h3>
             <ul className="list-disc list-inside space-y-1 opacity-80">
-              <li>建议先从简单难度开始，建立孩子信心</li>
-              <li>混合运算可以全面考察计算能力</li>
-              <li>打印时会自动优化排版，节省墨水</li>
-              <li>勾选"包含答案页"方便批改作业</li>
+              {(t('math.tips', { returnObjects: true }) as string[]).map((tip, index) => (
+                <li key={index}>{tip}</li>
+              ))}
             </ul>
           </div>
         </div>

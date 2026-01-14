@@ -1,4 +1,5 @@
 import { type WritingGeneratorOptions } from '../../../types/generator';
+import { useTranslation } from 'react-i18next';
 import { clsx } from 'clsx';
 import { pinyin } from 'pinyin-pro';
 
@@ -119,6 +120,7 @@ function SiXianSanGeRow({
 }
 
 export function WritingWorksheet({ options, content }: WritingWorksheetProps) {
+  const { t } = useTranslation();
   const isTianZiGe = options.gridType === 'tian-zi-ge';
 
   // 响应式：手机8个格子，平板/桌面/打印14个格子
@@ -167,15 +169,15 @@ export function WritingWorksheet({ options, content }: WritingWorksheetProps) {
         {/* 头部 */}
         <div className="mb-3 border-b-2 border-gray-800 pb-2">
           <h1 className="text-lg font-bold text-center mb-3 font-comic text-gray-800">
-            {isTianZiGe ? '汉字书写练习' : 'Writing Practice'}
+            {isTianZiGe ? t('worksheet.chinesePractice') : t('worksheet.englishPractice')}
           </h1>
           <div className="flex justify-between text-sm">
             <div className="flex gap-1">
-              <span className="font-bold">{isTianZiGe ? '姓名:' : 'Name:'}</span>
+              <span className="font-bold">{t('worksheet.name')}:</span>
               <div className="w-20 border-b-2 border-gray-400"></div>
             </div>
             <div className="flex gap-1">
-              <span className="font-bold">{isTianZiGe ? '日期:' : 'Date:'}</span>
+              <span className="font-bold">{t('worksheet.date')}:</span>
               <div className="w-20 border-b-2 border-gray-400"></div>
             </div>
           </div>
@@ -206,7 +208,7 @@ export function WritingWorksheet({ options, content }: WritingWorksheetProps) {
         </div>
 
         <div className="mt-4 text-center text-xs text-gray-400">
-          Kids Learning Cards
+          {t('worksheet.taglineShort')}
         </div>
       </div>
 
@@ -215,15 +217,15 @@ export function WritingWorksheet({ options, content }: WritingWorksheetProps) {
         {/* 头部 */}
         <div className="mb-4 border-b-2 border-gray-800 pb-3 print:mb-3">
           <h1 className="text-2xl font-bold text-center mb-4 font-comic text-gray-800">
-            {isTianZiGe ? '汉字书写练习' : 'Writing Practice'}
+            {isTianZiGe ? t('worksheet.chinesePractice') : t('worksheet.englishPractice')}
           </h1>
           <div className="flex justify-between text-base">
             <div className="flex gap-2">
-              <span className="font-bold">{isTianZiGe ? '姓名:' : 'Name:'}</span>
+              <span className="font-bold">{t('worksheet.name')}:</span>
               <div className="w-32 border-b-2 border-gray-400"></div>
             </div>
             <div className="flex gap-2">
-              <span className="font-bold">{isTianZiGe ? '日期:' : 'Date:'}</span>
+              <span className="font-bold">{t('worksheet.date')}:</span>
               <div className="w-32 border-b-2 border-gray-400"></div>
             </div>
           </div>
@@ -254,7 +256,7 @@ export function WritingWorksheet({ options, content }: WritingWorksheetProps) {
         </div>
 
         <div className="mt-6 text-center text-sm text-gray-400 print:absolute print:bottom-4 print:left-0 print:w-full">
-          Kids Learning Cards - AI 驱动的儿童教育资源生成器
+          {t('worksheet.tagline')}
         </div>
       </div>
     </>

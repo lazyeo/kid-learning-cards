@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { routes } from '../../config/routes';
+import { LanguageSwitcher } from '../../i18n/LanguageSwitcher';
 
 export function Header() {
   return (
@@ -15,7 +16,7 @@ export function Header() {
         </Link>
 
         <div className="flex gap-4">
-          {/* 这里将来可以放用户头像或设置按钮 */}
+          <LanguageSwitcher />
         </div>
       </div>
     </header>
