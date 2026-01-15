@@ -76,6 +76,11 @@ function TianZiGeRow({
 }
 
 // 四线三格行组件 - 固定高度，适合打印
+// 四线三格：4条横线分隔出3个区域
+// Line 1 (top): 顶线 - ascender line
+// Line 2: 中线 (虚线) - x-height line
+// Line 3: 基线 - baseline
+// Line 4 (bottom): 底线 - descender line
 function SiXianSanGeRow({
   text,
   showTracing
@@ -83,40 +88,38 @@ function SiXianSanGeRow({
   text?: string;
   showTracing?: boolean;
 }) {
-  return (
-    <div className="relative w-full h-[72px]">
-      {/* 四线三格背景 - 四条横线，比例为 1:1:1:0.5（上中下+descender） */}
-      <div className="absolute inset-0 flex flex-col w-full h-full pointer-events-none">
-        {/* Ascender zone (顶部区域) - 20px */}
-        <div className="w-full border-b border-red-400 print:border-red-500 opacity-70 box-border" style={{ height: '20px' }}></div>
-        {/* Mid zone (中间区域 - 虚线) - 20px */}
-        <div className="w-full border-b border-red-300 border-dashed print:border-red-400 opacity-60 box-border" style={{ height: '20px' }}></div>
-        {/* Base zone (基线区域) - 20px */}
-        <div className="w-full border-b border-red-400 print:border-red-500 opacity-80 box-border" style={{ height: '20px' }}></div>
-        {/* Descender zone (下行区域) - 12px */}
-        <div className="w-full border-b border-red-300 print:border-red-400 opacity-50 box-border" style={{ height: '12px' }}></div>
-      </div>
+  // 三格高度配置：ascender(24) + x-height(24) + descender(16) = 64px
+  const ascenderHeight = 16;  // 大写字母和 b,d,f,h,k,l 顶部
+  const xHeightPos = 16;      // 中线位置（虚线）
+  const baselinePos = 32;     // 基线位置
+  const totalHeight = 48;     // 总高度
 
-      {/* 文本内容 - 基线对齐到第三条线 */}
+  return (
+    <div className="relative w-full" style={{ height: `${totalHeight}px` }}>
+      {/* 四条横线 */}
+      {/* Line 1: 顶线 */}
+      <div className="absolute left-0 right-0 top-0 border-t border-red-400 print:border-red-500" />
+      {/* Line 2: 中线(虚线) */}
+      <div className="absolute left-0 right-0 border-t border-red-300 border-dashed print:border-red-400" style={{ top: `${xHeightPos}px` }} />
+      {/* Line 3: 基线 */}
+      <div className="absolute left-0 right-0 border-t border-red-400 print:border-red-500" style={{ top: `${baselinePos}px` }} />
+      {/* Line 4: 底线 */}
+      <div className="absolute left-0 right-0 border-t border-red-300 print:border-red-400" style={{ top: `${totalHeight}px` }} />
+
+      {/* 文本内容 */}
       {text && (
-        <div
-          className="absolute left-0 right-0 px-2 z-10"
-          style={{
-            top: '0px',
-            height: '60px', // 上三区的高度
-            display: 'flex',
-            alignItems: 'flex-end' // 让文字底部对齐基线
-          }}
-        >
+        <div className="absolute left-0 right-0 px-2" style={{ top: '1px' }}>
           <div
             className={clsx(
-              "text-[36px] tracking-wide whitespace-nowrap overflow-visible",
+              "tracking-wide whitespace-nowrap",
               showTracing ? "text-gray-300 print:text-gray-200" : "text-black"
             )}
             style={{
               fontFamily: '"Comic Sans MS", "Arial Rounded MT Bold", cursive',
+              // 字体大小：让大写字母填满 ascender + x-height 区域 (48px)
+              // 考虑到字体的 line-height，使用约 42px
+              fontSize: '36px',
               lineHeight: 1,
-              paddingBottom: '2px', // 微调让基线对齐
             }}
           >
             {text}
@@ -186,7 +189,7 @@ export function WritingWorksheet({ options, content }: WritingWorksheetProps) {
       {/* 练习区域 */}
       <div className={clsx(
         "flex flex-col w-full",
-        isTianZiGe ? "gap-1" : "gap-2"
+        isTianZiGe ? "gap-1" : "gap-4"  // 四线格增加行间距
       )}>
         {contentRows.map((row, index) => (
           isTianZiGe ? (
