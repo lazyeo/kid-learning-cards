@@ -101,29 +101,31 @@ describe('mathGenerator', () => {
   });
 
   it('should NOT include 1 in medium/hard multiplication problems', () => {
-    // Medium multiplication: 2-9 × 2-9
+    // Medium multiplication: 2-12 × 2-12
     const mediumProblems = generateMathProblems({
       type: 'multiplication',
       difficulty: 'medium',
-      count: 50
+      count: 50,
+      format: 'horizontal'
     });
     mediumProblems.forEach(p => {
       expect(p.operand1).toBeGreaterThanOrEqual(2);
       expect(p.operand2).toBeGreaterThanOrEqual(2);
-      expect(p.operand1).toBeLessThanOrEqual(9);
-      expect(p.operand2).toBeLessThanOrEqual(9);
+      expect(p.operand1).toBeLessThanOrEqual(12);
+      expect(p.operand2).toBeLessThanOrEqual(12);
     });
 
-    // Hard multiplication: 2-12 × 2-12
+    // Hard multiplication: 2-20 × 2-12 (challenge mode)
     const hardProblems = generateMathProblems({
       type: 'multiplication',
       difficulty: 'hard',
-      count: 50
+      count: 50,
+      format: 'horizontal'
     });
     hardProblems.forEach(p => {
       expect(p.operand1).toBeGreaterThanOrEqual(2);
       expect(p.operand2).toBeGreaterThanOrEqual(2);
-      expect(p.operand1).toBeLessThanOrEqual(12);
+      expect(p.operand1).toBeLessThanOrEqual(20);
       expect(p.operand2).toBeLessThanOrEqual(12);
     });
   });
@@ -161,13 +163,71 @@ describe('mathGenerator', () => {
     const easyProblems = generateMathProblems({
       type: 'multiplication',
       difficulty: 'easy',
-      count: 100
+      count: 100,
+      format: 'horizontal'
     });
     easyProblems.forEach(p => {
       expect(p.operand1).toBeGreaterThanOrEqual(1);
       expect(p.operand1).toBeLessThanOrEqual(5);
       expect(p.operand2).toBeGreaterThanOrEqual(1);
       expect(p.operand2).toBeLessThanOrEqual(5);
+    });
+  });
+
+  it('should generate division problems with remainder when allowRemainder is true', () => {
+    const problems = generateMathProblems({
+      type: 'division',
+      difficulty: 'medium',
+      count: 50,
+      format: 'horizontal',
+      allowRemainder: true
+    });
+
+    problems.forEach(p => {
+      expect(p.operator).toBe('÷');
+      expect(p.remainder).toBeDefined();
+      expect(p.remainder).toBeGreaterThan(0); // 余数应大于 0
+      expect(p.remainder).toBeLessThan(p.operand2); // 余数应小于除数
+      // 验证计算正确：被除数 = 商 × 除数 + 余数
+      expect(p.operand1).toBe(p.answer * p.operand2 + p.remainder!);
+    });
+  });
+
+  it('should NOT have remainder when allowRemainder is false', () => {
+    const problems = generateMathProblems({
+      type: 'division',
+      difficulty: 'medium',
+      count: 50,
+      format: 'horizontal',
+      allowRemainder: false
+    });
+
+    problems.forEach(p => {
+      expect(p.operator).toBe('÷');
+      expect(p.remainder).toBeUndefined();
+      // 验证整除
+      expect(p.operand1 % p.operand2).toBe(0);
+    });
+  });
+
+  it('should only apply remainder to division in mixed mode', () => {
+    const problems = generateMathProblems({
+      type: 'mixed',
+      difficulty: 'medium',
+      count: 100,
+      format: 'horizontal',
+      allowRemainder: true
+    });
+
+    problems.forEach(p => {
+      if (p.operator === '÷') {
+        // 除法题应该有余数
+        expect(p.remainder).toBeDefined();
+        expect(p.remainder).toBeGreaterThan(0);
+      } else {
+        // 非除法题不应有余数
+        expect(p.remainder).toBeUndefined();
+      }
     });
   });
 });

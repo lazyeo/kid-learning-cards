@@ -136,15 +136,31 @@ export function MathOptions({ options, onChange, onGenerate, isGenerating }: Mat
         </div>
 
         {/* 其他选项 */}
-        <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            id="includeAnswers"
-            checked={options.includeAnswers || false}
-            onChange={(e) => handleChange('includeAnswers', e.target.checked)}
-            className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-          />
-          <label htmlFor="includeAnswers" className="text-sm text-gray-700">{t('math.options.includeAnswers')}</label>
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="includeAnswers"
+              checked={options.includeAnswers || false}
+              onChange={(e) => handleChange('includeAnswers', e.target.checked)}
+              className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+            />
+            <label htmlFor="includeAnswers" className="text-sm text-gray-700">{t('math.options.includeAnswers')}</label>
+          </div>
+
+          {/* 余数选项：仅在除法或混合模式显示 */}
+          {(options.type === 'division' || options.type === 'mixed') && (
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="allowRemainder"
+                checked={options.allowRemainder || false}
+                onChange={(e) => handleChange('allowRemainder', e.target.checked)}
+                className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+              />
+              <label htmlFor="allowRemainder" className="text-sm text-gray-700">{t('math.options.allowRemainder')}</label>
+            </div>
+          )}
         </div>
 
         <Button

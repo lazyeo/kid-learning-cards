@@ -16,6 +16,7 @@ export interface MathProblem {
   operand2: number;
   operator: MathOperator;
   answer: number;
+  remainder?: number; // 除法余数（仅当 allowRemainder 启用时）
 }
 
 export interface MathGeneratorOptions {
@@ -24,6 +25,7 @@ export interface MathGeneratorOptions {
   count: number;
   format: 'horizontal' | 'vertical'; // 新增：题目格式
   includeAnswers?: boolean;
+  allowRemainder?: boolean; // 除法是否允许余数
 }
 
 // 书写练习类型

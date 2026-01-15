@@ -77,6 +77,7 @@
       "count": "Problem Count",
       "countSuffix": " problems",
       "includeAnswers": "Include Answer Key",
+      "allowRemainder": "Allow Remainder (Division)",
       "generate": "Generate"
     },
     "tips": [

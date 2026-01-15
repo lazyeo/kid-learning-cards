@@ -32,10 +32,10 @@ const getOperationConfig = (
     multiplication: {
       // 简单：入门级乘法，可包含 1
       easy: { min1: 1, max1: 5, min2: 1, max2: 5 },
-      // 中等：标准九九乘法表，不包含 1
-      medium: { min1: 2, max1: 9, min2: 2, max2: 9 },
-      // 困难：扩展乘法表 2-12，不包含 1
-      hard: { min1: 2, max1: 12, min2: 2, max2: 12 }
+      // 中等：标准乘法表 2-12，不包含 1
+      medium: { min1: 2, max1: 12, min2: 2, max2: 12 },
+      // 困难：挑战模式 2-20 × 2-12，不包含 1
+      hard: { min1: 2, max1: 20, min2: 2, max2: 12 }
     },
     division: {
       // 简单：除数 2-5，商 1-5
@@ -53,12 +53,14 @@ const getOperationConfig = (
 // 生成单个数学题
 const generateSingleProblem = (
   type: 'addition' | 'subtraction' | 'multiplication' | 'division',
-  difficulty: 'easy' | 'medium' | 'hard'
+  difficulty: 'easy' | 'medium' | 'hard',
+  allowRemainder: boolean = false
 ): MathProblem => {
   let operand1: number;
   let operand2: number;
   let operator: MathOperator;
   let answer: number;
+  let remainder: number | undefined;
 
   const config = getOperationConfig(type, difficulty);
 
@@ -96,12 +98,31 @@ const generateSingleProblem = (
     case 'division': {
       operator = '÷';
       const cfg = config as { divisorMin: number; divisorMax: number; quotientMin: number; quotientMax: number };
-      // 确保整除：先生成商和除数，反推被除数
-      const divisor = randomInt(cfg.divisorMin, cfg.divisorMax);
-      const quotient = randomInt(cfg.quotientMin, cfg.quotientMax);
-      operand1 = divisor * quotient;
-      operand2 = divisor;
-      answer = quotient;
+
+      if (allowRemainder) {
+        // 带余数除法：直接生成被除数和除数，计算商和余数
+        const divisor = randomInt(cfg.divisorMin, cfg.divisorMax);
+        // 被除数范围：确保商在合理范围内，同时有余数
+        const minDividend = divisor * cfg.quotientMin + 1; // +1 确保有余数
+        const maxDividend = divisor * (cfg.quotientMax + 1) - 1; // 最大不超过下一个整除点
+        operand1 = randomInt(minDividend, maxDividend);
+        operand2 = divisor;
+        answer = Math.floor(operand1 / operand2);
+        remainder = operand1 % operand2;
+        // 如果碰巧整除，重新调整被除数使其有余数
+        if (remainder === 0) {
+          operand1 += randomInt(1, operand2 - 1);
+          answer = Math.floor(operand1 / operand2);
+          remainder = operand1 % operand2;
+        }
+      } else {
+        // 整除模式：先生成商和除数，反推被除数
+        const divisor = randomInt(cfg.divisorMin, cfg.divisorMax);
+        const quotient = randomInt(cfg.quotientMin, cfg.quotientMax);
+        operand1 = divisor * quotient;
+        operand2 = divisor;
+        answer = quotient;
+      }
       break;
     }
 
@@ -113,17 +134,23 @@ const generateSingleProblem = (
       answer = 2;
   }
 
-  return {
+  const problem: MathProblem = {
     id: generateId(),
     operand1,
     operand2,
     operator,
     answer
   };
+
+  if (remainder !== undefined) {
+    problem.remainder = remainder;
+  }
+
+  return problem;
 };
 
 export function generateMathProblems(options: MathGeneratorOptions): MathProblem[] {
-  const { type, difficulty, count } = options;
+  const { type, difficulty, count, allowRemainder = false } = options;
   const problems: MathProblem[] = [];
 
   for (let i = 0; i < count; i++) {
@@ -135,7 +162,9 @@ export function generateMathProblems(options: MathGeneratorOptions): MathProblem
       problemType = types[Math.floor(Math.random() * types.length)];
     }
 
-    problems.push(generateSingleProblem(problemType, difficulty));
+    // 余数选项仅对除法生效
+    const useRemainder = allowRemainder && problemType === 'division';
+    problems.push(generateSingleProblem(problemType, difficulty, useRemainder));
   }
 
   return problems;

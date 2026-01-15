@@ -58,6 +58,13 @@ export function MathWorksheet({ problems, format = 'horizontal', includeAnswers 
                 <span>{problem.operand2}</span>
                 <span>=</span>
                 <span className="flex-1 max-w-14 h-10 border-b-2 border-gray-300"></span>
+                {/* 带余数的除法显示余数填写位置 */}
+                {problem.remainder !== undefined && (
+                  <>
+                    <span className="text-gray-500 text-lg">···</span>
+                    <span className="w-8 h-10 border-b-2 border-gray-300"></span>
+                  </>
+                )}
               </div>
             ) : (() => {
               // 除法使用特殊的长除式格式
@@ -176,7 +183,12 @@ export function MathWorksheet({ problems, format = 'horizontal', includeAnswers 
             {problems.map((problem, index) => (
               <div key={problem.id} className="flex gap-2">
                 <span className="font-bold text-gray-500">{index + 1}.</span>
-                <span className="text-blue-600 font-medium">{problem.answer}</span>
+                <span className="text-blue-600 font-medium">
+                  {problem.answer}
+                  {problem.remainder !== undefined && (
+                    <span className="text-orange-500">···{problem.remainder}</span>
+                  )}
+                </span>
               </div>
             ))}
           </div>
