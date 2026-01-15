@@ -28,15 +28,23 @@
     padding: 0 !important;
   }
 
-  /* 针对各页面的布局调整 */
-  .grid, .flex {
-    display: block !important; /* 默认重置 grid/flex 为 block，避免布局错乱 */
+  /* 针对各页面的布局调整 - 只重置页面级的 grid/flex */
+  main > .grid,
+  main > .flex,
+  .page-container > .grid {
+    display: block !important;
   }
 
-  /* 但我们需要保留生成器内部的网格布局 */
+  /* 保留生成器内部的网格布局 */
   .print\:grid-cols-3 {
     display: grid !important;
     grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  .print\:grid-cols-5,
+  .print\:grid.print\:grid-cols-5 {
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr) !important;
   }
 
   .print\:grid-cols-9 {
@@ -49,10 +57,31 @@
     grid-template-columns: repeat(8, 1fr) !important;
   }
 
-  /* 恢复 flex 布局的特定元素，但在打印时必须排除被标记为 no-print 的元素 */
+  /* 数学题目行 - 必须保留 grid 布局 */
+  .problem-row {
+    display: grid !important;
+  }
+
+  .problem-row.grid-cols-3 {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  .problem-row.grid-cols-5 {
+    grid-template-columns: repeat(5, 1fr) !important;
+  }
+
+  /* 答案页的网格 */
+  .grid.grid-cols-5 {
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr) !important;
+  }
+
+  /* 恢复 flex 布局的特定元素 */
   .flex.items-center:not(.no-print),
+  .flex.items-end:not(.no-print),
   .flex.justify-between:not(.no-print),
-  .flex.gap-2:not(.no-print) {
+  .flex.gap-2:not(.no-print),
+  .problem-item {
     display: flex !important;
   }
 
@@ -69,27 +98,29 @@
 
   /* 避免分页断开 - 单个题目 */
   .problem-item, .grid-cell, .card-container {
-    page-break-inside: avoid;
-    break-inside: avoid;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 
-  /* 避免分页断开 - 题目行 */
+  /* 避免分页断开 - 题目行（最重要） */
   .problem-row {
-    page-break-inside: avoid;
-    break-inside: avoid;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    -webkit-column-break-inside: avoid !important;
   }
 
   /* 固定页脚：打印时每页底部显示 */
   .print-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    text-align: center;
-    font-size: 10pt;
-    color: #9ca3af;
-    padding: 8px 0;
-    background: white;
+    display: block !important;
+    position: fixed !important;
+    bottom: 0.5cm !important;
+    left: 0 !important;
+    right: 0 !important;
+    text-align: center !important;
+    font-size: 9pt !important;
+    color: #9ca3af !important;
+    background: white !important;
+    z-index: 9999 !important;
   }
 
   /* 强制分页 */

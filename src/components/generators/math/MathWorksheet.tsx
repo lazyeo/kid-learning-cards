@@ -55,6 +55,7 @@ export function MathWorksheet({ problems, format = 'horizontal', includeAnswers 
                 className={`problem-row grid gap-x-6 gap-y-4 ${
                   format === 'vertical' ? 'grid-cols-5' : 'grid-cols-3'
                 }`}
+                style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }}
               >
                 {rowProblems.map((problem, colIndex) => {
                   const index = rowIndex * cols + colIndex;
@@ -89,10 +90,10 @@ export function MathWorksheet({ problems, format = 'horizontal', includeAnswers 
                           return (
                             <div className="flex-1 font-mono text-xl">
                               <div className="inline-flex items-end">
-                                {/* 除数 */}
-                                <div className="flex items-center h-8">
+                                {/* 除数 - 使用更紧凑的字间距 */}
+                                <div className="flex items-center h-8 tracking-tight">
                                   {divisorStr.split('').map((digit, i) => (
-                                    <span key={i} className="inline-block w-5 text-center">{digit}</span>
+                                    <span key={i} className="inline-block w-3.5 text-center">{digit}</span>
                                   ))}
                                 </div>
                                 {/* 长除式符号：SVG 一体化绘制 */}
@@ -189,10 +190,7 @@ export function MathWorksheet({ problems, format = 'horizontal', includeAnswers 
         );
       })()}
 
-      {/* 页脚：屏幕显示时正常位置，打印时固定在页面底部 */}
-      <div className="mt-12 text-center text-sm text-gray-400 hidden print:block print-footer">
-        {t('worksheet.tagline')}
-      </div>
+      {/* 屏幕显示的页脚 */}
       <div className="mt-12 text-center text-sm text-gray-400 print:hidden">
         {t('worksheet.tagline')}
       </div>
@@ -201,7 +199,7 @@ export function MathWorksheet({ problems, format = 'horizontal', includeAnswers 
       {includeAnswers && (
         <div className="break-before-page pt-8">
           <h2 className="text-2xl font-bold text-center mb-8 border-b-2 border-gray-800 pb-4">{t('worksheet.answerKey')}</h2>
-          <div className="grid grid-cols-5 gap-x-4 gap-y-2 text-lg">
+          <div className="grid grid-cols-5 gap-x-4 gap-y-2 text-lg print:grid print:grid-cols-5">
             {problems.map((problem, index) => (
               <div key={problem.id} className="flex gap-2">
                 <span className="font-bold text-gray-500">{index + 1}.</span>
@@ -216,6 +214,11 @@ export function MathWorksheet({ problems, format = 'horizontal', includeAnswers 
           </div>
         </div>
       )}
+
+      {/* 打印时的固定页脚 - 必须在最外层才能正确 fixed 定位 */}
+      <div className="hidden print:block print-footer">
+        {t('worksheet.taglineShort')}
+      </div>
     </div>
   );
 }
