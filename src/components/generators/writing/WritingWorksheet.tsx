@@ -84,29 +84,39 @@ function SiXianSanGeRow({
   showTracing?: boolean;
 }) {
   return (
-    <div className="relative w-full h-[60px]">
-      {/* 四线三格背景 - 四条横线 */}
+    <div className="relative w-full h-[72px]">
+      {/* 四线三格背景 - 四条横线，比例为 1:1:1:0.5（上中下+descender） */}
       <div className="absolute inset-0 flex flex-col w-full h-full pointer-events-none">
-        {/* Ascender line (顶线) */}
-        <div className="flex-1 w-full border-b border-red-400 print:border-red-500 opacity-70 box-border"></div>
-        {/* Mid line (中线 - 虚线) */}
-        <div className="flex-1 w-full border-b border-red-300 border-dashed print:border-red-400 opacity-60 box-border"></div>
-        {/* Base line (基线) */}
-        <div className="flex-1 w-full border-b border-red-400 print:border-red-500 opacity-80 box-border"></div>
-        {/* Descender line (底线) */}
-        <div className="flex-1 w-full border-b border-red-300 print:border-red-400 opacity-50 box-border"></div>
+        {/* Ascender zone (顶部区域) - 20px */}
+        <div className="w-full border-b border-red-400 print:border-red-500 opacity-70 box-border" style={{ height: '20px' }}></div>
+        {/* Mid zone (中间区域 - 虚线) - 20px */}
+        <div className="w-full border-b border-red-300 border-dashed print:border-red-400 opacity-60 box-border" style={{ height: '20px' }}></div>
+        {/* Base zone (基线区域) - 20px */}
+        <div className="w-full border-b border-red-400 print:border-red-500 opacity-80 box-border" style={{ height: '20px' }}></div>
+        {/* Descender zone (下行区域) - 12px */}
+        <div className="w-full border-b border-red-300 print:border-red-400 opacity-50 box-border" style={{ height: '12px' }}></div>
       </div>
 
-      {/* 文本内容 */}
+      {/* 文本内容 - 基线对齐到第三条线 */}
       {text && (
-        <div className="absolute inset-0 flex items-center px-2 z-10">
+        <div
+          className="absolute left-0 right-0 px-2 z-10"
+          style={{
+            top: '0px',
+            height: '60px', // 上三区的高度
+            display: 'flex',
+            alignItems: 'flex-end' // 让文字底部对齐基线
+          }}
+        >
           <div
             className={clsx(
-              "text-[32px] leading-none tracking-wide whitespace-nowrap overflow-hidden",
+              "text-[36px] tracking-wide whitespace-nowrap overflow-visible",
               showTracing ? "text-gray-300 print:text-gray-200" : "text-black"
             )}
             style={{
               fontFamily: '"Comic Sans MS", "Arial Rounded MT Bold", cursive',
+              lineHeight: 1,
+              paddingBottom: '2px', // 微调让基线对齐
             }}
           >
             {text}

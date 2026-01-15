@@ -1,8 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import { Palette, Calculator, PenTool, ArrowRight, Sparkles } from 'lucide-react';
+import { Palette, Calculator, PenTool, ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Card } from '../components/common/Card';
-import { Button } from '../components/common/Button';
 import { routes } from '../config/routes';
 
 interface FeatureCardProps {
@@ -96,18 +95,9 @@ export function HomePage() {
           </span>
         </h1>
 
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-10">
+        <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
           {t('home.subtitle')}
         </p>
-
-        <div className="flex justify-center gap-4">
-          <Button size="large" onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}>
-            {t('home.explore')}
-          </Button>
-          <Button variant="outline" size="large" icon={<Sparkles className="w-5 h-5" />}>
-            {t('home.learnMore')}
-          </Button>
-        </div>
       </section>
 
       {/* Features Grid */}

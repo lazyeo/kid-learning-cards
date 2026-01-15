@@ -23,8 +23,6 @@
     "title": "让学习变得",
     "titleHighlight": "更有趣",
     "subtitle": "Kids Learning Cards 是一个 AI 驱动的教育资源生成器。只需几秒钟，就能为您的孩子创建个性化的练习纸和涂色卡片。",
-    "explore": "开始探索",
-    "learnMore": "了解更多",
     "selectGenerator": "选择一个生成器",
     "moreFeatures": "更多功能开发中...",
     "startGenerate": "开始生成",
@@ -168,7 +166,7 @@
     "tips": [
       "尝试组合不同的主题和对象",
       "\"简单\"难度适合幼儿，线条更粗更少",
-      "如果您有 API Key，请在部署后配置环境变量",
+      "添加自定义描述可以获得更个性化的结果",
       "打印时建议使用 A4 纸张"
     ]
   },

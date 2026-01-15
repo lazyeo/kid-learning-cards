@@ -23,8 +23,6 @@
     "title": "Make Learning",
     "titleHighlight": "More Fun",
     "subtitle": "Kids Learning Cards is an AI-powered educational resource generator. Create personalized worksheets and coloring pages for your children in just seconds.",
-    "explore": "Start Exploring",
-    "learnMore": "Learn More",
     "selectGenerator": "Choose a Generator",
     "moreFeatures": "More features coming soon...",
     "startGenerate": "Start Generating",
@@ -168,7 +166,7 @@
     "tips": [
       "Try combining different themes and subjects",
       "\"Easy\" difficulty is great for toddlers with thicker, simpler lines",
-      "Configure your API key in environment variables after deployment",
+      "Add custom descriptions for more personalized results",
       "A4 paper is recommended for printing"
     ]
   },

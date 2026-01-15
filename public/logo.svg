@@ -1,0 +1,17 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Yellow Card (Left) -->
+  <g transform="rotate(-15 256 400)">
+    <rect x="106" y="100" width="300" height="380" rx="40" fill="#FFE66D" stroke="white" stroke-width="12"/>
+  </g>
+  
+  <!-- Teal Card (Middle) -->
+  <g transform="rotate(0 256 400)">
+    <rect x="106" y="80" width="300" height="380" rx="40" fill="#4ECDC4" stroke="white" stroke-width="12"/>
+  </g>
+
+  <!-- Red Card (Top/Right) with Star -->
+  <g transform="rotate(15 256 400)">
+    <rect x="106" y="60" width="300" height="380" rx="40" fill="#FF6B6B" stroke="white" stroke-width="12"/>
+    <path d="M256 160L282 230H355L296 275L318 345L256 300L194 345L216 275L157 230H230L256 160Z" fill="white" stroke="white" stroke-width="10" stroke-linejoin="round"/>
+  </g>
+</svg>
