@@ -15,7 +15,7 @@ export function MainLayout({ children }: MainLayoutProps) {
       <Header />
       <Navbar />
 
-      <main className="flex-1 w-full max-w-7xl mx-auto p-4 md:p-6 lg:p-8 animate-fade-in">
+      <main className="flex-1 w-full max-w-7xl mx-auto p-4 md:p-6 lg:p-8 pb-20 md:pb-0 animate-fade-in">
         {children || <Outlet />}
       </main>
 

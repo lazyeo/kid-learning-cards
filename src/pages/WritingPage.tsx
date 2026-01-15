@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { WritingOptions } from '../components/generators/writing/WritingOptions';
 import { WritingWorksheet } from '../components/generators/writing/WritingWorksheet';
 import { Button } from '../components/common/Button';
+import { ScaledPreview } from '../components/common/ScaledPreview';
 import { type WritingGeneratorOptions } from '../types/generator';
 import { downloadPDF, printPDF } from '../utils/pdfGenerator';
 import { routes } from '../config/routes';
@@ -156,6 +157,7 @@ export function WritingPage() {
 
       setContent(newContent);
       toast.success(t('writing.updateSuccess'));
+      setTimeout(scrollToPreview, 50);
     } catch (error) {
       console.error(error);
       toast.error(t('writing.generateFailed'));
@@ -187,10 +189,16 @@ export function WritingPage() {
 
   const isTianZiGe = options.gridType === 'tian-zi-ge';
 
+  const scrollToPreview = () => {
+    const el = document.getElementById('writing-worksheet-preview');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   return (
-    <div className="animate-fade-in">
+    <>
+    <div className="animate-fade-in max-w-full overflow-x-hidden pb-16 md:pb-0">
       {/* 顶部导航 */}
-      <div className="flex items-center justify-between mb-6 no-print">
+      <div className="flex items-center justify-between mb-4 no-print">
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"
@@ -200,10 +208,11 @@ export function WritingPage() {
           >
             {t('common.back')}
           </Button>
-          <h1 className="text-2xl font-bold text-gray-800">{t('writing.title')}</h1>
+          <h1 className="text-2xl font-bold text-gray-800 truncate">{t('writing.title')}</h1>
         </div>
 
-        <div className="flex gap-2">
+        {/* 桌面端显示的按钮 */}
+        <div className="hidden md:flex gap-2">
           <Button
             variant="outline"
             icon={<Printer className="w-4 h-4" />}
@@ -222,9 +231,9 @@ export function WritingPage() {
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-12 gap-8">
+      <div className="grid lg:grid-cols-12 gap-4 md:gap-8">
         {/* 左侧选项面板 - 打印时隐藏 */}
-        <div className="lg:col-span-4 no-print space-y-6">
+        <div className="lg:col-span-4 no-print space-y-4 md:space-y-6">
           <WritingOptions
             options={options}
             onChange={handleOptionsChange}
@@ -252,11 +261,33 @@ export function WritingPage() {
 
         {/* 右侧预览区域 */}
         <div className="lg:col-span-8">
-          <div className="print:w-full" id="writing-worksheet-preview">
+          <ScaledPreview id="writing-worksheet-preview" contentWidth={800} fit="width">
             <WritingWorksheet options={options} content={content} />
-          </div>
+          </ScaledPreview>
         </div>
       </div>
     </div>
+
+      {/* 移动端固定底部操作栏 - 在 tab 上方，必须在动画容器外 */}
+      <div className="fixed bottom-16 left-0 right-0 bg-white border-t border-gray-200 p-3 flex gap-2 z-40 md:hidden no-print shadow-lg">
+        <Button
+          variant="outline"
+          icon={<Printer className="w-4 h-4" />}
+          onClick={handlePrint}
+          className="flex-1"
+        >
+          {t('common.print')}
+        </Button>
+        <Button
+          variant="primary"
+          icon={<Download className="w-4 h-4" />}
+          onClick={handleDownload}
+          disabled={!content}
+          className="flex-1"
+        >
+          {t('common.download')}
+        </Button>
+      </div>
+    </>
   );
 }

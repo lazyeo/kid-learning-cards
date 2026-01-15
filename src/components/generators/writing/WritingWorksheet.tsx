@@ -29,9 +29,9 @@ function TianZiGeRow({
     grids.push(
       <div key={i} className="flex flex-col items-center" style={{ width: `${100 / gridCount}%` }}>
         {/* 拼音区域 - 固定高度 */}
-        <div className="h-4 w-full flex items-end justify-center print:h-5">
+        <div className="h-5 w-full flex items-end justify-center">
           {py && (
-            <span className="text-[10px] print:text-xs font-sans text-gray-500 tracking-wide leading-none">
+            <span className="text-xs font-sans text-gray-500 tracking-wide leading-none">
               {py}
             </span>
           )}
@@ -52,16 +52,14 @@ function TianZiGeRow({
             <div className="absolute inset-0 flex items-center justify-center z-10">
               <span
                 className={clsx(
-                  "leading-none",
+                  "leading-none text-[1.6rem]",
                   showTracing ? "text-gray-300 print:text-gray-200" : "text-black"
                 )}
                 style={{
                   fontFamily: '"KaiTi", "STKaiti", "SimKai", serif',
-                  fontSize: `calc(100% * 0.7)`,
-                  // 使用容器查询或固定大小
                 }}
               >
-                <span className="text-[min(5vw,1.5rem)] print:text-[1.6rem]">{char}</span>
+                {char}
               </span>
             </div>
           )}
@@ -86,7 +84,7 @@ function SiXianSanGeRow({
   showTracing?: boolean;
 }) {
   return (
-    <div className="relative w-full h-14 print:h-[60px]">
+    <div className="relative w-full h-[60px]">
       {/* 四线三格背景 - 四条横线 */}
       <div className="absolute inset-0 flex flex-col w-full h-full pointer-events-none">
         {/* Ascender line (顶线) */}
@@ -104,7 +102,7 @@ function SiXianSanGeRow({
         <div className="absolute inset-0 flex items-center px-2 z-10">
           <div
             className={clsx(
-              "text-2xl print:text-[32px] leading-none tracking-wide whitespace-nowrap overflow-hidden",
+              "text-[32px] leading-none tracking-wide whitespace-nowrap overflow-hidden",
               showTracing ? "text-gray-300 print:text-gray-200" : "text-black"
             )}
             style={{
@@ -123,15 +121,12 @@ export function WritingWorksheet({ options, content }: WritingWorksheetProps) {
   const { t } = useTranslation();
   const isTianZiGe = options.gridType === 'tian-zi-ge';
 
-  // 响应式：手机8个格子，平板/桌面/打印14个格子
-  // 使用 CSS 媒体查询在打印时强制使用14列
-  const mobileGridPerRow = 8;
-  const desktopGridPerRow = 14;
+  // 固定使用桌面端/打印的布局参数
+  const gridPerRow = 14;
+  const rowCount = 10;
 
-  const rowCount = isTianZiGe ? 10 : 10;
-
-  // 将内容分成行 - 使用较小的每行格子数来确保内容完整显示
-  const getContentRows = (gridPerRow: number) => {
+  // 将内容分成行
+  const getContentRows = () => {
     if (!content || content.trim() === '') {
       return Array(rowCount).fill(null);
     }
@@ -157,108 +152,54 @@ export function WritingWorksheet({ options, content }: WritingWorksheetProps) {
     return rows;
   };
 
-  // 手机视图的内容行
-  const mobileContentRows = getContentRows(mobileGridPerRow);
-  // 桌面/打印视图的内容行
-  const desktopContentRows = getContentRows(desktopGridPerRow);
+  const contentRows = getContentRows();
 
   return (
-    <>
-      {/* 手机视图 - 仅在屏幕显示，打印时隐藏 */}
-      <div className="block md:hidden print:hidden bg-white p-4 shadow-sm border border-gray-200">
-        {/* 头部 */}
-        <div className="mb-3 border-b-2 border-gray-800 pb-2">
-          <h1 className="text-lg font-bold text-center mb-3 font-comic text-gray-800">
-            {isTianZiGe ? t('worksheet.chinesePractice') : t('worksheet.englishPractice')}
-          </h1>
-          <div className="flex justify-between text-sm">
-            <div className="flex gap-1">
-              <span className="font-bold">{t('worksheet.name')}:</span>
-              <div className="w-20 border-b-2 border-gray-400"></div>
-            </div>
-            <div className="flex gap-1">
-              <span className="font-bold">{t('worksheet.date')}:</span>
-              <div className="w-20 border-b-2 border-gray-400"></div>
-            </div>
+    <div className="bg-white p-6 shadow-sm border border-gray-200 print:shadow-none print:border-none print:p-4">
+      {/* 头部 */}
+      <div className="mb-4 border-b-2 border-gray-800 pb-3 print:mb-3">
+        <h1 className="text-2xl font-bold text-center mb-4 font-comic text-gray-800">
+          {isTianZiGe ? t('worksheet.chinesePractice') : t('worksheet.englishPractice')}
+        </h1>
+        <div className="flex justify-between text-base">
+          <div className="flex gap-2 items-center">
+            <span className="font-bold whitespace-nowrap">{t('worksheet.name')}:</span>
+            <div className="w-32 border-b-2 border-gray-400"></div>
           </div>
-        </div>
-
-        {/* 练习区域 - 手机版 */}
-        <div className={clsx(
-          "flex flex-col w-full",
-          isTianZiGe ? "gap-0.5" : "gap-1"
-        )}>
-          {mobileContentRows.map((row, index) => (
-            isTianZiGe ? (
-              <TianZiGeRow
-                key={index}
-                chars={row as string[] | undefined}
-                showPinyin={options.showPinyin}
-                showTracing={options.showTracing}
-                gridCount={mobileGridPerRow}
-              />
-            ) : (
-              <SiXianSanGeRow
-                key={index}
-                text={row ? (row as string[])[0] : undefined}
-                showTracing={options.showTracing}
-              />
-            )
-          ))}
-        </div>
-
-        <div className="mt-4 text-center text-xs text-gray-400">
-          {t('worksheet.taglineShort')}
+          <div className="flex gap-2 items-center">
+            <span className="font-bold whitespace-nowrap">{t('worksheet.date')}:</span>
+            <div className="w-32 border-b-2 border-gray-400"></div>
+          </div>
         </div>
       </div>
 
-      {/* 桌面/打印视图 */}
-      <div className="hidden md:block print:block bg-white p-6 shadow-sm border border-gray-200 print:shadow-none print:border-none print:p-4">
-        {/* 头部 */}
-        <div className="mb-4 border-b-2 border-gray-800 pb-3 print:mb-3">
-          <h1 className="text-2xl font-bold text-center mb-4 font-comic text-gray-800">
-            {isTianZiGe ? t('worksheet.chinesePractice') : t('worksheet.englishPractice')}
-          </h1>
-          <div className="flex justify-between text-base">
-            <div className="flex gap-2">
-              <span className="font-bold">{t('worksheet.name')}:</span>
-              <div className="w-32 border-b-2 border-gray-400"></div>
-            </div>
-            <div className="flex gap-2">
-              <span className="font-bold">{t('worksheet.date')}:</span>
-              <div className="w-32 border-b-2 border-gray-400"></div>
-            </div>
-          </div>
-        </div>
-
-        {/* 练习区域 - 桌面/打印版 */}
-        <div className={clsx(
-          "flex flex-col w-full",
-          isTianZiGe ? "gap-1" : "gap-2"
-        )}>
-          {desktopContentRows.map((row, index) => (
-            isTianZiGe ? (
-              <TianZiGeRow
-                key={index}
-                chars={row as string[] | undefined}
-                showPinyin={options.showPinyin}
-                showTracing={options.showTracing}
-                gridCount={desktopGridPerRow}
-              />
-            ) : (
-              <SiXianSanGeRow
-                key={index}
-                text={row ? (row as string[])[0] : undefined}
-                showTracing={options.showTracing}
-              />
-            )
-          ))}
-        </div>
-
-        <div className="mt-6 text-center text-sm text-gray-400 print:absolute print:bottom-4 print:left-0 print:w-full">
-          {t('worksheet.tagline')}
-        </div>
+      {/* 练习区域 */}
+      <div className={clsx(
+        "flex flex-col w-full",
+        isTianZiGe ? "gap-1" : "gap-2"
+      )}>
+        {contentRows.map((row, index) => (
+          isTianZiGe ? (
+            <TianZiGeRow
+              key={index}
+              chars={row as string[] | undefined}
+              showPinyin={options.showPinyin}
+              showTracing={options.showTracing}
+              gridCount={gridPerRow}
+            />
+          ) : (
+            <SiXianSanGeRow
+              key={index}
+              text={row ? (row as string[])[0] : undefined}
+              showTracing={options.showTracing}
+            />
+          )
+        ))}
       </div>
-    </>
+
+      <div className="mt-6 text-center text-sm text-gray-400 print:absolute print:bottom-4 print:left-0 print:w-full">
+        {t('worksheet.tagline')}
+      </div>
+    </div>
   );
 }

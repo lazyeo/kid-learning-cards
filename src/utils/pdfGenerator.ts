@@ -20,31 +20,54 @@ const createPDF = async ({ elementId, element }: PDFOptions): Promise<jsPDF | nu
   }
 
   try {
-    // 1. Capture the element as an image using html-to-image
+    // 获取内容的原始尺寸（未缩放）
+    // ScaledPreview 组件内部内容固定为 800px 宽度
+    const PRINT_WIDTH = 800;
+
+    // 临时移除 transform 以获取真实高度
+    const originalTransform = targetElement.style.transform;
+    const originalWidth = targetElement.style.width;
+    targetElement.style.transform = 'none';
+    targetElement.style.width = `${PRINT_WIDTH}px`;
+
+    // 强制重排以获取正确尺寸
+    const elementHeight = targetElement.scrollHeight;
+
+    // 恢复原始样式
+    targetElement.style.transform = originalTransform;
+    targetElement.style.width = originalWidth;
+
+    // 2. Capture the element as an image using html-to-image
+    // Force transform: none on cloned node to avoid capturing scaled preview
     const dataUrl = await toPng(targetElement, {
       pixelRatio: 2, // Higher resolution for print quality
       backgroundColor: '#ffffff',
+      width: PRINT_WIDTH,
+      height: elementHeight,
+      style: {
+        transform: 'none',
+        transformOrigin: 'top left',
+        width: `${PRINT_WIDTH}px`,
+      },
     });
 
-    // 2. Initialize PDF (A4 size)
-    const imgWidth = 210;
-    const pageHeight = 297;
+    // 3. Initialize PDF (A4 size)
+    const imgWidth = 210; // mm
+    const pageHeight = 297; // mm
 
-    // Calculate aspect ratio
-    const elementWidth = targetElement.scrollWidth;
-    const elementHeight = targetElement.scrollHeight;
-    const imgHeight = (elementHeight * imgWidth) / elementWidth;
+    // Calculate image height preserving aspect ratio
+    const imgHeight = (elementHeight * imgWidth) / PRINT_WIDTH;
 
     const pdf = new jsPDF('p', 'mm', 'a4');
 
-    // 3. Add image to PDF
+    // 4. Add image to PDF
     let heightLeft = imgHeight;
     let position = 0;
 
     pdf.addImage(dataUrl, 'PNG', 0, position, imgWidth, imgHeight);
     heightLeft -= pageHeight;
 
-    // Handle multi-page
+    // 5. Handle multi-page
     while (heightLeft >= 0) {
       position = heightLeft - imgHeight;
       pdf.addPage();

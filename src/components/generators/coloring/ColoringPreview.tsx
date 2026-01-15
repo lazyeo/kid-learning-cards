@@ -52,17 +52,17 @@ export function ColoringPreview({ imageUrl, isLoading, error }: ColoringPreviewP
   }
 
   return (
-    <div className="bg-white p-8 shadow-sm border border-gray-200 min-h-[29.7cm] relative print:shadow-none print:border-none print:p-0 print:min-h-0 print:h-auto print:w-full flex flex-col">
+    <div className="bg-white p-8 shadow-sm border border-gray-200 min-h-0 relative print:shadow-none print:border-none print:p-0 print:min-h-0 print:h-auto print:w-full flex flex-col">
       {/* Header for Print */}
       <div className="mb-8 border-b-2 border-gray-800 pb-4 print:mb-4">
         <h1 className="text-3xl font-bold text-center mb-6 font-comic text-gray-800">{t('worksheet.coloringTime')}</h1>
         <div className="flex justify-between text-lg">
-          <div className="flex gap-2">
-            <span className="font-bold">{t('worksheet.name')}:</span>
+          <div className="flex gap-2 items-center">
+            <span className="font-bold whitespace-nowrap">{t('worksheet.name')}:</span>
             <div className="w-40 border-b-2 border-gray-400"></div>
           </div>
-          <div className="flex gap-2">
-            <span className="font-bold">{t('worksheet.date')}:</span>
+          <div className="flex gap-2 items-center">
+            <span className="font-bold whitespace-nowrap">{t('worksheet.date')}:</span>
             <div className="w-40 border-b-2 border-gray-400"></div>
           </div>
         </div>
