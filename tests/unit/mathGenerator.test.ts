@@ -72,8 +72,8 @@ describe('mathGenerator', () => {
     });
   });
 
-  it('should respect difficulty ranges', () => {
-    // Easy: 1-10
+  it('should respect difficulty ranges for addition', () => {
+    // Easy: operand1 1-10, operand2 1-10
     const easyProblems = generateMathProblems({
       type: 'addition',
       difficulty: 'easy',
@@ -86,14 +86,88 @@ describe('mathGenerator', () => {
       expect(p.operand2).toBeLessThanOrEqual(10);
     });
 
-    // Medium: 1-20
+    // Medium: operand1 10-50, operand2 5-30
     const mediumProblems = generateMathProblems({
       type: 'addition',
       difficulty: 'medium',
       count: 20
     });
-    // Check if at least one number is > 10 to ensure range is used (statistically likely)
-    const hasMediumNumbers = mediumProblems.some(p => p.operand1 > 10 || p.operand2 > 10);
-    expect(hasMediumNumbers).toBe(true);
+    mediumProblems.forEach(p => {
+      expect(p.operand1).toBeGreaterThanOrEqual(10);
+      expect(p.operand1).toBeLessThanOrEqual(50);
+      expect(p.operand2).toBeGreaterThanOrEqual(5);
+      expect(p.operand2).toBeLessThanOrEqual(30);
+    });
+  });
+
+  it('should NOT include 1 in medium/hard multiplication problems', () => {
+    // Medium multiplication: 2-9 × 2-9
+    const mediumProblems = generateMathProblems({
+      type: 'multiplication',
+      difficulty: 'medium',
+      count: 50
+    });
+    mediumProblems.forEach(p => {
+      expect(p.operand1).toBeGreaterThanOrEqual(2);
+      expect(p.operand2).toBeGreaterThanOrEqual(2);
+      expect(p.operand1).toBeLessThanOrEqual(9);
+      expect(p.operand2).toBeLessThanOrEqual(9);
+    });
+
+    // Hard multiplication: 2-12 × 2-12
+    const hardProblems = generateMathProblems({
+      type: 'multiplication',
+      difficulty: 'hard',
+      count: 50
+    });
+    hardProblems.forEach(p => {
+      expect(p.operand1).toBeGreaterThanOrEqual(2);
+      expect(p.operand2).toBeGreaterThanOrEqual(2);
+      expect(p.operand1).toBeLessThanOrEqual(12);
+      expect(p.operand2).toBeLessThanOrEqual(12);
+    });
+  });
+
+  it('should NOT include 1 as divisor or quotient in medium/hard division problems', () => {
+    // Medium division: divisor 2-9, quotient 2-9
+    const mediumProblems = generateMathProblems({
+      type: 'division',
+      difficulty: 'medium',
+      count: 50
+    });
+    mediumProblems.forEach(p => {
+      expect(p.operand2).toBeGreaterThanOrEqual(2); // divisor >= 2
+      expect(p.operand2).toBeLessThanOrEqual(9);
+      expect(p.answer).toBeGreaterThanOrEqual(2); // quotient >= 2
+      expect(p.answer).toBeLessThanOrEqual(9);
+    });
+
+    // Hard division: divisor 2-12, quotient 2-12
+    const hardProblems = generateMathProblems({
+      type: 'division',
+      difficulty: 'hard',
+      count: 50
+    });
+    hardProblems.forEach(p => {
+      expect(p.operand2).toBeGreaterThanOrEqual(2);
+      expect(p.operand2).toBeLessThanOrEqual(12);
+      expect(p.answer).toBeGreaterThanOrEqual(2);
+      expect(p.answer).toBeLessThanOrEqual(12);
+    });
+  });
+
+  it('should allow 1 in easy multiplication (beginner level)', () => {
+    // Easy multiplication: 1-5 × 1-5 (1 is allowed for beginners)
+    const easyProblems = generateMathProblems({
+      type: 'multiplication',
+      difficulty: 'easy',
+      count: 100
+    });
+    easyProblems.forEach(p => {
+      expect(p.operand1).toBeGreaterThanOrEqual(1);
+      expect(p.operand1).toBeLessThanOrEqual(5);
+      expect(p.operand2).toBeGreaterThanOrEqual(1);
+      expect(p.operand2).toBeLessThanOrEqual(5);
+    });
   });
 });
