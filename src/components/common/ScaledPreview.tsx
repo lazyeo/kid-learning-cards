@@ -90,12 +90,29 @@ export function ScaledPreview({
       resizeObserver.observe(containerRef.current);
     }
 
+    // 也监听内容元素大小变化（用于检测图片加载等异步内容）
+    if (contentRef.current) {
+      resizeObserver.observe(contentRef.current);
+    }
+
     // 监听窗口尺寸变化
     window.addEventListener('resize', updateScale);
+
+    // 监听内容区域内的图片加载事件
+    const handleImageLoad = () => {
+      requestAnimationFrame(updateScale);
+    };
+    const contentEl = contentRef.current;
+    if (contentEl) {
+      contentEl.addEventListener('load', handleImageLoad, true); // 使用捕获模式监听所有子元素的 load 事件
+    }
 
     return () => {
       resizeObserver.disconnect();
       window.removeEventListener('resize', updateScale);
+      if (contentEl) {
+        contentEl.removeEventListener('load', handleImageLoad, true);
+      }
     };
   }, [contentWidth, children, fit, viewportTopPadding, viewportBottomPadding]);
 
