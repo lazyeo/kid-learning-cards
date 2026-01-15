@@ -12,8 +12,8 @@ interface MathWorksheetProps {
 const A4_CONFIG = {
   // 每页可容纳的行数（第一页有头部，空间较少）
   horizontal: {
-    firstPageRows: 10,  // 第一页：3列 × 10行 = 30题
-    otherPageRows: 13,  // 后续页：3列 × 13行 = 39题
+    firstPageRows: 9,   // 第一页：3列 × 9行 = 27题（行间距较大）
+    otherPageRows: 12,  // 后续页：3列 × 12行 = 36题
     cols: 3,
   },
   vertical: {
@@ -285,12 +285,8 @@ export function MathWorksheet({ problems, format = 'horizontal', includeAnswers 
         >
           <PageHeader t={t} showHeader={page.isFirst} />
 
-          <div className="space-y-4">
+          <div className={format === 'horizontal' ? 'space-y-7' : 'space-y-4'}>
             {page.rows.map((rowProblems, rowIndex) => {
-              const globalRowIndex = page.isFirst
-                ? rowIndex
-                : (page.isFirst ? 0 : firstPageRows) + (pageIndex - 1) * otherPageRows + rowIndex;
-
               return (
                 <div
                   key={rowIndex}
