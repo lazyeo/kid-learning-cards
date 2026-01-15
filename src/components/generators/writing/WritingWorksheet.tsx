@@ -88,8 +88,7 @@ function SiXianSanGeRow({
   text?: string;
   showTracing?: boolean;
 }) {
-  // 三格高度配置：ascender(24) + x-height(24) + descender(16) = 64px
-  const ascenderHeight = 16;  // 大写字母和 b,d,f,h,k,l 顶部
+  // 三格高度配置：ascender(16) + x-height(16) + descender(16) = 48px
   const xHeightPos = 16;      // 中线位置（虚线）
   const baselinePos = 32;     // 基线位置
   const totalHeight = 48;     // 总高度
