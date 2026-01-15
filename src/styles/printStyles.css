@@ -93,7 +93,31 @@
   /* A4 纸张优化 */
   @page {
     size: A4;
-    margin: 1cm 1cm 2cm 1cm; /* 底部留出页脚空间 */
+    margin: 0; /* 页面内部已有 padding，这里设为 0 */
+  }
+
+  /* A4 页面容器 */
+  .a4-page {
+    width: 210mm !important;
+    min-height: 297mm !important;
+    height: 297mm !important;
+    padding: 10mm 10mm 20mm 10mm !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    page-break-after: always !important;
+    break-after: page !important;
+  }
+
+  .a4-page:last-child {
+    page-break-after: auto !important;
+    break-after: auto !important;
+  }
+
+  /* 工作表容器 */
+  .worksheet-container {
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   /* 避免分页断开 - 单个题目 */
