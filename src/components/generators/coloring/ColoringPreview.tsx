@@ -57,12 +57,12 @@ export function ColoringPreview({ imageUrl, isLoading, error }: ColoringPreviewP
       <div className="mb-8 border-b-2 border-gray-800 pb-4 print:mb-4">
         <h1 className="text-3xl font-bold text-center mb-6 font-comic text-gray-800">{t('worksheet.coloringTime')}</h1>
         <div className="flex justify-between text-lg">
-          <div className="flex gap-2 items-center">
-            <span className="font-bold whitespace-nowrap">{t('worksheet.name')}:</span>
+          <div className="flex gap-2 items-end">
+            <span className="font-bold whitespace-nowrap leading-none">{t('worksheet.name')}:</span>
             <div className="w-40 border-b-2 border-gray-400"></div>
           </div>
-          <div className="flex gap-2 items-center">
-            <span className="font-bold whitespace-nowrap">{t('worksheet.date')}:</span>
+          <div className="flex gap-2 items-end">
+            <span className="font-bold whitespace-nowrap leading-none">{t('worksheet.date')}:</span>
             <div className="w-40 border-b-2 border-gray-400"></div>
           </div>
         </div>

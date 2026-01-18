@@ -174,12 +174,12 @@ export function WritingWorksheet({ options, content }: WritingWorksheetProps) {
           {isTianZiGe ? t('worksheet.chinesePractice') : t('worksheet.englishPractice')}
         </h1>
         <div className="flex justify-between text-base">
-          <div className="flex gap-2 items-center">
-            <span className="font-bold whitespace-nowrap">{t('worksheet.name')}:</span>
+          <div className="flex gap-2 items-end">
+            <span className="font-bold whitespace-nowrap leading-none">{t('worksheet.name')}:</span>
             <div className="w-32 border-b-2 border-gray-400"></div>
           </div>
-          <div className="flex gap-2 items-center">
-            <span className="font-bold whitespace-nowrap">{t('worksheet.date')}:</span>
+          <div className="flex gap-2 items-end">
+            <span className="font-bold whitespace-nowrap leading-none">{t('worksheet.date')}:</span>
             <div className="w-32 border-b-2 border-gray-400"></div>
           </div>
         </div>
