@@ -35,7 +35,7 @@
 }
 
 .animate-progress {
-  animation: progress 30s linear forwards; /* 配合 AI 生成的预计时间 */
+  animation: progress 60s linear forwards; /* 配合 AI 生成的预计时间，约1分钟 */
 }
 
 /* 自定义滚动条 */

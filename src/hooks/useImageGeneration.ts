@@ -37,11 +37,15 @@ export function useImageGeneration() {
         cached: result.cached
       });
 
-      // 成功提示
+      // 成功提示（生产环境不显示 provider 名称）
       if (result.cached) {
         toast.success('使用缓存的涂色卡片');
-      } else {
+      } else if (import.meta.env.DEV) {
+        // 开发环境：显示 provider 信息便于调试
         toast.success(`涂色卡片生成成功！(${result.provider})`);
+      } else {
+        // 生产环境：不显示技术细节
+        toast.success('涂色卡片生成成功！');
       }
     } catch (error: unknown) {
       console.error('Generation failed:', error);
