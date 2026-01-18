@@ -6,6 +6,13 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
+# 为 generate-image function 设置更长超时
+# 注意：Netlify 免费版最大 10 秒，Pro 版最大 26 秒
+# Background Functions 可以运行最多 15 分钟，但需要不同的调用方式
+[functions."generate-image"]
+  # 设置为最大允许值（需要 Pro 账户才能生效超过 10 秒）
+  timeout = 26
+
 [dev]
   command = "npm run dev"
   targetPort = 5173

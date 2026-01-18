@@ -8,7 +8,7 @@ export interface GenerateImageResponse {
   error?: string;
 }
 
-export type ProviderName = 'openai' | 'gemini' | 'antigravity';
+export type ProviderName = 'openai' | 'gemini' | 'antigravity' | 'modelscope';
 
 export interface GenerateImageOptions {
   provider?: ProviderName;
@@ -41,14 +41,19 @@ export async function generateImageWithDetails(
   options: GenerateImageOptions = {}
 ): Promise<GenerationResult> {
   const {
-    provider = 'openai',
+    provider, // 不指定默认值，让后端自动调度
     useCache = true,
     forceRefresh = false
   } = options;
 
-  // 在本地开发环境，URL 指向本地的 Netlify Functions
-  // 在生产环境，自动指向相对路径
-  const apiUrl = '/.netlify/functions/generate-image';
+  // 开发环境使用本地 API 服务器
+  // 生产环境使用 Netlify Functions
+  const isDev = import.meta.env.DEV;
+  const apiUrl = isDev
+    ? 'http://localhost:3001/api/generate-image'
+    : '/.netlify/functions/generate-image';
+
+  console.log(`[API Client] Using ${isDev ? 'development' : 'production'} API: ${apiUrl}`);
 
   try {
     const response = await fetch(apiUrl, {
@@ -83,7 +88,7 @@ export async function generateImageWithDetails(
       imageUrl: data.imageUrl,
       cached: data.cached || false,
       cacheId: data.cacheId,
-      provider: data.provider || provider
+      provider: data.provider || provider || 'unknown'
     };
   } catch (error) {
     console.error('API call failed:', error);

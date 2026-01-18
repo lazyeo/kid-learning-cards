@@ -1,8 +1,17 @@
+/**
+ * @deprecated 请使用 src/services/image/cache 模块替代
+ *
+ * 此类已被 ImageService 模块的 CacheManager 和 SupabaseCacheAdapter 取代。
+ *
+ * @see src/services/image/cache/CacheManager.ts
+ * @see src/services/image/cache/SupabaseCacheAdapter.ts
+ */
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { type ColoringCardParams } from '../ai/types';
 
 /**
  * 缓存记录类型
+ * @deprecated 使用 src/services/image/types.ts 中的 CacheEntry
  */
 export interface CacheEntry {
   id: string;
@@ -23,6 +32,7 @@ export interface CacheEntry {
 
 /**
  * 图片缓存服务
+ * @deprecated 使用 CacheManager + SupabaseCacheAdapter 替代
  * 使用 Supabase PostgreSQL 存储缓存索引
  */
 export class ImageCacheService {

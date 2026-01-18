@@ -69,4 +69,44 @@ export interface GenerationResult {
   cached: boolean;
   cacheId?: string;
   provider: string;
+  /** 失败的 provider 列表（如果有降级） */
+  failedProviders?: ProviderError[];
+}
+
+/**
+ * Provider 错误信息
+ */
+export interface ProviderError {
+  providerId: string;
+  providerName: string;
+  error: string;
+  timestamp: number;
+}
+
+/**
+ * Provider 优先级配置
+ */
+export interface ProviderPriorityConfig {
+  /** Provider ID */
+  id: string;
+  /** 优先级（数字越小优先级越高，从 0 开始） */
+  priority: number;
+  /** 是否启用 */
+  enabled: boolean;
+  /** 超时时间（毫秒），覆盖 provider 默认配置 */
+  timeout?: number;
+  /** 重试次数 */
+  maxRetries?: number;
+}
+
+/**
+ * 多 Provider 策略配置
+ */
+export interface MultiProviderStrategy {
+  /** 优先级列表 */
+  priorities: ProviderPriorityConfig[];
+  /** 是否启用自动降级 */
+  autoFallback: boolean;
+  /** 全局超时时间（毫秒），所有 provider 总计不超过这个时间 */
+  globalTimeout?: number;
 }
