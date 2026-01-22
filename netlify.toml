@@ -2,6 +2,10 @@
   command = "npm run build"
   publish = "dist"
 
+# 排除非敏感环境变量的误报（模型名称和配置值，非密钥）
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "MODELSCOPE_MODEL,VITE_PROVIDER_PRIORITY"
+
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
