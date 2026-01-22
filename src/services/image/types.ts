@@ -215,6 +215,7 @@ export interface ProviderCredentials {
   gemini?: { apiKey: string };
   antigravity?: { baseUrl: string; apiKey?: string };
   modelscope?: { apiKey: string; baseUrl?: string; model?: string };
+  labnana?: { apiKey: string };
 }
 
 /**

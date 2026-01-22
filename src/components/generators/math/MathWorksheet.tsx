@@ -9,16 +9,16 @@ interface MathWorksheetProps {
 
 // A4 页面布局常量
 // 基于 A4 尺寸 210×297mm，考虑打印边距后的可用区域
+// 使用 flexbox justify-between 实现纵向平均分布
 const A4_CONFIG = {
-  // 每页可容纳的行数（第一页有头部，空间较少）
   horizontal: {
-    firstPageRows: 9,   // 第一页：3列 × 9行 = 27题（行间距较大）
-    otherPageRows: 12,  // 后续页：3列 × 12行 = 36题
+    firstPageRows: 10,  // 第一页：3列 × 10行 = 30题
+    otherPageRows: 10,  // 后续页：3列 × 10行 = 30题
     cols: 3,
   },
   vertical: {
-    firstPageRows: 7,   // 第一页：5列 × 7行 = 35题
-    otherPageRows: 9,   // 后续页：5列 × 9行 = 45题
+    firstPageRows: 5,   // 第一页：5列 × 5行 = 25题
+    otherPageRows: 5,   // 后续页：5列 × 5行 = 25题（50题刚好两页）
     cols: 5,
   },
 };
@@ -45,12 +45,6 @@ function ProblemItem({
           <span>{problem.operand2}</span>
           <span>=</span>
           <span className="flex-1 max-w-14 h-10 border-b-2 border-gray-300"></span>
-          {problem.remainder !== undefined && (
-            <>
-              <span className="text-gray-500 text-lg">···</span>
-              <span className="w-8 h-10 border-b-2 border-gray-300"></span>
-            </>
-          )}
         </div>
       </div>
     );
@@ -60,44 +54,45 @@ function ProblemItem({
   if (problem.operator === '÷') {
     const dividendStr = String(problem.operand1);
     const divisorStr = String(problem.operand2);
-    const contentWidth = dividendStr.length * 20 + 12;
+    const digitWidth = 14; // 每个数字宽度 (px)
+    const contentWidth = dividendStr.length * digitWidth + 10;
 
     return (
-      <div className="problem-item flex items-center p-2 text-2xl font-medium">
-        <span className="text-gray-400 text-lg shrink-0 mr-1 self-start mt-2">
+      <div className="problem-item flex items-center p-1 text-xl font-medium">
+        <span className="text-gray-400 text-base shrink-0 mr-0.5 self-start mt-2">
           {index + 1}.
         </span>
-        <div className="flex-1 font-mono text-xl">
+        <div className="flex-1 font-mono text-lg">
           <div className="inline-flex items-end">
-            <div className="flex items-center h-8 tracking-tight">
+            <div className="flex items-center h-7 tracking-tighter">
               {divisorStr.split('').map((digit, i) => (
-                <span key={i} className="inline-block w-3.5 text-center">{digit}</span>
+                <span key={i} className="inline-block w-3 text-center">{digit}</span>
               ))}
             </div>
             <div className="relative">
               <svg
                 className="absolute top-0 left-0 pointer-events-none"
-                width={contentWidth + 6}
-                height="38"
-                style={{ transform: 'translate(-4px, -2px)' }}
+                width={contentWidth + 4}
+                height="34"
+                style={{ transform: 'translate(-3px, -2px)' }}
               >
                 <path
-                  d={`M ${contentWidth + 4} 2 L 14 2 Q 6 2 6 10 L 6 30 Q 6 36 0 36`}
+                  d={`M ${contentWidth + 2} 2 L 12 2 Q 5 2 5 9 L 5 26 Q 5 32 0 32`}
                   stroke="black"
-                  strokeWidth="2"
+                  strokeWidth="1.5"
                   fill="none"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />
               </svg>
-              <div className="flex pl-3 h-8 items-center" style={{ minWidth: `${contentWidth}px` }}>
+              <div className="flex pl-2 h-7 items-center" style={{ minWidth: `${contentWidth}px` }}>
                 {dividendStr.split('').map((digit, i) => (
-                  <span key={i} className="inline-block w-5 text-center">{digit}</span>
+                  <span key={i} className="inline-block text-center" style={{ width: `${digitWidth}px` }}>{digit}</span>
                 ))}
               </div>
             </div>
           </div>
-          <div className="h-4"></div>
+          <div className="h-3"></div>
         </div>
       </div>
     );
@@ -109,6 +104,7 @@ function ProblemItem({
     String(problem.operand2).length
   );
   const totalWidth = maxDigits + 1;
+  const digitWidth = 14; // 每个数字宽度 (px)
 
   const padDigits = (num: number) => {
     const str = String(num);
@@ -120,35 +116,35 @@ function ProblemItem({
   const op2 = padDigits(problem.operand2);
 
   return (
-    <div className="problem-item flex items-center p-2 text-2xl font-medium">
-      <span className="text-gray-400 text-lg shrink-0 mr-1 self-start mt-2">
+    <div className="problem-item flex items-center p-1 text-xl font-medium">
+      <span className="text-gray-400 text-base shrink-0 mr-0.5 self-start mt-2">
         {index + 1}.
       </span>
-      <div className="flex-1 font-mono text-xl">
+      <div className="flex-1 font-mono text-lg">
         <div className="inline-block">
           <div className="flex justify-end">
-            <span className="w-5"></span>
+            <span style={{ width: `${digitWidth}px` }}></span>
             {Array(op1.padding).fill(null).map((_, i) => (
-              <span key={`pad1-${i}`} className="inline-block w-5"></span>
+              <span key={`pad1-${i}`} className="inline-block" style={{ width: `${digitWidth}px` }}></span>
             ))}
             {op1.digits.map((digit, i) => (
-              <span key={i} className="inline-block w-5 text-center">{digit}</span>
+              <span key={i} className="inline-block text-center" style={{ width: `${digitWidth}px` }}>{digit}</span>
             ))}
           </div>
           <div className="flex justify-end">
-            <span className="w-5 text-center text-gray-700">{problem.operator}</span>
+            <span className="text-center text-gray-700" style={{ width: `${digitWidth}px` }}>{problem.operator}</span>
             {Array(op2.padding).fill(null).map((_, i) => (
-              <span key={`pad2-${i}`} className="inline-block w-5"></span>
+              <span key={`pad2-${i}`} className="inline-block" style={{ width: `${digitWidth}px` }}></span>
             ))}
             {op2.digits.map((digit, i) => (
-              <span key={i} className="inline-block w-5 text-center">{digit}</span>
+              <span key={i} className="inline-block text-center" style={{ width: `${digitWidth}px` }}>{digit}</span>
             ))}
           </div>
           <div
-            className="border-b-2 border-black my-1"
-            style={{ width: `${totalWidth * 1.25}rem` }}
+            className="border-b-2 border-black my-0.5"
+            style={{ width: `${totalWidth * digitWidth}px` }}
           ></div>
-          <div className="h-7"></div>
+          <div className="h-5"></div>
         </div>
       </div>
     </div>
@@ -285,12 +281,18 @@ export function MathWorksheet({ problems, format = 'horizontal', includeAnswers 
         >
           <PageHeader t={t} showHeader={page.isFirst} />
 
-          <div className={format === 'horizontal' ? 'space-y-7' : 'space-y-4'}>
+          <div
+            className="flex flex-col justify-between"
+            style={{
+              height: page.isFirst ? 'calc(297mm - 10mm - 20mm - 100px)' : 'calc(297mm - 10mm - 20mm - 40px)',
+              minHeight: page.isFirst ? 'calc(297mm - 10mm - 20mm - 100px)' : 'calc(297mm - 10mm - 20mm - 40px)'
+            }}
+          >
             {page.rows.map((rowProblems, rowIndex) => {
               return (
                 <div
                   key={rowIndex}
-                  className={`grid gap-x-4 gap-y-2 ${
+                  className={`grid gap-x-2 ${
                     format === 'vertical' ? 'grid-cols-5' : 'grid-cols-3'
                   }`}
                 >

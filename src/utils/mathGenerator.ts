@@ -10,40 +10,47 @@ const randomInt = (min: number, max: number): number => {
 
 // 针对不同运算类型和难度的专用范围配置
 // 设计原则：
-// 1. 中等/困难模式的乘除法不出现 1（没有练习价值）
-// 2. 加减法可以出现小数字，但中等/困难模式应有更大的数字范围
-// 3. 乘法限制在合理范围内，避免心算过难
-// 4. 除法确保整除，且除数和商都有意义
+// 1. Easy: 整合了原 easy + medium，覆盖基础到中等难度
+// 2. Medium: 原 hard 级别
+// 3. Hard: 全新高难度，所有数字必须是两位数以上 (≥10)
+// 4. 乘除法中等以上不出现 1（没有练习价值）
+// 5. 除法确保整除，且除数和商都有意义
 const getOperationConfig = (
   type: 'addition' | 'subtraction' | 'multiplication' | 'division',
   difficulty: 'easy' | 'medium' | 'hard'
 ) => {
   const configs = {
     addition: {
-      easy: { min1: 1, max1: 10, min2: 1, max2: 10 },
-      medium: { min1: 10, max1: 50, min2: 5, max2: 30 },
-      hard: { min1: 20, max1: 100, min2: 10, max2: 80 }
+      // Easy: 整合原 easy(1-10) + medium(10-50)，扩大范围
+      easy: { min1: 1, max1: 50, min2: 1, max2: 30 },
+      // Medium: 原 hard 级别
+      medium: { min1: 20, max1: 100, min2: 10, max2: 80 },
+      // Hard: 全新高难度，所有数字 ≥ 10
+      hard: { min1: 10, max1: 999, min2: 10, max2: 999 }
     },
     subtraction: {
-      easy: { min1: 1, max1: 10, min2: 1, max2: 10 },
-      medium: { min1: 20, max1: 60, min2: 5, max2: 30 },
-      hard: { min1: 30, max1: 100, min2: 10, max2: 50 }
+      // Easy: 整合原 easy + medium
+      easy: { min1: 1, max1: 60, min2: 1, max2: 30 },
+      // Medium: 原 hard 级别
+      medium: { min1: 30, max1: 100, min2: 10, max2: 50 },
+      // Hard: 全新高难度，所有数字 ≥ 10
+      hard: { min1: 100, max1: 999, min2: 10, max2: 500 }
     },
     multiplication: {
-      // 简单：入门级乘法，可包含 1
-      easy: { min1: 1, max1: 5, min2: 1, max2: 5 },
-      // 中等：标准乘法表 2-12，不包含 1
-      medium: { min1: 2, max1: 12, min2: 2, max2: 12 },
-      // 困难：挑战模式 2-20 × 2-12，不包含 1
-      hard: { min1: 2, max1: 20, min2: 2, max2: 12 }
+      // Easy: 整合原 easy(1-5) + medium(2-12)，适合入门到熟练
+      easy: { min1: 1, max1: 12, min2: 1, max2: 12 },
+      // Medium: 原 hard 级别 (2-20 × 2-12)
+      medium: { min1: 2, max1: 20, min2: 2, max2: 12 },
+      // Hard: 全新高难度，两位数乘法 (10-99 × 10-50)
+      hard: { min1: 10, max1: 99, min2: 10, max2: 50 }
     },
     division: {
-      // 简单：除数 2-5，商 1-5
-      easy: { divisorMin: 2, divisorMax: 5, quotientMin: 1, quotientMax: 5 },
-      // 中等：除数 2-9，商 2-9（都不包含 1）
-      medium: { divisorMin: 2, divisorMax: 9, quotientMin: 2, quotientMax: 9 },
-      // 困难：除数 2-12，商 2-12（都不包含 1）
-      hard: { divisorMin: 2, divisorMax: 12, quotientMin: 2, quotientMax: 12 }
+      // Easy: 整合原 easy + medium，除数 2-9，商 1-9
+      easy: { divisorMin: 2, divisorMax: 9, quotientMin: 1, quotientMax: 9 },
+      // Medium: 原 hard 级别，除数 2-12，商 2-12
+      medium: { divisorMin: 2, divisorMax: 12, quotientMin: 2, quotientMax: 12 },
+      // Hard: 全新高难度，除数和商都是两位数 (10-50)
+      hard: { divisorMin: 10, divisorMax: 50, quotientMin: 10, quotientMax: 50 }
     }
   };
 
@@ -149,11 +156,24 @@ const generateSingleProblem = (
   return problem;
 };
 
+// 生成问题的唯一键，用于去重
+const getProblemKey = (problem: MathProblem): string => {
+  const base = `${problem.operand1}${problem.operator}${problem.operand2}`;
+  return problem.remainder !== undefined ? `${base}r${problem.remainder}` : base;
+};
+
 export function generateMathProblems(options: MathGeneratorOptions): MathProblem[] {
   const { type, difficulty, count, allowRemainder = false } = options;
   const problems: MathProblem[] = [];
+  const usedKeys = new Set<string>();
 
-  for (let i = 0; i < count; i++) {
+  // 防止无限循环的最大尝试次数
+  const maxAttempts = count * 10;
+  let attempts = 0;
+
+  while (problems.length < count && attempts < maxAttempts) {
+    attempts++;
+
     let problemType: 'addition' | 'subtraction' | 'multiplication' | 'division' = type === 'mixed' ? 'addition' : type;
 
     // 混合模式随机选择类型
@@ -164,7 +184,14 @@ export function generateMathProblems(options: MathGeneratorOptions): MathProblem
 
     // 余数选项仅对除法生效
     const useRemainder = allowRemainder && problemType === 'division';
-    problems.push(generateSingleProblem(problemType, difficulty, useRemainder));
+    const problem = generateSingleProblem(problemType, difficulty, useRemainder);
+
+    // 去重检查
+    const key = getProblemKey(problem);
+    if (!usedKeys.has(key)) {
+      usedKeys.add(key);
+      problems.push(problem);
+    }
   }
 
   return problems;

@@ -12,18 +12,60 @@ import type {
 } from '../types';
 
 /**
+ * Provider 默认超时配置 (ms)
+ */
+const PROVIDER_TIMEOUTS: Record<string, number> = {
+  labnana: 120000,
+  antigravity: 60000,
+  modelscope: 180000,  // 3分钟，给足轮询+下载时间
+  gemini: 60000,
+  openai: 60000,
+};
+
+/**
+ * 默认优先级顺序
+ */
+const DEFAULT_PRIORITY_ORDER = ['labnana', 'antigravity', 'modelscope', 'gemini', 'openai'];
+
+/**
+ * 从环境变量解析 Provider 优先级
+ * 格式: VITE_PROVIDER_PRIORITY=labnana,antigravity,modelscope,gemini,openai
+ * 支持 Vite (import.meta.env) 和 Node.js (process.env) 两种环境
+ */
+function parseProviderPriority(): ProviderPriorityConfig[] {
+  // 尝试从 Vite 环境变量读取
+  let envPriority: string | undefined;
+
+  // Browser/Vite 环境
+  if (typeof import.meta !== 'undefined' && import.meta.env?.VITE_PROVIDER_PRIORITY) {
+    envPriority = import.meta.env.VITE_PROVIDER_PRIORITY;
+  }
+  // Node.js 环境
+  else if (typeof process !== 'undefined' && process.env) {
+    envPriority = process.env.VITE_PROVIDER_PRIORITY || process.env.PROVIDER_PRIORITY;
+  }
+
+  const priorityOrder = envPriority
+    ? envPriority.split(',').map((s: string) => s.trim().toLowerCase()).filter(Boolean)
+    : DEFAULT_PRIORITY_ORDER;
+
+  return priorityOrder.map((id: string, index: number) => ({
+    id,
+    priority: index,
+    enabled: true,
+    timeout: PROVIDER_TIMEOUTS[id] || 60000,
+  }));
+}
+
+/**
  * 默认策略配置
- * 优先级：modelscope > gemini > antigravity > openai
+ * 优先级可通过环境变量 VITE_PROVIDER_PRIORITY 配置
+ * 例如: VITE_PROVIDER_PRIORITY=antigravity,labnana,modelscope
  */
 export const DEFAULT_STRATEGY: MultiProviderStrategy = {
-  priorities: [
-    { id: 'modelscope', priority: 0, enabled: true, timeout: 120000 },
-    { id: 'gemini', priority: 1, enabled: true, timeout: 60000 },
-    { id: 'antigravity', priority: 2, enabled: true, timeout: 60000 },
-    { id: 'openai', priority: 3, enabled: true, timeout: 60000 },
-  ],
+  priorities: parseProviderPriority(),
   autoFallback: true,
-  globalTimeout: 180000,
+  globalTimeout: 300000,  // 5分钟全局超时
 };
 
 export class ProviderOrchestrator {

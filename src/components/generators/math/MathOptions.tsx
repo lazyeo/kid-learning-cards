@@ -2,7 +2,8 @@ import { type MathGeneratorOptions } from '../../../types/generator';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../../common/Button';
 import { Card } from '../../common/Card';
-import { Settings, Plus, Minus, X, Divide, Shuffle } from 'lucide-react';
+import { Settings, Plus, Minus, X, Divide, Shuffle, Info } from 'lucide-react';
+import { useState } from 'react';
 
 interface MathOptionsProps {
   options: MathGeneratorOptions;
@@ -11,8 +12,20 @@ interface MathOptionsProps {
   isGenerating: boolean;
 }
 
+// 难度说明 Tooltip 组件
+function DifficultyTooltip({ children, isVisible }: { children: React.ReactNode; isVisible: boolean }) {
+  if (!isVisible) return null;
+  return (
+    <div className="absolute z-50 left-0 top-full mt-2 w-72 p-3 bg-gray-800 text-white text-xs rounded-lg shadow-lg">
+      {children}
+      <div className="absolute -top-1 left-4 w-2 h-2 bg-gray-800 rotate-45"></div>
+    </div>
+  );
+}
+
 export function MathOptions({ options, onChange, onGenerate, isGenerating }: MathOptionsProps) {
   const { t } = useTranslation();
+  const [showDifficultyInfo, setShowDifficultyInfo] = useState(false);
 
   const handleChange = (key: keyof MathGeneratorOptions, value: any) => {
     onChange({ ...options, [key]: value });
@@ -62,7 +75,34 @@ export function MathOptions({ options, onChange, onGenerate, isGenerating }: Mat
 
         {/* 难度选择 */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">{t('math.options.difficulty')}</label>
+          <label className="relative block text-sm font-medium text-gray-700 mb-2">
+            <span className="flex items-center gap-1">
+              {t('math.options.difficulty')}
+              <span
+                className="inline-flex cursor-help"
+                onMouseEnter={() => setShowDifficultyInfo(true)}
+                onMouseLeave={() => setShowDifficultyInfo(false)}
+              >
+                <Info className="w-4 h-4 text-gray-400 hover:text-gray-600" />
+              </span>
+            </span>
+            <DifficultyTooltip isVisible={showDifficultyInfo}>
+              <div className="space-y-2">
+                <div>
+                  <span className="font-bold text-green-400">{t('math.options.easy')}</span>
+                  <p className="mt-0.5">{t('math.options.easyDesc')}</p>
+                </div>
+                <div>
+                  <span className="font-bold text-yellow-400">{t('math.options.medium')}</span>
+                  <p className="mt-0.5">{t('math.options.mediumDesc')}</p>
+                </div>
+                <div>
+                  <span className="font-bold text-red-400">{t('math.options.hard')}</span>
+                  <p className="mt-0.5">{t('math.options.hardDesc')}</p>
+                </div>
+              </div>
+            </DifficultyTooltip>
+          </label>
           <div className="grid grid-cols-3 gap-2">
             {difficulties.map((diff) => (
               <button

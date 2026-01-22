@@ -13,6 +13,7 @@ import { OpenAIProvider } from '../../ai/providers/openai';
 import { GeminiProvider } from '../../ai/providers/gemini';
 import { AntigravityProvider } from '../../ai/providers/antigravity';
 import { ModelScopeProvider } from '../../ai/providers/modelscope';
+import { LabNanaProvider } from '../../ai/providers/labnana';
 import type { ImageServiceConfig } from '../types';
 
 /**
@@ -79,6 +80,14 @@ export function createImageService(config: ImageServiceConfig): ImageService {
     );
   }
 
+  if (config.providers.labnana?.apiKey) {
+    orchestrator.registerProvider(
+      new LabNanaProvider({
+        apiKey: config.providers.labnana.apiKey
+      })
+    );
+  }
+
   // 5. 确定默认 Provider
   const enabledProviders = orchestrator.getEnabledProviderIds();
   const defaultProvider = enabledProviders[0] ?? 'antigravity';
@@ -115,6 +124,9 @@ export function createBrowserImageService(options?: {
             baseUrl: env.VITE_ANTIGRAVITY_BASE_URL,
             apiKey: env.VITE_ANTIGRAVITY_API_KEY
           }
+        : undefined,
+      labnana: env.VITE_LABNANA_API_KEY
+        ? { apiKey: env.VITE_LABNANA_API_KEY }
         : undefined,
       openai: env.VITE_OPENAI_API_KEY
         ? { apiKey: env.VITE_OPENAI_API_KEY }

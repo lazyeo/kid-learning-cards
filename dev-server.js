@@ -39,6 +39,9 @@ function buildConfig() {
             baseUrl: process.env.MODELSCOPE_BASE_URL,
             model: process.env.MODELSCOPE_MODEL
           }
+        : undefined,
+      labnana: (process.env.LABNANA_API_KEY || process.env.VITE_LABNANA_API_KEY)
+        ? { apiKey: process.env.LABNANA_API_KEY || process.env.VITE_LABNANA_API_KEY }
         : undefined
     },
     enableCache: process.env.ENABLE_CACHE !== 'false',

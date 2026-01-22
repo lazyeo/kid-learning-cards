@@ -9,3 +9,4 @@ export { OpenAIProvider } from '../../ai/providers/openai';
 export { GeminiProvider } from '../../ai/providers/gemini';
 export { AntigravityProvider } from '../../ai/providers/antigravity';
 export { ModelScopeProvider } from '../../ai/providers/modelscope';
+export { LabNanaProvider } from '../../ai/providers/labnana';

@@ -73,7 +73,7 @@ describe('mathGenerator', () => {
   });
 
   it('should respect difficulty ranges for addition', () => {
-    // Easy: operand1 1-10, operand2 1-10
+    // Easy (整合原 easy+medium): operand1 1-50, operand2 1-30
     const easyProblems = generateMathProblems({
       type: 'addition',
       difficulty: 'easy',
@@ -81,27 +81,40 @@ describe('mathGenerator', () => {
     });
     easyProblems.forEach(p => {
       expect(p.operand1).toBeGreaterThanOrEqual(1);
-      expect(p.operand1).toBeLessThanOrEqual(10);
+      expect(p.operand1).toBeLessThanOrEqual(50);
       expect(p.operand2).toBeGreaterThanOrEqual(1);
-      expect(p.operand2).toBeLessThanOrEqual(10);
+      expect(p.operand2).toBeLessThanOrEqual(30);
     });
 
-    // Medium: operand1 10-50, operand2 5-30
+    // Medium (原 hard): operand1 20-100, operand2 10-80
     const mediumProblems = generateMathProblems({
       type: 'addition',
       difficulty: 'medium',
       count: 20
     });
     mediumProblems.forEach(p => {
+      expect(p.operand1).toBeGreaterThanOrEqual(20);
+      expect(p.operand1).toBeLessThanOrEqual(100);
+      expect(p.operand2).toBeGreaterThanOrEqual(10);
+      expect(p.operand2).toBeLessThanOrEqual(80);
+    });
+
+    // Hard (新高难度): 所有数字 >= 10
+    const hardProblems = generateMathProblems({
+      type: 'addition',
+      difficulty: 'hard',
+      count: 20
+    });
+    hardProblems.forEach(p => {
       expect(p.operand1).toBeGreaterThanOrEqual(10);
-      expect(p.operand1).toBeLessThanOrEqual(50);
-      expect(p.operand2).toBeGreaterThanOrEqual(5);
-      expect(p.operand2).toBeLessThanOrEqual(30);
+      expect(p.operand1).toBeLessThanOrEqual(999);
+      expect(p.operand2).toBeGreaterThanOrEqual(10);
+      expect(p.operand2).toBeLessThanOrEqual(999);
     });
   });
 
   it('should NOT include 1 in medium/hard multiplication problems', () => {
-    // Medium multiplication: 2-12 × 2-12
+    // Medium multiplication (原 hard): 2-20 × 2-12
     const mediumProblems = generateMathProblems({
       type: 'multiplication',
       difficulty: 'medium',
@@ -111,11 +124,11 @@ describe('mathGenerator', () => {
     mediumProblems.forEach(p => {
       expect(p.operand1).toBeGreaterThanOrEqual(2);
       expect(p.operand2).toBeGreaterThanOrEqual(2);
-      expect(p.operand1).toBeLessThanOrEqual(12);
+      expect(p.operand1).toBeLessThanOrEqual(20);
       expect(p.operand2).toBeLessThanOrEqual(12);
     });
 
-    // Hard multiplication: 2-20 × 2-12 (challenge mode)
+    // Hard multiplication (新高难度): 10-99 × 10-50，所有数字 >= 10
     const hardProblems = generateMathProblems({
       type: 'multiplication',
       difficulty: 'hard',
@@ -123,15 +136,15 @@ describe('mathGenerator', () => {
       format: 'horizontal'
     });
     hardProblems.forEach(p => {
-      expect(p.operand1).toBeGreaterThanOrEqual(2);
-      expect(p.operand2).toBeGreaterThanOrEqual(2);
-      expect(p.operand1).toBeLessThanOrEqual(20);
-      expect(p.operand2).toBeLessThanOrEqual(12);
+      expect(p.operand1).toBeGreaterThanOrEqual(10);
+      expect(p.operand2).toBeGreaterThanOrEqual(10);
+      expect(p.operand1).toBeLessThanOrEqual(99);
+      expect(p.operand2).toBeLessThanOrEqual(50);
     });
   });
 
   it('should NOT include 1 as divisor or quotient in medium/hard division problems', () => {
-    // Medium division: divisor 2-9, quotient 2-9
+    // Medium division (原 hard): divisor 2-12, quotient 2-12
     const mediumProblems = generateMathProblems({
       type: 'division',
       difficulty: 'medium',
@@ -139,27 +152,27 @@ describe('mathGenerator', () => {
     });
     mediumProblems.forEach(p => {
       expect(p.operand2).toBeGreaterThanOrEqual(2); // divisor >= 2
-      expect(p.operand2).toBeLessThanOrEqual(9);
+      expect(p.operand2).toBeLessThanOrEqual(12);
       expect(p.answer).toBeGreaterThanOrEqual(2); // quotient >= 2
-      expect(p.answer).toBeLessThanOrEqual(9);
+      expect(p.answer).toBeLessThanOrEqual(12);
     });
 
-    // Hard division: divisor 2-12, quotient 2-12
+    // Hard division (新高难度): divisor 10-50, quotient 10-50，所有数字 >= 10
     const hardProblems = generateMathProblems({
       type: 'division',
       difficulty: 'hard',
       count: 50
     });
     hardProblems.forEach(p => {
-      expect(p.operand2).toBeGreaterThanOrEqual(2);
-      expect(p.operand2).toBeLessThanOrEqual(12);
-      expect(p.answer).toBeGreaterThanOrEqual(2);
-      expect(p.answer).toBeLessThanOrEqual(12);
+      expect(p.operand2).toBeGreaterThanOrEqual(10); // divisor >= 10
+      expect(p.operand2).toBeLessThanOrEqual(50);
+      expect(p.answer).toBeGreaterThanOrEqual(10); // quotient >= 10
+      expect(p.answer).toBeLessThanOrEqual(50);
     });
   });
 
   it('should allow 1 in easy multiplication (beginner level)', () => {
-    // Easy multiplication: 1-5 × 1-5 (1 is allowed for beginners)
+    // Easy multiplication (整合原 easy+medium): 1-12 × 1-12
     const easyProblems = generateMathProblems({
       type: 'multiplication',
       difficulty: 'easy',
@@ -168,9 +181,9 @@ describe('mathGenerator', () => {
     });
     easyProblems.forEach(p => {
       expect(p.operand1).toBeGreaterThanOrEqual(1);
-      expect(p.operand1).toBeLessThanOrEqual(5);
+      expect(p.operand1).toBeLessThanOrEqual(12);
       expect(p.operand2).toBeGreaterThanOrEqual(1);
-      expect(p.operand2).toBeLessThanOrEqual(5);
+      expect(p.operand2).toBeLessThanOrEqual(12);
     });
   });
 

@@ -51,7 +51,7 @@ export class ModelScopeProvider implements ImageGeneratorProvider {
     this.config = {
       apiKey: config.apiKey,
       baseUrl: config.baseUrl || 'https://api-inference.modelscope.cn',
-      model: config.model || 'Qwen/Qwen-Image-2512',
+      model: config.model || 'Tongyi-MAI/Z-Image-Turbo',
       timeout: config.timeout || 120000,
       pollInterval: config.pollInterval || 5000,
       maxRetries: config.maxRetries || 24
