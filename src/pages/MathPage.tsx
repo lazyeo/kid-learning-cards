@@ -19,7 +19,7 @@ export function MathPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [problems, setProblems] = useState<MathProblem[]>([]);
   const [options, setOptions] = useState<MathGeneratorOptions>({
-    type: 'addition',
+    types: ['addition'],
     difficulty: 'easy',
     count: 20,
     format: 'horizontal',

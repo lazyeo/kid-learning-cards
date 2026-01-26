@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Images, Sparkles, TrendingUp, Clock, ChevronDown, Wand2 } from 'lucide-react';
+import { Images, TrendingUp, Clock, ChevronDown, Wand2 } from 'lucide-react';
 import { fetchGalleryImages, type GalleryImage } from '../../../services/api/client';
 
 const PAGE_SIZE = 12;
