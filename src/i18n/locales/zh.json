@@ -62,6 +62,7 @@
     "generateFailed": "生成失败，请重试",
     "options": {
       "type": "题目类型",
+      "multiSelect": "(可多选)",
       "addition": "加法",
       "subtraction": "减法",
       "multiplication": "乘法",
@@ -75,7 +76,7 @@
       "mediumDesc": "加减法 20-100，乘法 2-20，除法商 2-12",
       "hardDesc": "三位数运算，两位数乘除法，所有数字 ≥10",
       "format": "排版格式",
-      "horizontal": "横式 (1 + 1 =)",
+      "horizontal": "横式",
       "vertical": "竖式",
       "count": "题目数量",
       "countSuffix": "题",
@@ -146,6 +147,19 @@
   "coloring": {
     "title": "涂色卡片生成器",
     "generateFirst": "请先生成涂色卡片",
+    "gallery": {
+      "title": "涂色卡片图库",
+      "allThemes": "全部",
+      "popular": "热门",
+      "recent": "最新",
+      "empty": "暂无图片，生成第一张吧！",
+      "createFirst": "生成第一张涂色卡片",
+      "generateNew": "生成新图",
+      "backToGallery": "返回图库",
+      "selected": "已选择图片",
+      "loadMore": "加载更多",
+      "hint": "点击图片即可选择使用，或生成全新的涂色卡片"
+    },
     "options": {
       "theme": "主题",
       "themes": {
@@ -153,10 +167,13 @@
         "vehicles": "交通工具",
         "plants": "植物",
         "fantasy": "奇幻",
-        "food": "食物"
+        "food": "食物",
+        "custom": "自定义"
       },
       "subject": "具体内容",
       "subjectPlaceholder": "或者输入自定义内容...",
+      "customHint": "请输入您想要生成的完整内容描述",
+      "customPlaceholder": "例如：一只可爱的小猫在花园里玩耍",
       "complexity": "复杂度",
       "easy": "简单",
       "medium": "中等",

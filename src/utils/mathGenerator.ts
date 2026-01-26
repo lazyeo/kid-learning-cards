@@ -1,4 +1,4 @@
-import { type MathGeneratorOptions, type MathProblem, type MathOperator } from '../types/generator';
+import { type MathGeneratorOptions, type MathProblem, type MathOperator, type MathOperationType } from '../types/generator';
 
 // 生成唯一 ID
 const generateId = () => Math.random().toString(36).substr(2, 9);
@@ -163,7 +163,7 @@ const getProblemKey = (problem: MathProblem): string => {
 };
 
 export function generateMathProblems(options: MathGeneratorOptions): MathProblem[] {
-  const { type, difficulty, count, allowRemainder = false } = options;
+  const { types, difficulty, count, allowRemainder = false } = options;
   const problems: MathProblem[] = [];
   const usedKeys = new Set<string>();
 
@@ -171,16 +171,14 @@ export function generateMathProblems(options: MathGeneratorOptions): MathProblem
   const maxAttempts = count * 10;
   let attempts = 0;
 
+  // 确保至少有一种类型
+  const selectedTypes: MathOperationType[] = types.length > 0 ? types : ['addition'];
+
   while (problems.length < count && attempts < maxAttempts) {
     attempts++;
 
-    let problemType: 'addition' | 'subtraction' | 'multiplication' | 'division' = type === 'mixed' ? 'addition' : type;
-
-    // 混合模式随机选择类型
-    if (type === 'mixed') {
-      const types = ['addition', 'subtraction', 'multiplication', 'division'] as const;
-      problemType = types[Math.floor(Math.random() * types.length)];
-    }
+    // 从用户选择的类型中随机选择
+    const problemType = selectedTypes[Math.floor(Math.random() * selectedTypes.length)];
 
     // 余数选项仅对除法生效
     const useRemainder = allowRemainder && problemType === 'division';

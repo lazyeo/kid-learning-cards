@@ -130,6 +130,67 @@ export class SupabaseCacheAdapter implements CacheAdapter {
     return (data || []) as CacheEntry[];
   }
 
+  /**
+   * 获取热门/最新的图片用于图库展示
+   */
+  async getGalleryImages(
+    options: { theme?: string; limit?: number; offset?: number; orderBy?: 'popular' | 'recent' } = {}
+  ): Promise<CacheEntry[]> {
+    const { theme, limit = 20, offset = 0, orderBy = 'popular' } = options;
+
+    let query = this.supabase
+      .from(this.tableName)
+      .select('*')
+      .not('image_url', 'is', null);
+
+    if (theme && theme !== 'all') {
+      query = query.eq('theme', theme.toLowerCase());
+    }
+
+    if (orderBy === 'popular') {
+      query = query.order('access_count', { ascending: false });
+    } else {
+      query = query.order('created_at', { ascending: false });
+    }
+
+    const { data, error } = await query.range(offset, offset + limit - 1);
+
+    if (error) {
+      console.error('[SupabaseCacheAdapter] getGalleryImages error:', error);
+      return [];
+    }
+
+    return (data || []) as CacheEntry[];
+  }
+
+  /**
+   * 增加图片访问计数（下载/打印时调用）
+   */
+  async incrementAccessCount(imageId: string): Promise<void> {
+    const { data, error: fetchError } = await this.supabase
+      .from(this.tableName)
+      .select('access_count')
+      .eq('id', imageId)
+      .single();
+
+    if (fetchError || !data) {
+      console.error('[SupabaseCacheAdapter] incrementAccessCount fetch error:', fetchError);
+      return;
+    }
+
+    const { error: updateError } = await this.supabase
+      .from(this.tableName)
+      .update({
+        access_count: data.access_count + 1,
+        last_accessed_at: new Date().toISOString()
+      })
+      .eq('id', imageId);
+
+    if (updateError) {
+      console.error('[SupabaseCacheAdapter] incrementAccessCount update error:', updateError);
+    }
+  }
+
   async cleanup(maxAgeDays: number = 30, minAccessCount: number = 1): Promise<number> {
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - maxAgeDays);

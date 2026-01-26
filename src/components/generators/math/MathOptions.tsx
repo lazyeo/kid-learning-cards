@@ -1,8 +1,8 @@
-import { type MathGeneratorOptions } from '../../../types/generator';
+import { type MathGeneratorOptions, type MathOperationType } from '../../../types/generator';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../../common/Button';
 import { Card } from '../../common/Card';
-import { Settings, Plus, Minus, X, Divide, Shuffle, Info } from 'lucide-react';
+import { Settings, Plus, Minus, X, Divide, Info } from 'lucide-react';
 import { useState } from 'react';
 
 interface MathOptionsProps {
@@ -31,12 +31,25 @@ export function MathOptions({ options, onChange, onGenerate, isGenerating }: Mat
     onChange({ ...options, [key]: value });
   };
 
+  const handleTypeToggle = (typeValue: MathOperationType) => {
+    const currentTypes = options.types || [];
+    const isSelected = currentTypes.includes(typeValue);
+
+    if (isSelected) {
+      // 至少保留一种类型
+      if (currentTypes.length > 1) {
+        handleChange('types', currentTypes.filter(t => t !== typeValue));
+      }
+    } else {
+      handleChange('types', [...currentTypes, typeValue]);
+    }
+  };
+
   const types = [
-    { value: 'addition', labelKey: 'math.options.addition', icon: <Plus className="w-4 h-4" /> },
-    { value: 'subtraction', labelKey: 'math.options.subtraction', icon: <Minus className="w-4 h-4" /> },
-    { value: 'multiplication', labelKey: 'math.options.multiplication', icon: <X className="w-4 h-4" /> },
-    { value: 'division', labelKey: 'math.options.division', icon: <Divide className="w-4 h-4" /> },
-    { value: 'mixed', labelKey: 'math.options.mixed', icon: <Shuffle className="w-4 h-4" /> },
+    { value: 'addition' as MathOperationType, labelKey: 'math.options.addition', icon: <Plus className="w-4 h-4" /> },
+    { value: 'subtraction' as MathOperationType, labelKey: 'math.options.subtraction', icon: <Minus className="w-4 h-4" /> },
+    { value: 'multiplication' as MathOperationType, labelKey: 'math.options.multiplication', icon: <X className="w-4 h-4" /> },
+    { value: 'division' as MathOperationType, labelKey: 'math.options.division', icon: <Divide className="w-4 h-4" /> },
   ];
 
   const difficulties = [
@@ -52,24 +65,30 @@ export function MathOptions({ options, onChange, onGenerate, isGenerating }: Mat
       <div className="space-y-6">
         {/* 题目类型 */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">{t('math.options.type')}</label>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {types.map((type) => (
-              <button
-                key={type.value}
-                onClick={() => handleChange('type', type.value)}
-                className={`
-                  flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all
-                  ${options.type === type.value
-                    ? 'bg-blue-100 text-blue-700 border-2 border-blue-200'
-                    : 'bg-gray-50 text-gray-600 border border-gray-100 hover:bg-gray-100'
-                  }
-                `}
-              >
-                {type.icon}
-                {t(type.labelKey)}
-              </button>
-            ))}
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            {t('math.options.type')}
+            <span className="text-xs text-gray-400 font-normal ml-2">{t('math.options.multiSelect')}</span>
+          </label>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            {types.map((type) => {
+              const isSelected = (options.types || []).includes(type.value);
+              return (
+                <button
+                  key={type.value}
+                  onClick={() => handleTypeToggle(type.value)}
+                  className={`
+                    flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all
+                    ${isSelected
+                      ? 'bg-blue-100 text-blue-700 border-2 border-blue-200'
+                      : 'bg-gray-50 text-gray-600 border border-gray-100 hover:bg-gray-100'
+                    }
+                  `}
+                >
+                  {type.icon}
+                  {t(type.labelKey)}
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -188,8 +207,8 @@ export function MathOptions({ options, onChange, onGenerate, isGenerating }: Mat
             <label htmlFor="includeAnswers" className="text-sm text-gray-700">{t('math.options.includeAnswers')}</label>
           </div>
 
-          {/* 余数选项：仅在除法或混合模式显示 */}
-          {(options.type === 'division' || options.type === 'mixed') && (
+          {/* 余数选项：仅在选择了除法时显示 */}
+          {(options.types || []).includes('division') && (
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"

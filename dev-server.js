@@ -129,6 +129,52 @@ app.post('/api/cache/cleanup', async (req, res) => {
   }
 });
 
+// 图库端点
+app.get('/api/gallery', async (req, res) => {
+  try {
+    const { theme, limit = 20, offset = 0, orderBy = 'popular' } = req.query;
+    const cacheManager = imageService.getCacheManager();
+
+    if (!cacheManager.isEnabled()) {
+      return res.json({ images: [] });
+    }
+
+    const images = await cacheManager.getGalleryImages({
+      theme: theme || undefined,
+      limit: Number(limit),
+      offset: Number(offset),
+      orderBy: orderBy || 'popular'
+    });
+
+    res.json({ images });
+  } catch (error) {
+    console.error('[API] Gallery error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// 增加图片访问计数端点
+app.post('/api/gallery/increment', async (req, res) => {
+  try {
+    const { imageId } = req.body;
+
+    if (!imageId) {
+      return res.status(400).json({ error: 'Missing imageId' });
+    }
+
+    const cacheManager = imageService.getCacheManager();
+    if (!cacheManager.isEnabled()) {
+      return res.json({ success: false });
+    }
+
+    await cacheManager.incrementAccessCount(imageId);
+    res.json({ success: true });
+  } catch (error) {
+    console.error('[API] Increment error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // 启动服务器
 app.listen(PORT, () => {
   const orchestrator = imageService.getOrchestrator();

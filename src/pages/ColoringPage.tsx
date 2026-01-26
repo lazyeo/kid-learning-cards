@@ -1,33 +1,43 @@
 import { Printer, Download, ChevronLeft } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
 import { ColoringOptions } from '../components/generators/coloring/ColoringOptions';
 import { ColoringPreview } from '../components/generators/coloring/ColoringPreview';
+import { ColoringGallery } from '../components/generators/coloring/ColoringGallery';
 import { Button } from '../components/common/Button';
 import { ScaledPreview } from '../components/common/ScaledPreview';
 import { useImageGeneration } from '../hooks/useImageGeneration';
 import { downloadPDF, printPDF } from '../utils/pdfGenerator';
+import { incrementImageAccessCount } from '../services/api/client';
 import { routes } from '../config/routes';
 
 export function ColoringPage() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { isLoading, imageUrl, error, generate } = useImageGeneration();
+  const { isLoading, imageUrl, error, generate, setImageUrl, galleryImageId } = useImageGeneration();
+  const [showOptions, setShowOptions] = useState(false);
 
   const handlePrint = async () => {
     if (!imageUrl) {
       toast.error(t('coloring.generateFirst'));
       return;
     }
+    // 如果是图库图片，增加访问计数
+    if (galleryImageId) {
+      incrementImageAccessCount(galleryImageId);
+    }
     printPDF({ elementId: 'coloring-worksheet-preview' });
   };
 
   const handleDownload = async () => {
     if (!imageUrl) return;
-
+    // 如果是图库图片，增加访问计数
+    if (galleryImageId) {
+      incrementImageAccessCount(galleryImageId);
+    }
     downloadPDF({
       filename: 'coloring-page',
       elementId: 'coloring-worksheet-preview'
@@ -83,10 +93,38 @@ export function ColoringPage() {
       <div className="grid lg:grid-cols-12 gap-4 md:gap-8">
         {/* 左侧选项面板 - 打印时隐藏 */}
         <div className="lg:col-span-4 no-print space-y-4 md:space-y-6">
-          <ColoringOptions
-            onGenerate={generate}
-            isGenerating={isLoading}
-          />
+          {/* 图库 - 默认显示 */}
+          {!showOptions && (
+            <ColoringGallery
+              onSelectImage={(url, imageId) => {
+                setImageUrl(url, imageId);
+                toast.success(t('coloring.gallery.selected'));
+              }}
+              onGenerateNew={() => setShowOptions(true)}
+              isGenerating={isLoading}
+            />
+          )}
+
+          {/* 生成选项 - 点击"生成新图"后显示 */}
+          {showOptions && (
+            <>
+              <div className="flex items-center justify-between mb-2">
+                <button
+                  onClick={() => setShowOptions(false)}
+                  className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  {t('coloring.gallery.backToGallery')}
+                </button>
+              </div>
+              <ColoringOptions
+                onGenerate={(params) => {
+                  generate(params);
+                }}
+                isGenerating={isLoading}
+              />
+            </>
+          )}
 
           <div className="bg-green-50 p-4 rounded-2xl text-sm text-green-700">
             <h3 className="font-bold mb-2 flex items-center gap-2">

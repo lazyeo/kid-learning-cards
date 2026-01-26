@@ -107,6 +107,16 @@ export interface CacheAdapter {
   findSimilar?(params: ColoringCardParams, limit?: number): Promise<CacheEntry[]>;
 
   /**
+   * 获取图库图片（可选）
+   */
+  getGalleryImages?(options?: { theme?: string; limit?: number; offset?: number; orderBy?: 'popular' | 'recent' }): Promise<CacheEntry[]>;
+
+  /**
+   * 增加图片访问计数（可选）
+   */
+  incrementAccessCount?(imageId: string): Promise<void>;
+
+  /**
    * 清理过期缓存（可选）
    */
   cleanup?(maxAgeDays?: number, minAccessCount?: number): Promise<number>;

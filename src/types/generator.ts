@@ -19,8 +19,10 @@ export interface MathProblem {
   remainder?: number; // 除法余数（仅当 allowRemainder 启用时）
 }
 
+export type MathOperationType = 'addition' | 'subtraction' | 'multiplication' | 'division';
+
 export interface MathGeneratorOptions {
-  type: 'addition' | 'subtraction' | 'multiplication' | 'division' | 'mixed';
+  types: MathOperationType[];
   difficulty: 'easy' | 'medium' | 'hard';
   count: number;
   format: 'horizontal' | 'vertical'; // 新增：题目格式

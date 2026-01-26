@@ -62,10 +62,11 @@
     "generateFailed": "Generation failed, please try again",
     "options": {
       "type": "Problem Type",
-      "addition": "Addition",
-      "subtraction": "Subtraction",
-      "multiplication": "Multiplication",
-      "division": "Division",
+      "multiSelect": "(multi-select)",
+      "addition": "Add",
+      "subtraction": "Sub",
+      "multiplication": "Mul",
+      "division": "Div",
       "mixed": "Mixed",
       "difficulty": "Difficulty Level",
       "easy": "Easy",
@@ -75,7 +76,7 @@
       "mediumDesc": "Add/Sub 20-100, Multiplication 2-20, Division quotient 2-12",
       "hardDesc": "3-digit operations, 2-digit multiply/divide, all numbers ≥10",
       "format": "Layout Format",
-      "horizontal": "Horizontal (1 + 1 =)",
+      "horizontal": "Horizontal",
       "vertical": "Vertical",
       "count": "Problem Count",
       "countSuffix": " problems",
@@ -146,6 +147,19 @@
   "coloring": {
     "title": "Coloring Page Generator",
     "generateFirst": "Please generate a coloring page first",
+    "gallery": {
+      "title": "Coloring Gallery",
+      "allThemes": "All",
+      "popular": "Popular",
+      "recent": "Recent",
+      "empty": "No images yet. Create the first one!",
+      "createFirst": "Create First Coloring Page",
+      "generateNew": "Generate New",
+      "backToGallery": "Back to Gallery",
+      "selected": "Image selected",
+      "loadMore": "Load More",
+      "hint": "Click an image to use it, or generate a brand new coloring page"
+    },
     "options": {
       "theme": "Theme",
       "themes": {
@@ -153,10 +167,13 @@
         "vehicles": "Vehicles",
         "plants": "Plants",
         "fantasy": "Fantasy",
-        "food": "Food"
+        "food": "Food",
+        "custom": "Custom"
       },
       "subject": "Subject",
       "subjectPlaceholder": "Or enter custom content...",
+      "customHint": "Enter a complete description of what you want to generate",
+      "customPlaceholder": "e.g.: a cute kitten playing in the garden",
       "complexity": "Complexity",
       "easy": "Easy",
       "medium": "Medium",

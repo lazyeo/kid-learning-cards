@@ -123,6 +123,37 @@ export class CacheManager {
   }
 
   /**
+   * 获取图库图片
+   */
+  async getGalleryImages(
+    options: { theme?: string; limit?: number; orderBy?: 'popular' | 'recent' } = {}
+  ): Promise<CacheEntry[]> {
+    if (!this.adapter.getGalleryImages) {
+      return [];
+    }
+    try {
+      return await this.adapter.getGalleryImages(options);
+    } catch (error) {
+      console.error('[CacheManager] getGalleryImages error:', error);
+      return [];
+    }
+  }
+
+  /**
+   * 增加图片访问计数
+   */
+  async incrementAccessCount(imageId: string): Promise<void> {
+    if (!this.adapter.incrementAccessCount) {
+      return;
+    }
+    try {
+      await this.adapter.incrementAccessCount(imageId);
+    } catch (error) {
+      console.error('[CacheManager] incrementAccessCount error:', error);
+    }
+  }
+
+  /**
    * 检查缓存是否启用（非 NoOp）
    */
   isEnabled(): boolean {

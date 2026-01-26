@@ -118,24 +118,23 @@ export class ImageService implements IImageService {
       }
     }
 
-    // 5. 存储到缓存（暂时禁用，保留存储逻辑供未来使用）
+    // 5. 存储到缓存（用于图库展示，但不影响每次生成新图）
     let cacheId: string | undefined;
 
-    // TODO: 重新设计缓存机制后恢复
-    // if (this.cacheManager.isEnabled()) {
-    //   try {
-    //     cacheId = await this.cacheManager.store(
-    //       params,
-    //       prompt,
-    //       result.provider,
-    //       finalImageUrl,
-    //       storagePath
-    //     ) ?? undefined;
-    //     console.log(`[ImageService] Cache stored: ${cacheId}`);
-    //   } catch (error) {
-    //     console.warn('[ImageService] Cache store failed:', error);
-    //   }
-    // }
+    if (this.cacheManager.isEnabled()) {
+      try {
+        cacheId = await this.cacheManager.store(
+          params,
+          prompt,
+          result.provider,
+          finalImageUrl,
+          storagePath
+        ) ?? undefined;
+        console.log(`[ImageService] Cache stored: ${cacheId}`);
+      } catch (error) {
+        console.warn('[ImageService] Cache store failed:', error);
+      }
+    }
 
     return {
       imageUrl: finalImageUrl,

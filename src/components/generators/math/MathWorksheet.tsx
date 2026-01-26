@@ -16,12 +16,24 @@ const A4_CONFIG = {
     otherPageRows: 10,  // 后续页：3列 × 10行 = 30题
     cols: 3,
   },
-  vertical: {
-    firstPageRows: 5,   // 第一页：5列 × 5行 = 25题
-    otherPageRows: 5,   // 后续页：5列 × 5行 = 25题（50题刚好两页）
-    cols: 5,
-  },
 };
+
+// 根据题目总数动态计算竖式布局
+// 50题：5x5=25题/页（两页）；其他情况：6x5=30题/页
+function getVerticalConfig(totalCount: number) {
+  if (totalCount === 50) {
+    return {
+      firstPageRows: 5,   // 5列 × 5行 = 25题/页
+      otherPageRows: 5,
+      cols: 5,
+    };
+  }
+  return {
+    firstPageRows: 6,   // 5列 × 6行 = 30题/页
+    otherPageRows: 6,
+    cols: 5,
+  };
+}
 
 // 单个题目组件
 function ProblemItem({
@@ -230,7 +242,9 @@ export function MathWorksheet({ problems, format = 'horizontal', includeAnswers 
     );
   }
 
-  const config = A4_CONFIG[format];
+  const config = format === 'vertical'
+    ? getVerticalConfig(problems.length)
+    : A4_CONFIG.horizontal;
   const { cols, firstPageRows, otherPageRows } = config;
 
   // 将题目按行分组

@@ -23,6 +23,7 @@ export function ColoringOptions({ onGenerate, isGenerating }: ColoringOptionsPro
     { value: 'plants', labelKey: 'coloring.options.themes.plants' },
     { value: 'fantasy', labelKey: 'coloring.options.themes.fantasy' },
     { value: 'food', labelKey: 'coloring.options.themes.food' },
+    { value: 'custom', labelKey: 'coloring.options.themes.custom' },
   ];
 
   const subjectsByTheme: Record<string, string[]> = {
@@ -57,7 +58,11 @@ export function ColoringOptions({ onGenerate, isGenerating }: ColoringOptionsPro
                 key={themeItem.value}
                 onClick={() => {
                   setTheme(themeItem.value);
-                  setSubject(subjectsByTheme[themeItem.value][0]);
+                  if (themeItem.value === 'custom') {
+                    setSubject('');
+                  } else {
+                    setSubject(subjectsByTheme[themeItem.value][0]);
+                  }
                 }}
                 className={`
                   px-2 py-2 rounded-xl text-xs font-medium transition-all border
@@ -76,28 +81,33 @@ export function ColoringOptions({ onGenerate, isGenerating }: ColoringOptionsPro
         {/* 具体对象 */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">{t('coloring.options.subject')}</label>
-          <div className="flex flex-wrap gap-2 mb-2">
-            {subjectsByTheme[theme]?.map((s) => (
-              <button
-                key={s}
-                onClick={() => setSubject(s)}
-                className={`
-                  px-3 py-1 rounded-full text-xs font-medium transition-all border
-                  ${subject === s
-                    ? 'bg-purple-50 border-purple-400 text-purple-700'
-                    : 'bg-white border-gray-200 text-gray-600 hover:bg-purple-50'
-                  }
-                `}
-              >
-                {s}
-              </button>
-            ))}
-          </div>
+          {theme !== 'custom' && (
+            <div className="flex flex-wrap gap-2 mb-2">
+              {subjectsByTheme[theme]?.map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setSubject(s)}
+                  className={`
+                    px-3 py-1 rounded-full text-xs font-medium transition-all border
+                    ${subject === s
+                      ? 'bg-purple-50 border-purple-400 text-purple-700'
+                      : 'bg-white border-gray-200 text-gray-600 hover:bg-purple-50'
+                    }
+                  `}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          )}
+          {theme === 'custom' && (
+            <p className="text-xs text-gray-500 mb-2">{t('coloring.options.customHint')}</p>
+          )}
           <input
             type="text"
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
-            placeholder={t('coloring.options.subjectPlaceholder')}
+            placeholder={theme === 'custom' ? t('coloring.options.customPlaceholder') : t('coloring.options.subjectPlaceholder')}
             className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent text-sm"
           />
         </div>

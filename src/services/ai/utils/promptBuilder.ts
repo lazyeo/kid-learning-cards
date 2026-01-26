@@ -62,16 +62,6 @@ function getRandomElement<T>(array: T[]): T {
 export function buildColoringPrompt(params: ColoringCardParams): string {
   const { theme, subject, difficulty, customPrompt } = params;
 
-  // 获取主题增强元素
-  const themeKey = theme?.toLowerCase() || 'animals';
-  const enhancements = THEME_ENHANCEMENTS[themeKey] || THEME_ENHANCEMENTS.animals;
-
-  // 随机选择场景、装饰和姿态
-  const scene = getRandomElement(enhancements.scenes);
-  const decoration1 = getRandomElement(enhancements.decorations);
-  const decoration2 = getRandomElement(enhancements.decorations.filter(d => d !== decoration1));
-  const pose = getRandomElement(enhancements.poses);
-
   // 艺术风格：强调儿童涂色书风格，避免拟人化
   const artStyle = "children's coloring book style, simple cartoon illustration, kid-friendly design, non-anthropomorphic, natural proportions";
 
@@ -80,6 +70,41 @@ export function buildColoringPrompt(params: ColoringCardParams): string {
 
   // 构图指导
   const composition = "centered composition, full body visible, well-framed, professional coloring book quality";
+
+  // 自定义主题：直接使用用户输入，跳过主题增强
+  if (theme === 'custom') {
+    // 难度控制（简化版，无装饰）
+    let complexityDesc = "";
+    switch (difficulty) {
+      case 'easy':
+        complexityDesc = "very simple shapes, minimal details, extra thick outlines, large empty areas to color, rounded corners, no small parts";
+        break;
+      case 'medium':
+        complexityDesc = "moderate details, balanced composition, medium-sized areas to color";
+        break;
+      case 'hard':
+        complexityDesc = "intricate details, complex patterns, fine lines, many small areas to color";
+        break;
+    }
+
+    let finalPrompt = `${subject}, ${artStyle}, ${technicalStyle}, ${composition}, ${complexityDesc}`;
+
+    if (customPrompt && customPrompt.trim()) {
+      finalPrompt += `, ${customPrompt.trim()}`;
+    }
+
+    return finalPrompt;
+  }
+
+  // 预设主题：使用主题增强元素
+  const themeKey = theme?.toLowerCase() || 'animals';
+  const enhancements = THEME_ENHANCEMENTS[themeKey] || THEME_ENHANCEMENTS.animals;
+
+  // 随机选择场景、装饰和姿态
+  const scene = getRandomElement(enhancements.scenes);
+  const decoration1 = getRandomElement(enhancements.decorations);
+  const decoration2 = getRandomElement(enhancements.decorations.filter(d => d !== decoration1));
+  const pose = getRandomElement(enhancements.poses);
 
   // 难度控制 - 增加更具体的描述
   let complexityDesc = "";

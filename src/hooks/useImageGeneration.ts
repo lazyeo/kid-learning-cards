@@ -11,6 +11,8 @@ export interface GenerationState {
   usedProvider?: string;
   /** 是否来自缓存 */
   cached?: boolean;
+  /** 图库图片 ID（用于计数） */
+  galleryImageId?: string;
 }
 
 export function useImageGeneration() {
@@ -71,10 +73,22 @@ export function useImageGeneration() {
     });
   };
 
+  const setImageUrl = (url: string, imageId?: string) => {
+    setState({
+      isLoading: false,
+      imageUrl: url,
+      error: null,
+      usedProvider: undefined,
+      cached: true,
+      galleryImageId: imageId
+    });
+  };
+
   return {
     ...state,
     generate,
-    reset
+    reset,
+    setImageUrl
   };
 }
 
