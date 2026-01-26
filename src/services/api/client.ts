@@ -115,16 +115,16 @@ export async function fetchGalleryImages(
 ): Promise<GalleryImage[]> {
   const { theme, limit = 20, offset = 0, orderBy = 'popular' } = options;
 
-  const isDev = import.meta.env.DEV;
-  const baseUrl = isDev ? 'http://localhost:3001' : '';
   const params = new URLSearchParams();
-
   if (theme && theme !== 'all') params.set('theme', theme);
   params.set('limit', String(limit));
   params.set('offset', String(offset));
   params.set('orderBy', orderBy);
 
-  const apiUrl = `${baseUrl}/api/gallery?${params.toString()}`;
+  const isDev = import.meta.env.DEV;
+  const apiUrl = isDev
+    ? `http://localhost:3001/api/gallery?${params.toString()}`
+    : `/.netlify/functions/gallery?${params.toString()}`;
 
   try {
     const response = await fetch(apiUrl);
@@ -155,10 +155,12 @@ export async function fetchGalleryImages(
  */
 export async function incrementImageAccessCount(imageId: string): Promise<void> {
   const isDev = import.meta.env.DEV;
-  const baseUrl = isDev ? 'http://localhost:3001' : '';
+  const apiUrl = isDev
+    ? 'http://localhost:3001/api/gallery/increment'
+    : '/.netlify/functions/gallery-increment';
 
   try {
-    await fetch(`${baseUrl}/api/gallery/increment`, {
+    await fetch(apiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ imageId })
