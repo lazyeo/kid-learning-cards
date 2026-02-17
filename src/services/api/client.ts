@@ -58,11 +58,11 @@ export async function generateImageWithDetails(
   } = options;
 
   // 开发环境使用本地 API 服务器
-  // 生产环境使用 Netlify Functions
+  // 生产环境使用 Cloudflare Pages Functions
   const isDev = import.meta.env.DEV;
   const apiUrl = isDev
     ? 'http://localhost:3001/api/generate-image'
-    : '/.netlify/functions/generate-image';
+    : '/api/generate-image';
 
   console.log(`[API Client] Using ${isDev ? 'development' : 'production'} API: ${apiUrl}`);
 
@@ -124,7 +124,7 @@ export async function fetchGalleryImages(
   const isDev = import.meta.env.DEV;
   const apiUrl = isDev
     ? `http://localhost:3001/api/gallery?${params.toString()}`
-    : `/.netlify/functions/gallery?${params.toString()}`;
+    : `/api/gallery?${params.toString()}`;
 
   try {
     const response = await fetch(apiUrl);
@@ -157,7 +157,7 @@ export async function incrementImageAccessCount(imageId: string): Promise<void> 
   const isDev = import.meta.env.DEV;
   const apiUrl = isDev
     ? 'http://localhost:3001/api/gallery/increment'
-    : '/.netlify/functions/gallery-increment';
+    : '/api/gallery-increment';
 
   try {
     await fetch(apiUrl, {

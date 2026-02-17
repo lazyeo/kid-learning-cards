@@ -11,7 +11,9 @@
     "lint": "eslint .",
     "test": "vitest",
     "test:e2e": "playwright test",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "preview:cf": "npx wrangler pages dev dist",
+    "deploy:cf": "npx wrangler pages deploy dist"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.90.1",
