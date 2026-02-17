@@ -18,7 +18,7 @@ export function ColoringGallery({ onSelectImage, onGenerateNew, isGenerating }: 
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [selectedTheme, setSelectedTheme] = useState<string>('all');
-  const [orderBy, setOrderBy] = useState<'popular' | 'recent'>('popular');
+  const [orderBy, setOrderBy] = useState<'popular' | 'recent'>('recent');
 
   const themes = [
     { value: 'all', labelKey: 'coloring.gallery.allThemes' },
