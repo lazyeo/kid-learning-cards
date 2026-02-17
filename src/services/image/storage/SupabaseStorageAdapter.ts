@@ -10,6 +10,9 @@ import type { StorageAdapter, StorageResult } from '../types';
 let sharp: typeof import('sharp') | null = null;
 
 // 尝试加载 sharp（Node.js 环境）
+// 使用变量间接引用模块名，防止 esbuild 静态分析并尝试 bundle sharp 的原生依赖
+// （Cloudflare Pages Functions 的 esbuild 无法处理 sharp 的 child_process/fs 依赖）
+const SHARP_MODULE = 'sharp';
 async function getSharp(): Promise<typeof import('sharp') | null> {
   if (sharp !== null) return sharp;
 
@@ -19,7 +22,7 @@ async function getSharp(): Promise<typeof import('sharp') | null> {
   }
 
   try {
-    sharp = (await import('sharp')).default;
+    sharp = (await import(/* webpackIgnore: true */ SHARP_MODULE)).default;
     return sharp;
   } catch {
     console.warn('[SupabaseStorageAdapter] sharp not available, skipping WebP conversion');
