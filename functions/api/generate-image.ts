@@ -10,12 +10,6 @@ function buildConfig(env: Env): ImageServiceConfig {
         }
       : undefined,
     providers: {
-      antigravity: env.ANTIGRAVITY_BASE_URL
-        ? {
-            baseUrl: env.ANTIGRAVITY_BASE_URL,
-            apiKey: env.ANTIGRAVITY_API_KEY
-          }
-        : undefined,
       openai: env.OPENAI_API_KEY
         ? { apiKey: env.OPENAI_API_KEY }
         : undefined,

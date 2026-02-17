@@ -4,8 +4,6 @@
 interface Env {
   SUPABASE_URL?: string;
   SUPABASE_ANON_KEY?: string;
-  ANTIGRAVITY_BASE_URL?: string;
-  ANTIGRAVITY_API_KEY?: string;
   OPENAI_API_KEY?: string;
   GEMINI_API_KEY?: string;
   MODELSCOPE_API_KEY?: string;
