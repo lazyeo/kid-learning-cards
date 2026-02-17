@@ -28,6 +28,9 @@ function buildConfig(env: Env): ImageServiceConfig {
             baseUrl: env.MODELSCOPE_BASE_URL,
             model: env.MODELSCOPE_MODEL
           }
+        : undefined,
+      labnana: env.LABNANA_API_KEY
+        ? { apiKey: env.LABNANA_API_KEY }
         : undefined
     },
     enableCache: env.ENABLE_CACHE !== 'false',

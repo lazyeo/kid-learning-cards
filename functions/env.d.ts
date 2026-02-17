@@ -11,6 +11,7 @@ interface Env {
   MODELSCOPE_API_KEY?: string;
   MODELSCOPE_BASE_URL?: string;
   MODELSCOPE_MODEL?: string;
+  LABNANA_API_KEY?: string;
   ENABLE_CACHE?: string;
 }
 
