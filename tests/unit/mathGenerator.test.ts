@@ -1,24 +1,26 @@
 import { describe, it, expect } from 'vitest';
 import { generateMathProblems } from '../../src/utils/mathGenerator';
-import { MathGeneratorOptions } from '../../src/types/generator';
+import { type MathGeneratorOptions } from '../../src/types/generator';
+
+const createOptions = (
+  overrides: Partial<MathGeneratorOptions> = {}
+): MathGeneratorOptions => ({
+  types: ['addition'],
+  difficulty: 'easy',
+  count: 10,
+  format: 'horizontal',
+  ...overrides
+});
 
 describe('mathGenerator', () => {
   it('should generate correct number of problems', () => {
-    const options: MathGeneratorOptions = {
-      type: 'addition',
-      difficulty: 'easy',
-      count: 10
-    };
+    const options = createOptions();
     const problems = generateMathProblems(options);
     expect(problems.length).toBe(10);
   });
 
   it('should generate addition problems correctly', () => {
-    const options: MathGeneratorOptions = {
-      type: 'addition',
-      difficulty: 'easy',
-      count: 5
-    };
+    const options = createOptions({ count: 5 });
     const problems = generateMathProblems(options);
 
     problems.forEach(problem => {
@@ -28,11 +30,11 @@ describe('mathGenerator', () => {
   });
 
   it('should generate subtraction problems correctly with non-negative answers', () => {
-    const options: MathGeneratorOptions = {
-      type: 'subtraction',
+    const options = createOptions({
+      types: ['subtraction'],
       difficulty: 'medium',
       count: 5
-    };
+    });
     const problems = generateMathProblems(options);
 
     problems.forEach(problem => {
@@ -43,11 +45,11 @@ describe('mathGenerator', () => {
   });
 
   it('should generate multiplication problems correctly', () => {
-    const options: MathGeneratorOptions = {
-      type: 'multiplication',
+    const options = createOptions({
+      types: ['multiplication'],
       difficulty: 'medium',
       count: 5
-    };
+    });
     const problems = generateMathProblems(options);
 
     problems.forEach(problem => {
@@ -57,11 +59,11 @@ describe('mathGenerator', () => {
   });
 
   it('should generate division problems correctly with integer answers', () => {
-    const options: MathGeneratorOptions = {
-      type: 'division',
+    const options = createOptions({
+      types: ['division'],
       difficulty: 'medium',
       count: 5
-    };
+    });
     const problems = generateMathProblems(options);
 
     problems.forEach(problem => {
@@ -74,11 +76,7 @@ describe('mathGenerator', () => {
 
   it('should respect difficulty ranges for addition', () => {
     // Easy (整合原 easy+medium): operand1 1-50, operand2 1-30
-    const easyProblems = generateMathProblems({
-      type: 'addition',
-      difficulty: 'easy',
-      count: 20
-    });
+    const easyProblems = generateMathProblems(createOptions({ count: 20 }));
     easyProblems.forEach(p => {
       expect(p.operand1).toBeGreaterThanOrEqual(1);
       expect(p.operand1).toBeLessThanOrEqual(50);
@@ -87,11 +85,10 @@ describe('mathGenerator', () => {
     });
 
     // Medium (原 hard): operand1 20-100, operand2 10-80
-    const mediumProblems = generateMathProblems({
-      type: 'addition',
+    const mediumProblems = generateMathProblems(createOptions({
       difficulty: 'medium',
       count: 20
-    });
+    }));
     mediumProblems.forEach(p => {
       expect(p.operand1).toBeGreaterThanOrEqual(20);
       expect(p.operand1).toBeLessThanOrEqual(100);
@@ -100,11 +97,10 @@ describe('mathGenerator', () => {
     });
 
     // Hard (新高难度): 所有数字 >= 10
-    const hardProblems = generateMathProblems({
-      type: 'addition',
+    const hardProblems = generateMathProblems(createOptions({
       difficulty: 'hard',
       count: 20
-    });
+    }));
     hardProblems.forEach(p => {
       expect(p.operand1).toBeGreaterThanOrEqual(10);
       expect(p.operand1).toBeLessThanOrEqual(999);
@@ -115,12 +111,11 @@ describe('mathGenerator', () => {
 
   it('should NOT include 1 in medium/hard multiplication problems', () => {
     // Medium multiplication (原 hard): 2-20 × 2-12
-    const mediumProblems = generateMathProblems({
-      type: 'multiplication',
+    const mediumProblems = generateMathProblems(createOptions({
+      types: ['multiplication'],
       difficulty: 'medium',
-      count: 50,
-      format: 'horizontal'
-    });
+      count: 50
+    }));
     mediumProblems.forEach(p => {
       expect(p.operand1).toBeGreaterThanOrEqual(2);
       expect(p.operand2).toBeGreaterThanOrEqual(2);
@@ -129,12 +124,11 @@ describe('mathGenerator', () => {
     });
 
     // Hard multiplication (新高难度): 10-99 × 10-50，所有数字 >= 10
-    const hardProblems = generateMathProblems({
-      type: 'multiplication',
+    const hardProblems = generateMathProblems(createOptions({
+      types: ['multiplication'],
       difficulty: 'hard',
-      count: 50,
-      format: 'horizontal'
-    });
+      count: 50
+    }));
     hardProblems.forEach(p => {
       expect(p.operand1).toBeGreaterThanOrEqual(10);
       expect(p.operand2).toBeGreaterThanOrEqual(10);
@@ -145,11 +139,11 @@ describe('mathGenerator', () => {
 
   it('should NOT include 1 as divisor or quotient in medium/hard division problems', () => {
     // Medium division (原 hard): divisor 2-12, quotient 2-12
-    const mediumProblems = generateMathProblems({
-      type: 'division',
+    const mediumProblems = generateMathProblems(createOptions({
+      types: ['division'],
       difficulty: 'medium',
       count: 50
-    });
+    }));
     mediumProblems.forEach(p => {
       expect(p.operand2).toBeGreaterThanOrEqual(2); // divisor >= 2
       expect(p.operand2).toBeLessThanOrEqual(12);
@@ -158,11 +152,11 @@ describe('mathGenerator', () => {
     });
 
     // Hard division (新高难度): divisor 10-50, quotient 10-50，所有数字 >= 10
-    const hardProblems = generateMathProblems({
-      type: 'division',
+    const hardProblems = generateMathProblems(createOptions({
+      types: ['division'],
       difficulty: 'hard',
       count: 50
-    });
+    }));
     hardProblems.forEach(p => {
       expect(p.operand2).toBeGreaterThanOrEqual(10); // divisor >= 10
       expect(p.operand2).toBeLessThanOrEqual(50);
@@ -173,12 +167,10 @@ describe('mathGenerator', () => {
 
   it('should allow 1 in easy multiplication (beginner level)', () => {
     // Easy multiplication (整合原 easy+medium): 1-12 × 1-12
-    const easyProblems = generateMathProblems({
-      type: 'multiplication',
-      difficulty: 'easy',
-      count: 100,
-      format: 'horizontal'
-    });
+    const easyProblems = generateMathProblems(createOptions({
+      types: ['multiplication'],
+      count: 100
+    }));
     easyProblems.forEach(p => {
       expect(p.operand1).toBeGreaterThanOrEqual(1);
       expect(p.operand1).toBeLessThanOrEqual(12);
@@ -188,13 +180,12 @@ describe('mathGenerator', () => {
   });
 
   it('should generate division problems with remainder when allowRemainder is true', () => {
-    const problems = generateMathProblems({
-      type: 'division',
+    const problems = generateMathProblems(createOptions({
+      types: ['division'],
       difficulty: 'medium',
       count: 50,
-      format: 'horizontal',
       allowRemainder: true
-    });
+    }));
 
     problems.forEach(p => {
       expect(p.operator).toBe('÷');
@@ -207,13 +198,12 @@ describe('mathGenerator', () => {
   });
 
   it('should NOT have remainder when allowRemainder is false', () => {
-    const problems = generateMathProblems({
-      type: 'division',
+    const problems = generateMathProblems(createOptions({
+      types: ['division'],
       difficulty: 'medium',
       count: 50,
-      format: 'horizontal',
       allowRemainder: false
-    });
+    }));
 
     problems.forEach(p => {
       expect(p.operator).toBe('÷');
@@ -224,13 +214,12 @@ describe('mathGenerator', () => {
   });
 
   it('should only apply remainder to division in mixed mode', () => {
-    const problems = generateMathProblems({
-      type: 'mixed',
+    const problems = generateMathProblems(createOptions({
+      types: ['addition', 'subtraction', 'multiplication', 'division'],
       difficulty: 'medium',
       count: 100,
-      format: 'horizontal',
       allowRemainder: true
-    });
+    }));
 
     problems.forEach(p => {
       if (p.operator === '÷') {

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ImageGenerator } from '../../../src/services/ai/imageGenerator';
-import { ImageGeneratorProvider, ImageGenOptions, ColoringCardParams } from '../../../src/services/ai/types';
+import { type ImageGeneratorProvider, type ColoringCardParams } from '../../../src/services/ai/types';
 
 // Mock Provider Implementation
 class MockProvider implements ImageGeneratorProvider {
@@ -80,12 +80,17 @@ describe('ImageGenerator', () => {
 
     const result = await generator.generate(params);
 
-    expect(result).toBe('http://mock1.com/image.png');
+    expect(result).toEqual({
+      imageUrl: 'http://mock1.com/image.png',
+      cached: false,
+      provider: 'mock1'
+    });
     expect(mockProvider1.generateImage).toHaveBeenCalledTimes(1);
 
     // Verify prompt construction happened (roughly)
     const callArgs = mockProvider1.generateImage.mock.calls[0];
     expect(callArgs[0]).toContain('cat');
-    expect(callArgs[0]).toContain('animals');
+    expect(callArgs[0]).toContain("children's coloring book style");
+    expect(callArgs[0]).toContain('black and white coloring page');
   });
 });

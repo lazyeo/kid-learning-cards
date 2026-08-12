@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { buildColoringPrompt } from '../../../src/services/ai/utils/promptBuilder';
-import { ColoringCardParams } from '../../../src/services/ai/types';
+import { type ColoringCardParams } from '../../../src/services/ai/types';
 
 describe('promptBuilder', () => {
   it('should build a basic prompt with theme and subject', () => {
@@ -12,8 +12,10 @@ describe('promptBuilder', () => {
 
     const prompt = buildColoringPrompt(params);
 
-    expect(prompt).toContain('a cute cat with animals theme');
-    expect(prompt).toContain('black and white coloring page for kids');
+    expect(prompt).toContain('cat');
+    expect(prompt).toContain("children's coloring book style");
+    expect(prompt).toContain('black and white coloring page');
+    expect(prompt).toContain('no shading');
     expect(prompt).toContain('very simple shapes'); // Easy difficulty keyword
   });
 
