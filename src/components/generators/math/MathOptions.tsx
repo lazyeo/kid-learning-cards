@@ -27,7 +27,10 @@ export function MathOptions({ options, onChange, onGenerate, isGenerating }: Mat
   const { t } = useTranslation();
   const [showDifficultyInfo, setShowDifficultyInfo] = useState(false);
 
-  const handleChange = (key: keyof MathGeneratorOptions, value: any) => {
+  const handleChange = <K extends keyof MathGeneratorOptions,>(
+    key: K,
+    value: MathGeneratorOptions[K]
+  ) => {
     onChange({ ...options, [key]: value });
   };
 
@@ -52,7 +55,10 @@ export function MathOptions({ options, onChange, onGenerate, isGenerating }: Mat
     { value: 'division' as MathOperationType, labelKey: 'math.options.division', icon: <Divide className="w-4 h-4" /> },
   ];
 
-  const difficulties = [
+  const difficulties: Array<{
+    value: MathGeneratorOptions['difficulty'];
+    labelKey: string;
+  }> = [
     { value: 'easy', labelKey: 'math.options.easy' },
     { value: 'medium', labelKey: 'math.options.medium' },
     { value: 'hard', labelKey: 'math.options.hard' },

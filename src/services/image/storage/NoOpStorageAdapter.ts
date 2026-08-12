@@ -7,7 +7,7 @@
 import type { StorageAdapter, StorageResult } from '../types';
 
 export class NoOpStorageAdapter implements StorageAdapter {
-  async storeFromUrl(imageUrl: string, _filename: string): Promise<StorageResult> {
+  async storeFromUrl(imageUrl: string): Promise<StorageResult> {
     // 直接返回原始 URL
     return {
       publicUrl: imageUrl,
@@ -15,7 +15,7 @@ export class NoOpStorageAdapter implements StorageAdapter {
     };
   }
 
-  async storeFromBase64(base64Data: string, _filename: string): Promise<StorageResult> {
+  async storeFromBase64(base64Data: string): Promise<StorageResult> {
     // 直接返回 data URI
     return {
       publicUrl: base64Data,
@@ -23,7 +23,7 @@ export class NoOpStorageAdapter implements StorageAdapter {
     };
   }
 
-  async delete(_path: string): Promise<void> {
+  async delete(): Promise<void> {
     // 无操作
   }
 

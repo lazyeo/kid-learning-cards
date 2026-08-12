@@ -208,7 +208,7 @@ export class SupabaseStorageAdapter implements StorageAdapter {
     return filename
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^\x00-\x7F]/g, '')
+      .replace(/\P{ASCII}/gu, '')
       .toLowerCase()
       .replace(/[^a-z0-9-]/g, '-')
       .replace(/-+/g, '-')

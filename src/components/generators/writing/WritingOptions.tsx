@@ -16,18 +16,29 @@ interface WritingOptionsProps {
 export function WritingOptions({ options, onChange, onGenerate, isGenerating }: WritingOptionsProps) {
   const { t } = useTranslation();
 
-  const handleChange = (key: keyof WritingGeneratorOptions, value: any) => {
+  const handleChange = <K extends keyof WritingGeneratorOptions,>(
+    key: K,
+    value: WritingGeneratorOptions[K]
+  ) => {
     onChange({ ...options, [key]: value });
   };
 
   const isTianZiGe = options.gridType === 'tian-zi-ge';
 
-  const gridTypes = [
+  const gridTypes: Array<{
+    value: WritingGeneratorOptions['gridType'];
+    labelKey: string;
+    icon: React.ReactNode;
+  }> = [
     { value: 'tian-zi-ge', labelKey: 'writing.options.tianZiGe', icon: <Grid className="w-4 h-4" /> },
     { value: 'si-xian-san-ge', labelKey: 'writing.options.siXianGe', icon: <AlignLeft className="w-4 h-4" /> },
   ];
 
-  const englishTypes = [
+  const englishTypes: Array<{
+    value: NonNullable<WritingGeneratorOptions['englishType']>;
+    labelKey: string;
+    icon: React.ReactNode;
+  }> = [
     { value: 'alphabet', labelKey: 'writing.english.alphabet', icon: <Type className="w-4 h-4" /> },
     { value: 'words', labelKey: 'writing.english.words', icon: <BookOpen className="w-4 h-4" /> },
     { value: 'sentences', labelKey: 'writing.english.sentences', icon: <FileText className="w-4 h-4" /> },
@@ -72,7 +83,10 @@ export function WritingOptions({ options, onChange, onGenerate, isGenerating }: 
                 {difficultyLevels.map((level) => (
                   <button
                     key={level.id}
-                    onClick={() => handleChange('chineseDifficulty', level.id)}
+                    onClick={() => handleChange(
+                      'chineseDifficulty',
+                      level.id as WritingGeneratorOptions['chineseDifficulty']
+                    )}
                     className={`
                       px-2 py-2 rounded-xl text-xs font-medium transition-all border text-center
                       ${options.chineseDifficulty === level.id

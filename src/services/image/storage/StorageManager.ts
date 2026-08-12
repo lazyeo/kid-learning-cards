@@ -95,7 +95,7 @@ export class StorageManager {
     return filename
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')  // 移除重音符号
-      .replace(/[^\x00-\x7F]/g, '')      // 移除非 ASCII 字符
+      .replace(/\P{ASCII}/gu, '')         // 移除非 ASCII 字符
       .toLowerCase()
       .replace(/[^a-z0-9-]/g, '-')       // 只保留字母、数字、连字符
       .replace(/-+/g, '-')               // 合并多个连字符

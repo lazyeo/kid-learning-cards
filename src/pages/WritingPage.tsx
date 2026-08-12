@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Printer, Download, ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
@@ -23,88 +23,84 @@ function getRandomItems<T>(arr: T[], count: number): T[] {
   return shuffled.slice(0, count);
 }
 
+const DEFAULT_WRITING_OPTIONS: WritingGeneratorOptions = {
+  gridType: 'tian-zi-ge',
+  content: '',
+  showTracing: true,
+  showPinyin: true,
+  chineseDifficulty: 'beginner',
+  chineseCategory: 'nature',
+  englishType: 'alphabet',
+  englishCategory: 'animals',
+  englishCount: 8
+};
+
+// 根据选项生成内容
+function generateContent(opts: WritingGeneratorOptions): string {
+  const isTianZiGe = opts.gridType === 'tian-zi-ge';
+
+  if (isTianZiGe) {
+    // 田字格：根据难度和分类生成汉字内容
+    if (opts.chineseDifficulty === 'custom') {
+      return opts.content || '';
+    }
+
+    if (opts.chineseCategory) {
+      const category = chineseDatabase.find(c => c.id === opts.chineseCategory);
+      if (category) return category.chars;
+    }
+
+    return getDefaultChineseContent(opts.chineseDifficulty || 'beginner');
+  }
+
+  // 四线格：根据英文练习类型生成内容
+  switch (opts.englishType) {
+    case 'alphabet':
+      return DEFAULT_ENGLISH_ALPHABET;
+
+    case 'words': {
+      const category = vocabularyDatabase.find(c => c.id === opts.englishCategory);
+      if (category) {
+        const words = getRandomItems(category.words, opts.englishCount || 8);
+        return words.join('\n');
+      }
+      return '';
+    }
+
+    case 'sentences': {
+      const templates = getRandomItems(sentenceTemplates, opts.englishCount || 5);
+      const nounCategories = ['animals', 'fruits', 'family', 'body'];
+      const validWords = vocabularyDatabase
+        .filter(c => nounCategories.includes(c.id))
+        .flatMap(c => c.words);
+
+      const sentences = templates.map(template => {
+        const randomWord = validWords[Math.floor(Math.random() * validWords.length)];
+        let sentence = template.replace('[word]', randomWord);
+        // 处理 a/an
+        const vowelRegex = /\b(a)\s+([aeiou])/i;
+        if (vowelRegex.test(sentence)) {
+          sentence = sentence.replace(/\ba\s+([aeiou])/i, 'an $1');
+        }
+        return sentence;
+      });
+      return sentences.join('\n');
+    }
+
+    case 'custom':
+      return opts.content || '';
+
+    default:
+      return DEFAULT_ENGLISH_ALPHABET;
+  }
+}
+
 export function WritingPage() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [isGenerating, setIsGenerating] = useState(false);
-  const [content, setContent] = useState<string>('');
-  const [options, setOptions] = useState<WritingGeneratorOptions>({
-    gridType: 'tian-zi-ge',
-    content: '',
-    showTracing: true,
-    showPinyin: true,
-    chineseDifficulty: 'beginner',
-    chineseCategory: 'nature',
-    englishType: 'alphabet',
-    englishCategory: 'animals',
-    englishCount: 8
-  });
-
-  // 根据选项生成内容
-  const generateContent = (opts: WritingGeneratorOptions): string => {
-    const isTianZiGe = opts.gridType === 'tian-zi-ge';
-
-    if (isTianZiGe) {
-      // 田字格：根据难度和分类生成汉字内容
-      if (opts.chineseDifficulty === 'custom') {
-        return opts.content || '';
-      }
-
-      if (opts.chineseCategory) {
-        const category = chineseDatabase.find(c => c.id === opts.chineseCategory);
-        if (category) return category.chars;
-      }
-
-      return getDefaultChineseContent(opts.chineseDifficulty || 'beginner');
-    } else {
-      // 四线格：根据英文练习类型生成内容
-      switch (opts.englishType) {
-        case 'alphabet':
-          return DEFAULT_ENGLISH_ALPHABET;
-
-        case 'words': {
-          const category = vocabularyDatabase.find(c => c.id === opts.englishCategory);
-          if (category) {
-            const words = getRandomItems(category.words, opts.englishCount || 8);
-            return words.join('\n');
-          }
-          return '';
-        }
-
-        case 'sentences': {
-          const templates = getRandomItems(sentenceTemplates, opts.englishCount || 5);
-          const nounCategories = ['animals', 'fruits', 'family', 'body'];
-          const validWords = vocabularyDatabase
-            .filter(c => nounCategories.includes(c.id))
-            .flatMap(c => c.words);
-
-          const sentences = templates.map(template => {
-            const randomWord = validWords[Math.floor(Math.random() * validWords.length)];
-            let sentence = template.replace('[word]', randomWord);
-            // 处理 a/an
-            const vowelRegex = /\b(a)\s+([aeiou])/i;
-            if (vowelRegex.test(sentence)) {
-              sentence = sentence.replace(/\ba\s+([aeiou])/i, 'an $1');
-            }
-            return sentence;
-          });
-          return sentences.join('\n');
-        }
-
-        case 'custom':
-          return opts.content || '';
-
-        default:
-          return DEFAULT_ENGLISH_ALPHABET;
-      }
-    }
-  };
-
-  // 初始化时生成默认内容
-  useEffect(() => {
-    const initialContent = generateContent(options);
-    setContent(initialContent);
-  }, []);
+  const [content, setContent] = useState(() => generateContent(DEFAULT_WRITING_OPTIONS));
+  const [options, setOptions] = useState<WritingGeneratorOptions>(DEFAULT_WRITING_OPTIONS);
 
   // 处理选项变化
   const handleOptionsChange = (newOptions: WritingGeneratorOptions) => {

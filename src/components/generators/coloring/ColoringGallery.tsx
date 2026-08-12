@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Images, TrendingUp, Clock, ChevronDown, Wand2 } from 'lucide-react';
 import { fetchGalleryImages, type GalleryImage } from '../../../services/api/client';
@@ -29,11 +29,7 @@ export function ColoringGallery({ onSelectImage, onGenerateNew, isGenerating }: 
     { value: 'food', labelKey: 'coloring.options.themes.food' },
   ];
 
-  useEffect(() => {
-    loadGallery(true);
-  }, [selectedTheme, orderBy]);
-
-  const loadGallery = async (reset: boolean = false) => {
+  const loadGallery = useCallback(async (reset: boolean = false, offset: number = 0) => {
     if (reset) {
       setIsLoading(true);
       setImages([]);
@@ -42,11 +38,10 @@ export function ColoringGallery({ onSelectImage, onGenerateNew, isGenerating }: 
     }
 
     try {
-      const currentCount = reset ? 0 : images.length;
       const data = await fetchGalleryImages({
         theme: selectedTheme === 'all' ? undefined : selectedTheme,
         limit: PAGE_SIZE,
-        offset: currentCount,
+        offset: reset ? 0 : offset,
         orderBy
       });
 
@@ -62,11 +57,15 @@ export function ColoringGallery({ onSelectImage, onGenerateNew, isGenerating }: 
       setIsLoading(false);
       setIsLoadingMore(false);
     }
-  };
+  }, [orderBy, selectedTheme]);
+
+  useEffect(() => {
+    void loadGallery(true);
+  }, [loadGallery]);
 
   const handleLoadMore = () => {
     if (!isLoadingMore && hasMore) {
-      loadGallery(false);
+      void loadGallery(false, images.length);
     }
   };
 
