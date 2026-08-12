@@ -5,3 +5,4 @@
 export { StorageManager } from './StorageManager';
 export { NoOpStorageAdapter } from './NoOpStorageAdapter';
 export { SupabaseStorageAdapter } from './SupabaseStorageAdapter';
+export { R2StorageAdapter } from './R2StorageAdapter';

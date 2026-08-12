@@ -1,19 +1,8 @@
 import { createImageService } from '../../src/services/image';
-import type { ImageServiceConfig } from '../../src/services/image';
-
-function buildConfig(env: Env): ImageServiceConfig {
-  return {
-    supabase: env.SUPABASE_URL && env.SUPABASE_ANON_KEY
-      ? {
-          url: env.SUPABASE_URL,
-          anonKey: env.SUPABASE_ANON_KEY
-        }
-      : undefined,
-    providers: {},
-    enableCache: env.ENABLE_CACHE !== 'false',
-    enableStorage: true
-  };
-}
+import {
+  buildImageServiceConfig,
+  type PagesImageEnv,
+} from '../lib/imageServiceConfig';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -22,7 +11,7 @@ const corsHeaders = {
   'Content-Type': 'application/json'
 };
 
-export const onRequest: PagesFunction<Env> = async (context) => {
+export const onRequest: PagesFunction<PagesImageEnv> = async (context) => {
   if (context.request.method === 'OPTIONS') {
     return new Response('', { status: 204, headers: corsHeaders });
   }
@@ -45,7 +34,9 @@ export const onRequest: PagesFunction<Env> = async (context) => {
       );
     }
 
-    const imageService = createImageService(buildConfig(context.env));
+    const imageService = createImageService(
+      buildImageServiceConfig(context.env, context.request.url)
+    );
     const cacheManager = imageService.getCacheManager();
 
     if (!cacheManager.isEnabled()) {

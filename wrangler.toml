@@ -2,3 +2,19 @@ name = "kids-learning-cards"
 pages_build_output_dir = "dist"
 compatibility_date = "2024-01-01"
 compatibility_flags = ["nodejs_compat"]
+
+[vars]
+STORAGE_BACKEND = "cloudflare"
+
+[ai]
+binding = "AI"
+remote = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "kids-learning-cards-db"
+database_id = "54845b2a-adf6-4478-8536-0ba961b657d1"
+
+[[r2_buckets]]
+binding = "IMAGES"
+bucket_name = "kids-learning-cards-images"

@@ -40,6 +40,9 @@ export type {
 
   // Config types
   SupabaseConfig,
+  CloudflareStorageConfig,
+  D1DatabaseLike,
+  R2BucketLike,
   ProviderCredentials,
   ImageServiceConfig,
 
@@ -58,6 +61,7 @@ export type {
 export { CacheManager } from './cache';
 export { NoOpCacheAdapter } from './cache';
 export { SupabaseCacheAdapter } from './cache';
+export { D1CacheAdapter } from './cache';
 
 // ============================================================================
 // Storage
@@ -66,6 +70,7 @@ export { SupabaseCacheAdapter } from './cache';
 export { StorageManager } from './storage';
 export { NoOpStorageAdapter } from './storage';
 export { SupabaseStorageAdapter } from './storage';
+export { R2StorageAdapter } from './storage';
 
 // ============================================================================
 // Providers

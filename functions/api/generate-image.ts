@@ -1,36 +1,9 @@
 import { createImageService } from '../../src/services/image';
-import type { ColoringCardParams, ImageServiceConfig } from '../../src/services/image';
-
-function buildConfig(env: Env): ImageServiceConfig {
-  return {
-    supabase: env.SUPABASE_URL && env.SUPABASE_ANON_KEY
-      ? {
-          url: env.SUPABASE_URL,
-          anonKey: env.SUPABASE_ANON_KEY
-        }
-      : undefined,
-    providers: {
-      openai: env.OPENAI_API_KEY
-        ? { apiKey: env.OPENAI_API_KEY }
-        : undefined,
-      gemini: env.GEMINI_API_KEY
-        ? { apiKey: env.GEMINI_API_KEY }
-        : undefined,
-      modelscope: env.MODELSCOPE_API_KEY
-        ? {
-            apiKey: env.MODELSCOPE_API_KEY,
-            baseUrl: env.MODELSCOPE_BASE_URL,
-            model: env.MODELSCOPE_MODEL
-          }
-        : undefined,
-      labnana: env.LABNANA_API_KEY
-        ? { apiKey: env.LABNANA_API_KEY }
-        : undefined
-    },
-    enableCache: env.ENABLE_CACHE !== 'false',
-    enableStorage: true
-  };
-}
+import type { ColoringCardParams } from '../../src/services/image';
+import {
+  buildImageServiceConfig,
+  type PagesImageEnv,
+} from '../lib/imageServiceConfig';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -38,7 +11,7 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS'
 };
 
-export const onRequest: PagesFunction<Env> = async (context) => {
+export const onRequest: PagesFunction<PagesImageEnv> = async (context) => {
   if (context.request.method === 'OPTIONS') {
     return new Response('', { status: 200, headers: corsHeaders });
   }
@@ -68,7 +41,9 @@ export const onRequest: PagesFunction<Env> = async (context) => {
 
     console.log(`[generate-image] Generating image with provider: ${providerName || 'auto'}`);
 
-    const imageService = createImageService(buildConfig(context.env));
+    const imageService = createImageService(
+      buildImageServiceConfig(context.env, context.request.url)
+    );
     const result = await imageService.generate(params, {
       provider: providerName,
       skipCache: !useCache,

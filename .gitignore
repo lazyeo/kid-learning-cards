@@ -26,6 +26,10 @@ dist-ssr
 # Local Netlify folder
 .netlify
 
+# Local Cloudflare state and development secrets
+.wrangler/
+.dev.vars*
+
 # Claude Code configuration
 .claude/
 CLAUDE.md

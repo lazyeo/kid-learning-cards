@@ -16,7 +16,7 @@
 - **前端框架**: React 19 + TypeScript
 - **样式系统**: Tailwind CSS v4
 - **构建工具**: Vite
-- **AI 服务**: 待集成 (OpenAI DALL-E / Stability AI / 其他)
+- **AI 服务**: Cloudflare Workers AI 语音转写 + 多图像 Provider
 
 ## 项目结构
 
@@ -38,11 +38,17 @@ src/
 npm install
 ```
 
-### 启动开发服务器
+### 启动完整开发环境
 
 ```bash
-npm run dev
+npm run dev:full
 ```
+
+请访问 `http://localhost:3001`。该命令通过 Wrangler 运行 Pages Functions 和
+Workers AI binding，使用 Wrangler 的 Cloudflare 登录态，不需要在项目中保存
+Cloudflare API Token。如果只调试前端，仍可使用 `npm run dev`。
+远程 Pages secret 的值不会被 Wrangler 下载；如果需要在本地调试图片
+Provider，请将必要的值放入已被 Git 忽略的 `.dev.vars`。
 
 ### 构建生产版本
 
@@ -55,6 +61,23 @@ npm run build
 ```bash
 npm run preview
 ```
+
+使用 Cloudflare Pages Functions 预览：
+
+```bash
+npm run build
+npm run preview:cf
+```
+
+### Cloudflare 数据存储
+
+生产环境使用 D1 `kids-learning-cards-db` 存储图片索引，使用 R2
+`kids-learning-cards-images` 存储图片。`wrangler.toml` 是 binding 和
+`STORAGE_BACKEND` 的配置来源。Supabase 数据和 secrets 暂时保留作为回退路径。
+
+回退时将 `wrangler.toml` 中的 `STORAGE_BACKEND` 改为 `supabase`，重新构建并
+执行 `npm run deploy:cf`。本地 `npm run dev:full` 会显式覆盖为 Supabase，
+不会误写远程 D1/R2。
 
 ## 项目状态
 

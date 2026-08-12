@@ -126,7 +126,7 @@ export class CacheManager {
    * 获取图库图片
    */
   async getGalleryImages(
-    options: { theme?: string; limit?: number; orderBy?: 'popular' | 'recent' } = {}
+    options: { theme?: string; limit?: number; offset?: number; orderBy?: 'popular' | 'recent' } = {}
   ): Promise<CacheEntry[]> {
     if (!this.adapter.getGalleryImages) {
       return [];

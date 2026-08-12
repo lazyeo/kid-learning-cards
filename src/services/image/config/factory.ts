@@ -7,7 +7,9 @@ import { ImageService } from '../ImageService';
 import { CacheManager } from '../cache/CacheManager';
 import { StorageManager } from '../storage/StorageManager';
 import { SupabaseCacheAdapter } from '../cache/SupabaseCacheAdapter';
+import { D1CacheAdapter } from '../cache/D1CacheAdapter';
 import { SupabaseStorageAdapter } from '../storage/SupabaseStorageAdapter';
+import { R2StorageAdapter } from '../storage/R2StorageAdapter';
 import { ProviderOrchestrator, DEFAULT_STRATEGY } from '../providers/ProviderOrchestrator';
 import { OpenAIProvider } from '../../ai/providers/openai';
 import { GeminiProvider } from '../../ai/providers/gemini';
@@ -22,7 +24,9 @@ import type { ImageServiceConfig } from '../types';
 export function createImageService(config: ImageServiceConfig): ImageService {
   // 1. 创建缓存管理器
   let cacheManager: CacheManager;
-  if (config.enableCache !== false && config.supabase) {
+  if (config.enableCache !== false && config.cloudflare) {
+    cacheManager = new CacheManager(new D1CacheAdapter(config.cloudflare.db));
+  } else if (config.enableCache !== false && config.supabase) {
     const cacheAdapter = new SupabaseCacheAdapter(
       config.supabase.url,
       config.supabase.anonKey
@@ -34,7 +38,12 @@ export function createImageService(config: ImageServiceConfig): ImageService {
 
   // 2. 创建存储管理器
   let storageManager: StorageManager;
-  if (config.enableStorage !== false && config.supabase) {
+  if (config.enableStorage !== false && config.cloudflare) {
+    storageManager = new StorageManager(new R2StorageAdapter(
+      config.cloudflare.images,
+      config.cloudflare.publicBaseUrl
+    ));
+  } else if (config.enableStorage !== false && config.supabase) {
     const storageAdapter = new SupabaseStorageAdapter(
       config.supabase.url,
       config.supabase.anonKey

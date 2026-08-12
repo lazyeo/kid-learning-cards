@@ -217,6 +217,41 @@ export interface SupabaseConfig {
   anonKey: string;
 }
 
+export interface D1ResultLike {
+  meta?: { changes?: number };
+}
+
+export interface D1PreparedStatementLike {
+  bind(...values: unknown[]): D1PreparedStatementLike;
+  first<T>(): Promise<T | null>;
+  all<T>(): Promise<{ results?: T[] }>;
+  run(): Promise<D1ResultLike>;
+}
+
+export interface D1DatabaseLike {
+  prepare(query: string): D1PreparedStatementLike;
+}
+
+export interface R2BucketLike {
+  put(
+    key: string,
+    value: ArrayBuffer | Uint8Array,
+    options?: {
+      httpMetadata?: {
+        contentType?: string;
+        cacheControl?: string;
+      };
+    }
+  ): Promise<unknown>;
+  delete(key: string): Promise<unknown>;
+}
+
+export interface CloudflareStorageConfig {
+  db: D1DatabaseLike;
+  images: R2BucketLike;
+  publicBaseUrl: string;
+}
+
 /**
  * Provider 凭证配置
  */
@@ -234,6 +269,8 @@ export interface ProviderCredentials {
 export interface ImageServiceConfig {
   /** Supabase 配置（缓存和存储） */
   supabase?: SupabaseConfig;
+  /** Cloudflare D1 + R2 配置（优先于 Supabase） */
+  cloudflare?: CloudflareStorageConfig;
   /** Provider 凭证 */
   providers: ProviderCredentials;
   /** 多 Provider 策略 */
