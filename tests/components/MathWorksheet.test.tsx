@@ -8,6 +8,16 @@ const mockProblems: MathProblem[] = [
   { id: '2', operand1: 10, operand2: 4, operator: '-', answer: 6 },
 ];
 
+function createProblems(count: number): MathProblem[] {
+  return Array.from({ length: count }, (_, index) => ({
+    id: String(index + 1),
+    operand1: 20 + index,
+    operand2: 3,
+    operator: '+' as const,
+    answer: 23 + index,
+  }));
+}
+
 describe('MathWorksheet', () => {
   it('should render problems correctly', () => {
     render(<MathWorksheet problems={mockProblems} />);
@@ -37,5 +47,16 @@ describe('MathWorksheet', () => {
     render(<MathWorksheet problems={[]} />);
 
     expect(screen.getByText(/点击左侧"开始生成"按钮/i)).toBeInTheDocument();
+  });
+
+  it('gives every vertical row equal writing space, including the final row', () => {
+    render(<MathWorksheet problems={createProblems(20)} format="vertical" />);
+
+    const layout = document.querySelector('.problem-layout');
+    expect(layout).toBeInTheDocument();
+    expect(layout).toHaveClass('grid');
+    expect(layout).toHaveStyle({
+      gridTemplateRows: 'repeat(4, minmax(0, 1fr))',
+    });
   });
 });

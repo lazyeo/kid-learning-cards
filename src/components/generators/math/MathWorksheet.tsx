@@ -296,17 +296,18 @@ export function MathWorksheet({ problems, format = 'horizontal', includeAnswers 
           <PageHeader t={t} showHeader={page.isFirst} />
 
           <div
-            className="flex flex-col justify-between"
+            className="problem-layout grid"
             style={{
               height: page.isFirst ? 'calc(297mm - 10mm - 20mm - 100px)' : 'calc(297mm - 10mm - 20mm - 40px)',
-              minHeight: page.isFirst ? 'calc(297mm - 10mm - 20mm - 100px)' : 'calc(297mm - 10mm - 20mm - 40px)'
+              minHeight: page.isFirst ? 'calc(297mm - 10mm - 20mm - 100px)' : 'calc(297mm - 10mm - 20mm - 40px)',
+              gridTemplateRows: `repeat(${page.rows.length}, minmax(0, 1fr))`,
             }}
           >
             {page.rows.map((rowProblems, rowIndex) => {
               return (
                 <div
                   key={rowIndex}
-                  className={`grid gap-x-2 ${
+                  className={`problem-row grid min-h-0 items-start gap-x-2 ${
                     format === 'vertical' ? 'grid-cols-5' : 'grid-cols-3'
                   }`}
                 >
