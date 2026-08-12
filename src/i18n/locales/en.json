@@ -184,6 +184,25 @@
       "generate": "Generate Coloring Page",
       "generatingNote": "Note: Generation may take 15-30 seconds"
     },
+    "voice": {
+      "sectionLabel": "Create a coloring page with your voice",
+      "title": "Tell me what to draw",
+      "start": "Say what you want to draw",
+      "gettingReady": "Getting ready to listen...",
+      "ask": "Tell me, what would you like to draw?",
+      "stop": "I'm finished",
+      "understanding": "Let me think...",
+      "confirmSpeech": "I heard that you want to draw: {{idea}}. Is that right?",
+      "parentTranscript": "Recognized: {{idea}}",
+      "replay": "Listen again",
+      "retry": "Say it again",
+      "confirm": "Start drawing",
+      "tryAgain": "Try again",
+      "noSpeech": "I could not hear that. Please say it again.",
+      "transcriptionFailed": "I did not understand that one. Please try again.",
+      "permissionDenied": "Please allow microphone access so I can hear you.",
+      "unsupported": "This browser cannot record audio. Please ask an adult to type it in."
+    },
     "tips": [
       "Try combining different themes and subjects",
       "\"Easy\" difficulty is great for toddlers with thicker, simpler lines",

@@ -184,6 +184,25 @@
       "generate": "生成涂色卡片",
       "generatingNote": "注意：生成过程可能需要 15-30 秒"
     },
+    "voice": {
+      "sectionLabel": "语音生成涂色卡片",
+      "title": "说出来，让我帮你画",
+      "start": "说出想画的东西",
+      "gettingReady": "准备听你说...",
+      "ask": "告诉我，你想画什么？",
+      "stop": "我说完了",
+      "understanding": "让我想一想...",
+      "confirmSpeech": "我听到你想画：{{idea}}。对吗？",
+      "parentTranscript": "识别结果：{{idea}}",
+      "replay": "再听一次",
+      "retry": "重新说",
+      "confirm": "开始画",
+      "tryAgain": "再试一次",
+      "noSpeech": "没有听清楚，请再说一次。",
+      "transcriptionFailed": "这次没有听懂，请再说一次。",
+      "permissionDenied": "需要允许使用麦克风，才能听见你说话。",
+      "unsupported": "这个浏览器暂时不能录音，可以请大人帮忙输入。"
+    },
     "tips": [
       "尝试组合不同的主题和对象",
       "\"简单\"难度适合幼儿，线条更粗更少",

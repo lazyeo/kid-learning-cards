@@ -4,6 +4,7 @@ import { Settings, Sparkles, Palette } from 'lucide-react';
 import { Button } from '../../common/Button';
 import { Card } from '../../common/Card';
 import { type ColoringCardParams } from '../../../services/ai/types';
+import { VoicePrompt } from './VoicePrompt';
 
 interface ColoringOptionsProps {
   onGenerate: (params: ColoringCardParams) => void;
@@ -46,6 +47,21 @@ export function ColoringOptions({ onGenerate, isGenerating }: ColoringOptionsPro
   return (
     <Card title={<div className="flex items-center gap-2"><Settings className="w-5 h-5" /> {t('common.options')}</div>}>
       <div className="space-y-6">
+        <VoicePrompt
+          disabled={isGenerating}
+          onConfirm={(spokenIdea) => {
+            setTheme('custom');
+            setSubject(spokenIdea);
+            setCustomPrompt('');
+            onGenerate({
+              theme: 'custom',
+              subject: spokenIdea,
+              difficulty,
+              customPrompt: '',
+            });
+          }}
+        />
+
         {/* 主题选择 */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
