@@ -29,6 +29,7 @@ dist-ssr
 # Local Cloudflare state and development secrets
 .wrangler/
 .dev.vars*
+.worktrees/
 
 # Claude Code configuration
 .claude/
