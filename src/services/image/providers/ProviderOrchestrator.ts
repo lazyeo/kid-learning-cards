@@ -16,6 +16,7 @@ import type {
  */
 const PROVIDER_TIMEOUTS: Record<string, number> = {
   labnana: 120000,
+  'gpt-image': 120000,
   antigravity: 60000,
   modelscope: 180000,  // 3分钟，给足轮询+下载时间
   gemini: 60000,
@@ -25,11 +26,18 @@ const PROVIDER_TIMEOUTS: Record<string, number> = {
 /**
  * 默认优先级顺序
  */
-const DEFAULT_PRIORITY_ORDER = ['labnana', 'antigravity', 'modelscope', 'gemini', 'openai'];
+const DEFAULT_PRIORITY_ORDER = [
+  'labnana',
+  'gpt-image',
+  'antigravity',
+  'modelscope',
+  'gemini',
+  'openai',
+];
 
 /**
  * 从环境变量解析 Provider 优先级
- * 格式: VITE_PROVIDER_PRIORITY=labnana,antigravity,modelscope,gemini,openai
+ * 格式: VITE_PROVIDER_PRIORITY=labnana,gpt-image,antigravity,modelscope,gemini,openai
  * 支持 Vite (import.meta.env) 和 Node.js (process.env) 两种环境
  */
 function parseProviderPriority(): ProviderPriorityConfig[] {

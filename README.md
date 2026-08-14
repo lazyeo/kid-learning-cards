@@ -79,6 +79,34 @@ npm run preview:cf
 执行 `npm run deploy:cf`。本地 `npm run dev:full` 会显式覆盖为 Supabase，
 不会误写远程 D1/R2。
 
+### AI 图片 Provider
+
+默认图片生成顺序为 ListenHub/LabNana 主用，GPT Image 兼容接口作为第一
+fallback：
+
+```text
+labnana → gpt-image → antigravity → modelscope → gemini → openai
+```
+
+GPT Image provider 使用独立的服务端环境变量，不会暴露到浏览器：
+
+```bash
+GPT_IMAGE_BASE_URL=https://your-compatible-api.example.com/v1
+GPT_IMAGE_API_KEY=your-api-key
+GPT_IMAGE_MODEL=gpt-image-2
+```
+
+`GPT_IMAGE_MODEL` 可省略，默认使用 `gpt-image-2`。Base URL 可以是服务根地址、
+`/v1` 地址或完整的 `/v1/images/generations` 地址。只有 Base URL 和 API key
+同时存在时 provider 才会注册。
+
+需要调整主备顺序时设置服务端 `PROVIDER_PRIORITY`，例如未来将 GPT Image
+切为主用：
+
+```bash
+PROVIDER_PRIORITY=gpt-image,labnana,antigravity,modelscope,gemini,openai
+```
+
 ## 项目状态
 
 🚀 **规划中** - 项目架构设计阶段
