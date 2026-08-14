@@ -256,6 +256,7 @@ export interface CloudflareStorageConfig {
  * Provider 凭证配置
  */
 export interface ProviderCredentials {
+  gptImage?: { baseUrl: string; apiKey: string; model?: string };
   openai?: { apiKey: string };
   gemini?: { apiKey: string };
   antigravity?: { baseUrl: string; apiKey?: string };

@@ -52,4 +52,31 @@ describe('buildImageServiceConfig', () => {
       'Cloudflare storage bindings are unavailable'
     );
   });
+
+  it('maps complete GPT Image credentials with the default model', () => {
+    const config = buildImageServiceConfig({
+      GPT_IMAGE_BASE_URL: 'https://images.example.com/v1',
+      GPT_IMAGE_API_KEY: 'test-key',
+    }, 'https://kids.a-dobe.club/api/gallery');
+
+    expect(config.providers.gptImage).toEqual({
+      baseUrl: 'https://images.example.com/v1',
+      apiKey: 'test-key',
+      model: 'gpt-image-2',
+    });
+  });
+
+  it('uses the configured GPT Image model and ignores incomplete credentials', () => {
+    const configured = buildImageServiceConfig({
+      GPT_IMAGE_BASE_URL: 'https://images.example.com/v1',
+      GPT_IMAGE_API_KEY: 'test-key',
+      GPT_IMAGE_MODEL: 'gpt-image-2-compatible',
+    }, 'https://kids.a-dobe.club/api/gallery');
+    const incomplete = buildImageServiceConfig({
+      GPT_IMAGE_API_KEY: 'test-key',
+    }, 'https://kids.a-dobe.club/api/gallery');
+
+    expect(configured.providers.gptImage?.model).toBe('gpt-image-2-compatible');
+    expect(incomplete.providers.gptImage).toBeUndefined();
+  });
 });

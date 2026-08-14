@@ -18,6 +18,9 @@ export interface PagesImageEnv {
   MODELSCOPE_BASE_URL?: string;
   MODELSCOPE_MODEL?: string;
   LABNANA_API_KEY?: string;
+  GPT_IMAGE_BASE_URL?: string;
+  GPT_IMAGE_API_KEY?: string;
+  GPT_IMAGE_MODEL?: string;
   ENABLE_CACHE?: string;
 }
 
@@ -48,6 +51,13 @@ export function buildImageServiceConfig(
         }
       : undefined,
     providers: {
+      gptImage: env.GPT_IMAGE_BASE_URL && env.GPT_IMAGE_API_KEY
+        ? {
+            baseUrl: env.GPT_IMAGE_BASE_URL,
+            apiKey: env.GPT_IMAGE_API_KEY,
+            model: env.GPT_IMAGE_MODEL || 'gpt-image-2',
+          }
+        : undefined,
       antigravity: env.ANTIGRAVITY_BASE_URL
         ? {
             baseUrl: env.ANTIGRAVITY_BASE_URL,

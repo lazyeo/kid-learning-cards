@@ -16,6 +16,7 @@ import { GeminiProvider } from '../../ai/providers/gemini';
 import { AntigravityProvider } from '../../ai/providers/antigravity';
 import { ModelScopeProvider } from '../../ai/providers/modelscope';
 import { LabNanaProvider } from '../../ai/providers/labnana';
+import { GptImageProvider } from '../../ai/providers/gptImage';
 import type { ImageServiceConfig } from '../types';
 
 /**
@@ -63,6 +64,16 @@ export function createImageService(config: ImageServiceConfig): ImageService {
       new AntigravityProvider({
         baseUrl: config.providers.antigravity.baseUrl,
         apiKey: config.providers.antigravity.apiKey ?? 'local'
+      })
+    );
+  }
+
+  if (config.providers.gptImage?.baseUrl && config.providers.gptImage.apiKey) {
+    orchestrator.registerProvider(
+      new GptImageProvider({
+        baseUrl: config.providers.gptImage.baseUrl,
+        apiKey: config.providers.gptImage.apiKey,
+        model: config.providers.gptImage.model,
       })
     );
   }

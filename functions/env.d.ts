@@ -10,6 +10,9 @@ interface Env {
   MODELSCOPE_BASE_URL?: string;
   MODELSCOPE_MODEL?: string;
   LABNANA_API_KEY?: string;
+  GPT_IMAGE_BASE_URL?: string;
+  GPT_IMAGE_API_KEY?: string;
+  GPT_IMAGE_MODEL?: string;
   ENABLE_CACHE?: string;
 }
 

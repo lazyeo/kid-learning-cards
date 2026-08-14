@@ -21,6 +21,13 @@ function buildConfig() {
         }
       : undefined,
     providers: {
+      gptImage: process.env.GPT_IMAGE_BASE_URL && process.env.GPT_IMAGE_API_KEY
+        ? {
+            baseUrl: process.env.GPT_IMAGE_BASE_URL,
+            apiKey: process.env.GPT_IMAGE_API_KEY,
+            model: process.env.GPT_IMAGE_MODEL || 'gpt-image-2'
+          }
+        : undefined,
       antigravity: process.env.ANTIGRAVITY_BASE_URL
         ? {
             baseUrl: process.env.ANTIGRAVITY_BASE_URL,
