@@ -109,4 +109,3 @@ export class GptImageProvider implements ImageGeneratorProvider {
     return ['openai_compatible', 'gpt_image', 'base64_output', 'custom_endpoint'];
   }
 }
-

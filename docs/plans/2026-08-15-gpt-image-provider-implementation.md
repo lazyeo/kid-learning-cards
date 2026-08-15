@@ -58,4 +58,3 @@
 3. Run `npm run build` and require success.
 4. Run `npx --yes wrangler@4.121.0 pages functions build` and require successful compilation.
 5. Review `git diff --check`, ensure no secrets are present, and commit the implementation.
-

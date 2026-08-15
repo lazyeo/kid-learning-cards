@@ -36,4 +36,3 @@ describe('ProviderOrchestrator default fallback order', () => {
     expect(result.failedProviders?.map(provider => provider.providerId)).toEqual(['labnana']);
   });
 });
-

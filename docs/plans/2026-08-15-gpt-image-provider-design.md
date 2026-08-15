@@ -19,4 +19,3 @@ Requests use a two-minute provider timeout and map the existing `standard`/`hd` 
 ## Testing
 
 Unit tests cover endpoint normalization, authorization and request shape, base64 and URL responses, malformed responses, upstream errors, config wiring, registration, and fallback order. Full Vitest, ESLint, TypeScript/Vite build, and Pages Functions compilation are required before integration.
-
