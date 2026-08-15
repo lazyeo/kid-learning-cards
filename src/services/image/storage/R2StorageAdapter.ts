@@ -35,6 +35,14 @@ function extensionFor(contentType: string): string {
   return extensions[normalized] || 'png';
 }
 
+function toArrayBuffer(body: ArrayBuffer | Uint8Array): ArrayBuffer {
+  if (body instanceof ArrayBuffer) return body;
+
+  const copy = new Uint8Array(body.byteLength);
+  copy.set(body);
+  return copy.buffer;
+}
+
 export class R2StorageAdapter implements StorageAdapter {
   private readonly bucket: R2BucketLike;
   private readonly publicBaseUrl: string;
@@ -100,7 +108,7 @@ export class R2StorageAdapter implements StorageAdapter {
       && ['image/png', 'image/jpeg', 'image/jpg'].includes(normalizedContentType)
     ) {
       try {
-        const stream = new Response(body).body;
+        const stream = new Response(toArrayBuffer(body)).body;
         if (!stream) throw new Error('Image body stream is unavailable');
 
         const transformed = await this.imageTransformer
