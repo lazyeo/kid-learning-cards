@@ -6,15 +6,17 @@
   "scripts": {
     "dev": "vite",
     "dev:api": "node --import tsx dev-server.js",
-    "dev:full": "concurrently \"npm run dev\" \"npm run dev:cf\"",
-    "dev:cf": "npx --yes wrangler@4.121.0 pages dev --proxy 5173 --port 3001 --binding STORAGE_BACKEND=supabase --show-interactive-dev-session false",
-    "build": "tsc -b && vite build",
+    "dev:full": "concurrently \"npm run dev\" \"npm run dev:api\"",
+    "dev:cf": "npm run build && wrangler dev",
+    "build": "npm run build:web && npm run build:worker",
+    "build:web": "tsc -b && vite build",
+    "build:worker": "wrangler pages functions build functions --outdir .worker --minify",
     "lint": "eslint .",
     "test": "vitest",
     "test:e2e": "playwright test",
     "preview": "vite preview",
-    "preview:cf": "npx --yes wrangler@4.121.0 pages dev dist",
-    "deploy:cf": "npx --yes wrangler@4.121.0 pages deploy dist"
+    "preview:cf": "npm run build && wrangler dev",
+    "deploy:cf": "wrangler deploy"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.90.1",
@@ -62,6 +64,7 @@
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
     "vite": "^7.2.4",
-    "vitest": "^4.0.16"
+    "vitest": "^4.0.16",
+    "wrangler": "4.121.0"
   }
 }

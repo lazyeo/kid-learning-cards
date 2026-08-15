@@ -1,10 +1,23 @@
-name = "kids-learning-cards"
-pages_build_output_dir = "dist"
+name = "kids-learning-cards-worker"
+main = ".worker/index.js"
 compatibility_date = "2024-01-01"
 compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+routes = [
+  { pattern = "kids.a-dobe.club/*", zone_name = "a-dobe.club" }
+]
 
 [vars]
 STORAGE_BACKEND = "cloudflare"
+ENABLE_CACHE = "true"
+GPT_IMAGE_BASE_URL = "https://api.a-dobe.club/v1"
+GPT_IMAGE_MODEL = "gpt-image-2"
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+run_worker_first = ["/api/*"]
 
 [ai]
 binding = "AI"
