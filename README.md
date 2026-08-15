@@ -44,11 +44,17 @@ npm install
 npm run dev:full
 ```
 
-请访问 `http://localhost:3001`。该命令通过 Wrangler 运行 Pages Functions 和
-Workers AI binding，使用 Wrangler 的 Cloudflare 登录态，不需要在项目中保存
-Cloudflare API Token。如果只调试前端，仍可使用 `npm run dev`。
-远程 Pages secret 的值不会被 Wrangler 下载；如果需要在本地调试图片
-Provider，请将必要的值放入已被 Git 忽略的 `.dev.vars`。
+请访问 `http://localhost:5173`。该命令同时运行 Vite 和本地 API 服务。如果只
+调试前端，仍可使用 `npm run dev`。
+
+需要使用真实 Worker runtime、D1/R2 或 Cloudflare bindings 时运行：
+
+```bash
+npm run dev:cf
+```
+
+Wrangler 会在 `http://localhost:8787` 提供完整站点。远程 secret 不会被下载；
+本地调试 Provider 时请将必要值放入已被 Git 忽略的 `.dev.vars`。
 
 ### 构建生产版本
 
@@ -62,7 +68,7 @@ npm run build
 npm run preview
 ```
 
-使用 Cloudflare Pages Functions 预览：
+使用 Cloudflare Worker 预览：
 
 ```bash
 npm run build
@@ -71,7 +77,7 @@ npm run preview:cf
 
 ### Cloudflare 数据存储
 
-生产环境使用 D1 `kids-learning-cards-db` 存储图片索引，使用 R2
+Worker 环境使用 D1 `kids-learning-cards-db` 存储图片索引，使用 R2
 `kids-learning-cards-images` 存储图片。`wrangler.toml` 是 binding 和
 `STORAGE_BACKEND` 的配置来源。Supabase 数据和 secrets 暂时保留作为回退路径。
 
@@ -79,9 +85,41 @@ npm run preview:cf
 写入 R2；上游已经返回 WebP 时不会重复转换。转换服务不可用或额度不足时会
 自动保存原图，避免影响图片生成流程。
 
-回退时将 `wrangler.toml` 中的 `STORAGE_BACKEND` 改为 `supabase`，重新构建并
-执行 `npm run deploy:cf`。本地 `npm run dev:full` 会显式覆盖为 Supabase，
-不会误写远程 D1/R2。
+当前迁移目标是 staging Worker `kids-learning-cards-worker`。执行以下命令会
+部署到 `workers.dev`，不会自动接管 `kids.a-dobe.club`：
+
+```bash
+npm run build
+npm run deploy:cf
+```
+
+现有 Pages 项目在 Worker 完成验证和域名切换前继续保留，作为回滚路径。
+
+### Worker secrets
+
+Wrangler 和 Cloudflare 不允许读取 Pages 中已有的 secret 值，因此需要在新
+Worker 中重新添加。主用和第一 fallback 至少需要：
+
+```text
+LABNANA_API_KEY
+GPT_IMAGE_API_KEY
+```
+
+其他 provider 如需保持可用，再添加：
+
+```text
+ANTIGRAVITY_API_KEY
+ANTIGRAVITY_BASE_URL
+OPENAI_API_KEY
+GEMINI_API_KEY
+MODELSCOPE_API_KEY
+MODELSCOPE_BASE_URL
+MODELSCOPE_MODEL
+PROVIDER_PRIORITY
+```
+
+可以在 Cloudflare Dashboard 的 Worker Variables and Secrets 页面填写，也可以
+逐项执行 `wrangler secret put <NAME>`。不要把值写入 `wrangler.toml` 或提交到 Git。
 
 ### AI 图片 Provider
 
