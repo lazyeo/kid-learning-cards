@@ -14,6 +14,14 @@ interface Env {
   GPT_IMAGE_API_KEY?: string;
   GPT_IMAGE_MODEL?: string;
   ENABLE_CACHE?: string;
+  IMAGE_TRANSFORMER?: {
+    input(stream: ReadableStream): {
+      output(options: {
+        format: 'image/webp';
+        quality: number;
+      }): Promise<{ response(): Response }>;
+    };
+  };
 }
 
 // Cloudflare Pages Functions handler 类型

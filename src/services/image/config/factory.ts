@@ -42,7 +42,8 @@ export function createImageService(config: ImageServiceConfig): ImageService {
   if (config.enableStorage !== false && config.cloudflare) {
     storageManager = new StorageManager(new R2StorageAdapter(
       config.cloudflare.images,
-      config.cloudflare.publicBaseUrl
+      config.cloudflare.publicBaseUrl,
+      config.cloudflare.imageTransformer
     ));
   } else if (config.enableStorage !== false && config.supabase) {
     const storageAdapter = new SupabaseStorageAdapter(

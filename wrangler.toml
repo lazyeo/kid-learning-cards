@@ -10,6 +10,9 @@ STORAGE_BACKEND = "cloudflare"
 binding = "AI"
 remote = true
 
+[images]
+binding = "IMAGE_TRANSFORMER"
+
 [[d1_databases]]
 binding = "DB"
 database_name = "kids-learning-cards-db"

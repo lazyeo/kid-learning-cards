@@ -10,9 +10,15 @@ function createBindings() {
     run: vi.fn(),
   };
   statement.bind.mockReturnValue(statement);
+  const output = vi.fn(async () => ({
+    response: () => new Response(new Uint8Array([9]), {
+      headers: { 'Content-Type': 'image/webp' },
+    }),
+  }));
   return {
     DB: { prepare: vi.fn(() => statement) },
     IMAGES: { put: vi.fn(), delete: vi.fn() },
+    IMAGE_TRANSFORMER: { input: vi.fn(() => ({ output })) },
   };
 }
 
@@ -40,6 +46,7 @@ describe('buildImageServiceConfig', () => {
     expect(config.cloudflare).toEqual({
       db: bindings.DB,
       images: bindings.IMAGES,
+      imageTransformer: bindings.IMAGE_TRANSFORMER,
       publicBaseUrl: 'https://kids.a-dobe.club/api/images',
     });
     expect(config.supabase).toBeUndefined();

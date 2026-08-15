@@ -1,4 +1,9 @@
-import type { R2BucketLike, StorageAdapter, StorageResult } from '../types';
+import type {
+  ImagesBindingLike,
+  R2BucketLike,
+  StorageAdapter,
+  StorageResult,
+} from '../types';
 
 const IMMUTABLE_CACHE_CONTROL = 'public, max-age=31536000, immutable';
 
@@ -30,16 +35,27 @@ function extensionFor(contentType: string): string {
   return extensions[normalized] || 'png';
 }
 
+function toArrayBuffer(body: ArrayBuffer | Uint8Array): ArrayBuffer {
+  if (body instanceof ArrayBuffer) return body;
+
+  const copy = new Uint8Array(body.byteLength);
+  copy.set(body);
+  return copy.buffer;
+}
+
 export class R2StorageAdapter implements StorageAdapter {
   private readonly bucket: R2BucketLike;
   private readonly publicBaseUrl: string;
+  private readonly imageTransformer?: ImagesBindingLike;
 
   constructor(
     bucket: R2BucketLike,
-    publicBaseUrl: string
+    publicBaseUrl: string,
+    imageTransformer?: ImagesBindingLike
   ) {
     this.bucket = bucket;
     this.publicBaseUrl = publicBaseUrl.replace(/\/$/, '');
+    this.imageTransformer = imageTransformer;
   }
 
   async storeFromUrl(imageUrl: string, filename: string): Promise<StorageResult> {
@@ -84,10 +100,35 @@ export class R2StorageAdapter implements StorageAdapter {
     contentType: string,
     filename: string
   ): Promise<StorageResult> {
-    const normalizedContentType = contentType.split(';')[0].trim().toLowerCase();
+    let normalizedContentType = contentType.split(';')[0].trim().toLowerCase();
+    let storageBody = body;
+
+    if (
+      this.imageTransformer
+      && ['image/png', 'image/jpeg', 'image/jpg'].includes(normalizedContentType)
+    ) {
+      try {
+        const stream = new Response(toArrayBuffer(body)).body;
+        if (!stream) throw new Error('Image body stream is unavailable');
+
+        const transformed = await this.imageTransformer
+          .input(stream)
+          .output({ format: 'image/webp', quality: 80 });
+        const response = transformed.response();
+        if (!response.ok) {
+          throw new Error(`Image transformation failed with status ${response.status}`);
+        }
+
+        storageBody = await response.arrayBuffer();
+        normalizedContentType = 'image/webp';
+      } catch (error) {
+        console.warn('[R2StorageAdapter] WebP conversion failed, storing original image', error);
+      }
+    }
+
     const storagePath = `${Date.now()}-${sanitizeFilename(filename)}.${extensionFor(normalizedContentType)}`;
 
-    await this.bucket.put(storagePath, body, {
+    await this.bucket.put(storagePath, storageBody, {
       httpMetadata: {
         contentType: normalizedContentType,
         cacheControl: IMMUTABLE_CACHE_CONTROL,
