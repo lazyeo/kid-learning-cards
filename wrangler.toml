@@ -3,6 +3,9 @@ main = ".worker/index.js"
 compatibility_date = "2024-01-01"
 compatibility_flags = ["nodejs_compat"]
 workers_dev = true
+routes = [
+  { pattern = "kids.a-dobe.club/*", zone_name = "a-dobe.club" }
+]
 
 [vars]
 STORAGE_BACKEND = "cloudflare"

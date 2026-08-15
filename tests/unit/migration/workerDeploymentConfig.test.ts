@@ -24,6 +24,13 @@ describe('Cloudflare Worker deployment configuration', () => {
     expect(wrangler).toContain('binding = "AI"');
   });
 
+  it('routes the production hostname through the Worker without deleting Pages', () => {
+    const wrangler = readFileSync(projectFile('wrangler.toml'), 'utf8');
+
+    expect(wrangler).toContain('pattern = "kids.a-dobe.club/*"');
+    expect(wrangler).toContain('zone_name = "a-dobe.club"');
+  });
+
   it('builds Pages Functions into a Worker before Wrangler deploys it', () => {
     const packageJson = JSON.parse(
       readFileSync(projectFile('package.json'), 'utf8')

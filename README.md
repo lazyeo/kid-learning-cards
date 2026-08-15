@@ -85,15 +85,16 @@ Worker 环境使用 D1 `kids-learning-cards-db` 存储图片索引，使用 R2
 写入 R2；上游已经返回 WebP 时不会重复转换。转换服务不可用或额度不足时会
 自动保存原图，避免影响图片生成流程。
 
-当前迁移目标是 staging Worker `kids-learning-cards-worker`。执行以下命令会
-部署到 `workers.dev`，不会自动接管 `kids.a-dobe.club`：
+生产环境由 Worker `kids-learning-cards-worker` 提供服务。执行以下命令会同时
+更新 `workers.dev` 预览地址和 `kids.a-dobe.club/*` Worker route：
 
 ```bash
 npm run build
 npm run deploy:cf
 ```
 
-现有 Pages 项目在 Worker 完成验证和域名切换前继续保留，作为回滚路径。
+现有 Pages 项目和自定义域名继续保留作为回滚路径。正式流量由 Worker route
+优先接管；如需回滚，移除 `wrangler.toml` 中的 route 并重新部署 Worker 即可。
 
 ### Worker secrets
 
