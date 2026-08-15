@@ -75,6 +75,10 @@ npm run preview:cf
 `kids-learning-cards-images` 存储图片。`wrangler.toml` 是 binding 和
 `STORAGE_BACKEND` 的配置来源。Supabase 数据和 secrets 暂时保留作为回退路径。
 
+新生成的 PNG/JPEG 会通过 Cloudflare Images binding 转为质量 80 的 WebP 后
+写入 R2；上游已经返回 WebP 时不会重复转换。转换服务不可用或额度不足时会
+自动保存原图，避免影响图片生成流程。
+
 回退时将 `wrangler.toml` 中的 `STORAGE_BACKEND` 改为 `supabase`，重新构建并
 执行 `npm run deploy:cf`。本地 `npm run dev:full` 会显式覆盖为 Supabase，
 不会误写远程 D1/R2。
