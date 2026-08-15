@@ -1,6 +1,7 @@
 import type {
   D1DatabaseLike,
   ImageServiceConfig,
+  ImagesBindingLike,
   R2BucketLike,
 } from '../../src/services/image/types';
 
@@ -8,6 +9,7 @@ export interface PagesImageEnv {
   STORAGE_BACKEND?: 'supabase' | 'cloudflare';
   DB?: D1DatabaseLike;
   IMAGES?: R2BucketLike;
+  IMAGE_TRANSFORMER?: ImagesBindingLike;
   SUPABASE_URL?: string;
   SUPABASE_ANON_KEY?: string;
   ANTIGRAVITY_API_KEY?: string;
@@ -41,6 +43,7 @@ export function buildImageServiceConfig(
       ? {
           db: env.DB!,
           images: env.IMAGES!,
+          imageTransformer: env.IMAGE_TRANSFORMER,
           publicBaseUrl: `${origin}/api/images`,
         }
       : undefined,
