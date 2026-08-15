@@ -9,6 +9,17 @@ function createBucket() {
   };
 }
 
+function createTransformer(bytes = new Uint8Array([9, 8, 7])) {
+  const output = vi.fn(async () => ({
+    response: () => new Response(bytes, {
+      headers: { 'Content-Type': 'image/webp' },
+    }),
+  }));
+  const input = vi.fn(() => ({ output }));
+
+  return { input, output };
+}
+
 afterEach(() => {
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
@@ -16,6 +27,94 @@ afterEach(() => {
 });
 
 describe('R2StorageAdapter', () => {
+  it('converts PNG bytes to quality-80 WebP before storing them', async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-08-12T00:00:00.000Z'));
+    const bucket = createBucket();
+    const transformer = createTransformer();
+    const adapter = new R2StorageAdapter(
+      bucket,
+      'https://example.test/api/images',
+      transformer
+    );
+
+    const result = await adapter.storeFromBase64(
+      'data:image/png;base64,AQID',
+      'Smiling Star'
+    );
+
+    expect(transformer.input).toHaveBeenCalledOnce();
+    expect(transformer.output).toHaveBeenCalledWith({
+      format: 'image/webp',
+      quality: 80,
+    });
+    expect(result.storagePath).toBe('1786492800000-smiling-star.webp');
+    const uploaded = bucket.put.mock.calls[0][1] as ArrayBuffer;
+    expect(Array.from(new Uint8Array(uploaded))).toEqual([9, 8, 7]);
+    expect(bucket.put).toHaveBeenCalledWith(result.storagePath, uploaded, {
+      httpMetadata: {
+        contentType: 'image/webp',
+        cacheControl: 'public, max-age=31536000, immutable',
+      },
+    });
+  });
+
+  it('does not transform an existing WebP image', async () => {
+    const bucket = createBucket();
+    const transformer = createTransformer();
+    const adapter = new R2StorageAdapter(
+      bucket,
+      'https://example.test/api/images',
+      transformer
+    );
+
+    await adapter.storeFromBase64('data:image/webp;base64,AQID', 'Moon');
+
+    expect(transformer.input).not.toHaveBeenCalled();
+    expect(bucket.put).toHaveBeenCalledWith(
+      expect.stringMatching(/-moon\.webp$/),
+      expect.any(Uint8Array),
+      expect.objectContaining({
+        httpMetadata: expect.objectContaining({ contentType: 'image/webp' }),
+      })
+    );
+  });
+
+  it('stores the original image when WebP conversion fails', async () => {
+    const warning = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const bucket = createBucket();
+    const transformer = {
+      input: vi.fn(() => ({
+        output: vi.fn(async () => {
+          throw new Error('transform unavailable');
+        }),
+      })),
+    };
+    const adapter = new R2StorageAdapter(
+      bucket,
+      'https://example.test/api/images',
+      transformer
+    );
+
+    const result = await adapter.storeFromBase64(
+      'data:image/png;base64,AQID',
+      'Fallback'
+    );
+
+    expect(transformer.input).toHaveBeenCalledOnce();
+    expect(warning).toHaveBeenCalledOnce();
+    expect(result.storagePath).toMatch(/-fallback\.png$/);
+    const uploaded = bucket.put.mock.calls[0][1] as Uint8Array;
+    expect(Array.from(uploaded)).toEqual([1, 2, 3]);
+    expect(bucket.put).toHaveBeenCalledWith(
+      result.storagePath,
+      uploaded,
+      expect.objectContaining({
+        httpMetadata: expect.objectContaining({ contentType: 'image/png' }),
+      })
+    );
+  });
+
   it('stores a fetched image with HTTP metadata and returns its Pages URL', async () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-08-12T00:00:00.000Z'));

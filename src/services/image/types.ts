@@ -246,9 +246,25 @@ export interface R2BucketLike {
   delete(key: string): Promise<unknown>;
 }
 
+export interface ImagesTransformOutputLike {
+  response(): Response;
+}
+
+export interface ImagesTransformInputLike {
+  output(options: {
+    format: 'image/webp';
+    quality: number;
+  }): Promise<ImagesTransformOutputLike>;
+}
+
+export interface ImagesBindingLike {
+  input(stream: ReadableStream): ImagesTransformInputLike;
+}
+
 export interface CloudflareStorageConfig {
   db: D1DatabaseLike;
   images: R2BucketLike;
+  imageTransformer?: ImagesBindingLike;
   publicBaseUrl: string;
 }
 
